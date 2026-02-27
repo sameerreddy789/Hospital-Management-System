@@ -59,8 +59,8 @@ Incremental implementation of a multi-role clinic management web app using vanil
     - Email field, submit handler calling `sendPasswordReset`, success/error messages
     - _Requirements: 22.2, 22.3, 22.4, 22.5, 22.6_
 
-- [ ] 4. Landing page
-  - [ ] 4.1 Create `index.html` with About, Services, and Contact sections
+- [x] 4. Landing page
+  - [x] 4.1 Create `index.html` with About, Services, and Contact sections
     - Navigation with login and registration buttons linking to `login.html` and `register.html`
     - _Requirements: 1.1, 1.2, 1.3, 1.4_
 
