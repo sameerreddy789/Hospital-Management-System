@@ -36,6 +36,9 @@
     </div>
 
     <h2>Pending Problem Submissions</h2>
+    <div class="filter-bar">
+      <input type="text" id="searchInput" placeholder="Search by patient name..." class="search-input">
+    </div>
     <div id="submissionList" class="list-container">
       <p class="loading">Loading...</p>
     </div>
@@ -49,19 +52,13 @@
   <script src="../js/auth.js"></script>
   <script src="../js/auth-guard.js"></script>
   <script src="../js/firestore.js"></script>
+  <script src="../js/search-filter.js"></script>
   <script>
     requireAuth('admin').then(function(user) {
       var container = document.getElementById('submissionList');
+      var allSubmissions = [];
 
-      // Real-time stats
-      onStatsChange('admin', user.uid, function(stats) {
-        if (stats.pendingCount !== undefined) document.getElementById('pendingCount').textContent = stats.pendingCount;
-        if (stats.assignedCount !== undefined) document.getElementById('assignedCount').textContent = stats.assignedCount;
-        if (stats.doctorCount !== undefined) document.getElementById('doctorCount').textContent = stats.doctorCount;
-      });
-
-      // Real-time pending submissions
-      onSubmissionsChange(function(submissions) {
+      function renderSubmissions(submissions) {
         if (submissions.length === 0) { container.innerHTML = '<p>No pending submissions.</p>'; return; }
         container.innerHTML = '';
         submissions.forEach(function(sub) {
@@ -77,6 +74,25 @@
             '</div>';
           container.appendChild(card);
         });
+      }
+
+      // Real-time stats
+      onStatsChange('admin', user.uid, function(stats) {
+        if (stats.pendingCount !== undefined) document.getElementById('pendingCount').textContent = stats.pendingCount;
+        if (stats.assignedCount !== undefined) document.getElementById('assignedCount').textContent = stats.assignedCount;
+        if (stats.doctorCount !== undefined) document.getElementById('doctorCount').textContent = stats.doctorCount;
+      });
+
+      // Real-time pending submissions
+      onSubmissionsChange(function(submissions) {
+        allSubmissions = submissions;
+        var searchText = document.getElementById('searchInput').value;
+        renderSubmissions(filterByText(submissions, searchText, 'patientName'));
+      });
+
+      // Wire search
+      document.getElementById('searchInput').addEventListener('input', function() {
+        renderSubmissions(filterByText(allSubmissions, this.value, 'patientName'));
       });
 
       document.getElementById('logoutBtn').addEventListener('click', function(e) { e.preventDefault(); logoutUser(); });

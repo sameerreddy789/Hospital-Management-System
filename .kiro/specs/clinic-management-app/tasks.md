@@ -190,12 +190,12 @@ Incremental implementation of a multi-role clinic management web app using vanil
     - **Property 15: Notifications ordered by date descending** (`tests/property/notifications.property.test.js`)
     - **Validates: Requirements 14.6**
 
-- [ ] 13. Search and filter
-  - [ ] 13.1 Create `js/search-filter.js` with search and filter logic
+- [x] 13. Search and filter
+  - [x] 13.1 Create `js/search-filter.js` with search and filter logic
     - Implement `filterByText`, `filterByStatus`, `applyFilters`, `setupSearchFilter`
     - _Requirements: 16.2, 16.3, 16.4, 16.6, 16.7, 16.8_
 
-  - [ ] 13.2 Wire search/filter into admin and doctor dashboards
+  - [x] 13.2 Wire search/filter into admin and doctor dashboards
     - Add search input and status dropdown above lists on `admin/dashboard.html` and `doctor/dashboard.html`
     - _Requirements: 16.1, 16.5_
 

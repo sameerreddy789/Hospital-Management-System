@@ -32,6 +32,14 @@
     </div>
 
     <h2>Assigned Appointments</h2>
+    <div class="filter-bar">
+      <input type="text" id="searchInput" placeholder="Search by patient name..." class="search-input">
+      <select id="statusFilter" class="status-filter">
+        <option value="all">All Statuses</option>
+        <option value="assigned">Assigned</option>
+        <option value="prescribed">Prescribed</option>
+      </select>
+    </div>
     <div id="appointmentList" class="list-container">
       <p class="loading">Loading...</p>
     </div>
@@ -45,22 +53,16 @@
   <script src="../js/auth.js"></script>
   <script src="../js/auth-guard.js"></script>
   <script src="../js/firestore.js"></script>
+  <script src="../js/search-filter.js"></script>
   <script>
     requireAuth('doctor').then(function(user) {
       var container = document.getElementById('appointmentList');
+      var allAppointments = [];
 
-      // Real-time stats
-      onStatsChange('doctor', user.uid, function(stats) {
-        if (stats.todayCount !== undefined) document.getElementById('todayCount').textContent = stats.todayCount;
-        if (stats.assignedCount !== undefined) document.getElementById('assignedCount').textContent = stats.assignedCount;
-      });
-
-      // Real-time appointments
-      onAppointmentsChange(user.uid, 'doctor', function(appointments) {
-        var active = appointments.filter(function(a) { return a.status === 'assigned' || a.status === 'prescribed'; });
-        if (active.length === 0) { container.innerHTML = '<p>No assigned appointments.</p>'; return; }
+      function renderAppointments(items) {
+        if (items.length === 0) { container.innerHTML = '<p>No assigned appointments.</p>'; return; }
         container.innerHTML = '';
-        active.forEach(function(apt) {
+        items.forEach(function(apt) {
           var card = createElement('div', { className: 'card' });
           card.innerHTML = '<h3>' + apt.patientName + '</h3>' +
             '<p>Problem: ' + (apt.problemTitle || 'N/A') + '</p>' +
@@ -71,7 +73,28 @@
             '</div>';
           container.appendChild(card);
         });
+      }
+
+      function doFilter() {
+        var text = document.getElementById('searchInput').value;
+        var status = document.getElementById('statusFilter').value;
+        renderAppointments(applyFilters(allAppointments, text, 'patientName', status));
+      }
+
+      // Real-time stats
+      onStatsChange('doctor', user.uid, function(stats) {
+        if (stats.todayCount !== undefined) document.getElementById('todayCount').textContent = stats.todayCount;
+        if (stats.assignedCount !== undefined) document.getElementById('assignedCount').textContent = stats.assignedCount;
       });
+
+      // Real-time appointments
+      onAppointmentsChange(user.uid, 'doctor', function(appointments) {
+        allAppointments = appointments.filter(function(a) { return a.status === 'assigned' || a.status === 'prescribed'; });
+        doFilter();
+      });
+
+      document.getElementById('searchInput').addEventListener('input', doFilter);
+      document.getElementById('statusFilter').addEventListener('change', doFilter);
 
       document.getElementById('logoutBtn').addEventListener('click', function(e) { e.preventDefault(); logoutUser(); });
       var toggle = document.querySelector('.nav-toggle');
