@@ -104,6 +104,42 @@ function serverTimestamp() {
   return firebase.firestore.FieldValue.serverTimestamp();
 }
 
+/**
+ * Escapes HTML special characters to prevent XSS.
+ * @param {string} str - The string to escape
+ * @returns {string} Escaped string
+ */
+function escapeHtml(str) {
+  if (!str) return '';
+  var div = document.createElement('div');
+  div.appendChild(document.createTextNode(str));
+  return div.innerHTML;
+}
+
+/**
+ * Shows a toast notification that auto-dismisses.
+ * @param {string} message - The message text
+ * @param {string} [type='success'] - 'success', 'error', or 'info'
+ * @param {number} [duration=3000] - Duration in ms
+ */
+function showToast(message, type, duration) {
+  type = type || 'success';
+  duration = duration || 3000;
+  var container = document.getElementById('toastContainer');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'toastContainer';
+    container.className = 'toast-container';
+    document.body.appendChild(container);
+  }
+  var toast = document.createElement('div');
+  toast.className = 'toast toast-' + type;
+  toast.textContent = message;
+  container.appendChild(toast);
+  setTimeout(function() { toast.classList.add('toast-fade'); }, duration - 300);
+  setTimeout(function() { toast.remove(); }, duration);
+}
+
 // Export to window for cross-file access
 window.formatDate = formatDate;
 window.formatTime = formatTime;
@@ -113,3 +149,5 @@ window.createElement = createElement;
 window.showMessage = showMessage;
 window.hideMessage = hideMessage;
 window.serverTimestamp = serverTimestamp;
+window.escapeHtml = escapeHtml;
+window.showToast = showToast;

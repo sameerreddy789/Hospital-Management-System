@@ -40,7 +40,8 @@
       <input type="text" id="searchInput" placeholder="Search by patient name..." class="search-input">
     </div>
     <div id="submissionList" class="list-container">
-      <p class="loading">Loading...</p>
+      <div class="skeleton skeleton-card"></div>
+      <div class="skeleton skeleton-card"></div>
     </div>
   </div>
 
@@ -65,9 +66,9 @@
           var card = createElement('div', { className: 'card' });
           var dateStr = sub.createdAt ? new Date(sub.createdAt.seconds * 1000).toLocaleDateString() : '';
           var typeLabel = sub.type === 'follow-up' ? ' <span class="badge badge-info">Follow-up</span>' : '';
-          card.innerHTML = '<h3>' + sub.title + typeLabel + '</h3>' +
-            '<p>Patient: ' + sub.patientName + '</p>' +
-            '<p>' + sub.description + '</p>' +
+          card.innerHTML = '<h3>' + escapeHtml(sub.title) + typeLabel + '</h3>' +
+            '<p>Patient: ' + escapeHtml(sub.patientName) + '</p>' +
+            '<p>' + escapeHtml(sub.description) + '</p>' +
             '<p class="text-muted">Submitted: ' + dateStr + '</p>' +
             '<div class="card-actions">' +
               '<a href="assign.html?id=' + sub.id + '&patientId=' + sub.patientId + '" class="btn btn-primary">Assign to Doctor</a>' +

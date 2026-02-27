@@ -25,7 +25,8 @@
   <div class="container">
     <h1>My Prescriptions</h1>
     <div id="prescriptionList" class="list-container">
-      <p class="loading">Loading...</p>
+      <div class="skeleton skeleton-card"></div>
+      <div class="skeleton skeleton-card"></div>
     </div>
   </div>
 
@@ -50,14 +51,14 @@
           var card = createElement('div', { className: 'card' });
           var medsHtml = '<table class="table"><thead><tr><th>Medicine</th><th>Dosage</th><th>Frequency</th></tr></thead><tbody>';
           (rx.medicines || []).forEach(function(m) {
-            medsHtml += '<tr><td>' + m.name + '</td><td>' + m.dosage + '</td><td>' + m.frequency + '</td></tr>';
+            medsHtml += '<tr><td>' + escapeHtml(m.name) + '</td><td>' + escapeHtml(m.dosage) + '</td><td>' + escapeHtml(m.frequency) + '</td></tr>';
           });
           medsHtml += '</tbody></table>';
           var dateStr = rx.createdAt ? new Date(rx.createdAt.seconds * 1000).toLocaleDateString() : '';
           card.innerHTML = '<h3>Prescription - ' + dateStr + '</h3>' +
-            '<p>Doctor: ' + rx.doctorName + '</p>' +
+            '<p>Doctor: ' + escapeHtml(rx.doctorName) + '</p>' +
             medsHtml +
-            (rx.notes ? '<p><strong>Notes:</strong> ' + rx.notes + '</p>' : '') +
+            (rx.notes ? '<p><strong>Notes:</strong> ' + escapeHtml(rx.notes) + '</p>' : '') +
             '<div class="card-actions">' +
               '<button class="btn btn-primary download-btn" data-idx="' + prescriptions.indexOf(rx) + '">Download PDF</button> ' +
               '<button class="btn btn-outline print-btn">Print</button>' +

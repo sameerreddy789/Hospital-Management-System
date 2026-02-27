@@ -149,9 +149,9 @@
           var card = createElement('div', { className: 'card card-sm' });
           if (item.type === 'appointment') {
             card.innerHTML = '<p><strong>Appointment</strong> - ' + formatDate(item.data.scheduledDate) + '</p>' +
-              '<p>' + item.data.problemTitle + ' | Status: ' + item.data.status + '</p>';
+              '<p>' + escapeHtml(item.data.problemTitle) + ' | Status: ' + escapeHtml(item.data.status) + '</p>';
           } else {
-            var meds = (item.data.medicines || []).map(function(m) { return m.name; }).join(', ');
+            var meds = (item.data.medicines || []).map(function(m) { return escapeHtml(m.name); }).join(', ');
             card.innerHTML = '<p><strong>Prescription</strong> - ' + formatDate(item.date) + '</p>' +
               '<p>Medicines: ' + meds + '</p>';
           }
@@ -190,7 +190,7 @@
           .then(function() {
             // Notify patient about prescription
             createNotification(patientId, 'A new prescription has been issued for you.', 'prescription');
-            showMessage(messageEl, 'Prescription submitted successfully!', 'success');
+            showToast('Prescription submitted successfully!', 'success');
             document.getElementById('prescriptionSection').style.display = 'none';
             document.getElementById('aptStatus').textContent = 'prescribed';
             document.getElementById('aptStatus').className = 'status status-prescribed';
@@ -204,7 +204,7 @@
         updateAppointmentStatus(appointmentId, 'completed').then(function() {
           // Notify patient about completion
           createNotification(patientId, 'Your appointment has been marked as completed.', 'completion');
-          showMessage(messageEl, 'Appointment marked as completed.', 'success');
+          showToast('Appointment marked as completed.', 'success');
           document.getElementById('completeSection').style.display = 'none';
           document.getElementById('aptStatus').textContent = 'completed';
           document.getElementById('aptStatus').className = 'status status-completed';

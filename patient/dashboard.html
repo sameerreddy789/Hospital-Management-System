@@ -37,7 +37,8 @@
 
     <h2>Recent Appointments</h2>
     <div id="appointmentList" class="list-container">
-      <p class="loading">Loading...</p>
+      <div class="skeleton skeleton-card"></div>
+      <div class="skeleton skeleton-card"></div>
     </div>
   </div>
 
@@ -69,8 +70,8 @@
         container.innerHTML = '';
         appointments.slice(0, 5).forEach(function(apt) {
           var card = createElement('div', { className: 'card' });
-          card.innerHTML = '<h3>' + (apt.problemTitle || 'Appointment') + '</h3>' +
-            '<p>Doctor: ' + apt.doctorName + '</p>' +
+          card.innerHTML = '<h3>' + escapeHtml(apt.problemTitle || 'Appointment') + '</h3>' +
+            '<p>Doctor: ' + escapeHtml(apt.doctorName) + '</p>' +
             '<p>Date: ' + formatDate(apt.scheduledDate) + ' at ' + formatTime(apt.scheduledTime) + '</p>' +
             '<p>Status: <span class="status status-' + apt.status + '">' + apt.status + '</span></p>';
           container.appendChild(card);

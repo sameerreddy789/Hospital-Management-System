@@ -37,7 +37,7 @@
         notifs.forEach(function(n) {
           var card = createElement('div', { className: 'card' + (n.read ? '' : ' card-unread') });
           var dateStr = n.createdAt ? new Date(n.createdAt.seconds * 1000).toLocaleString() : '';
-          card.innerHTML = '<p>' + n.message + '</p><p class="text-muted">' + dateStr + '</p>';
+          card.innerHTML = '<p>' + escapeHtml(n.message) + '</p><p class="text-muted">' + dateStr + '</p>';
           if (!n.read) {
             card.addEventListener('click', function() { markAsRead(n.id); card.classList.remove('card-unread'); });
           }

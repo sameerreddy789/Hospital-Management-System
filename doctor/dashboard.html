@@ -41,7 +41,8 @@
       </select>
     </div>
     <div id="appointmentList" class="list-container">
-      <p class="loading">Loading...</p>
+      <div class="skeleton skeleton-card"></div>
+      <div class="skeleton skeleton-card"></div>
     </div>
   </div>
 
@@ -64,8 +65,8 @@
         container.innerHTML = '';
         items.forEach(function(apt) {
           var card = createElement('div', { className: 'card' });
-          card.innerHTML = '<h3>' + apt.patientName + '</h3>' +
-            '<p>Problem: ' + (apt.problemTitle || 'N/A') + '</p>' +
+          card.innerHTML = '<h3>' + escapeHtml(apt.patientName) + '</h3>' +
+            '<p>Problem: ' + escapeHtml(apt.problemTitle || 'N/A') + '</p>' +
             '<p>Date: ' + formatDate(apt.scheduledDate) + ' at ' + formatTime(apt.scheduledTime) + '</p>' +
             '<p>Status: <span class="status status-' + apt.status + '">' + apt.status + '</span></p>' +
             '<div class="card-actions">' +
