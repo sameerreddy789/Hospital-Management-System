@@ -64,15 +64,15 @@ Incremental implementation of a multi-role clinic management web app using vanil
     - Navigation with login and registration buttons linking to `login.html` and `register.html`
     - _Requirements: 1.1, 1.2, 1.3, 1.4_
 
-- [ ] 5. Checkpoint
+- [x] 5. Checkpoint
   - Ensure auth flow works end-to-end (register, login, logout, password reset, auth guard redirects). Ask the user if questions arise.
 
-- [ ] 6. Firestore operations module
-  - [ ] 6.1 Create `js/firestore.js` — Problem Submissions CRUD
+- [x] 6. Firestore operations module
+  - [x] 6.1 Create `js/firestore.js` — Problem Submissions CRUD
     - Implement `createProblemSubmission`, `getPendingSubmissions`, `getSubmissionsByPatient`, `updateSubmissionStatus`
     - _Requirements: 5.2, 6.1, 6.2, 7.4_
 
-  - [ ] 6.2 Create `js/firestore.js` — Appointments CRUD
+  - [x] 6.2 Create `js/firestore.js` — Appointments CRUD
     - Implement `createAppointment`, `getAppointmentsByPatient`, `getAppointmentsByDoctor`, `getAllAppointments`, `updateAppointmentStatus`, `checkDoctorConflict`
     - _Requirements: 7.3, 8.1, 9.1, 17.3, 17.5, 18.1_
 
@@ -80,15 +80,15 @@ Incremental implementation of a multi-role clinic management web app using vanil
     - **Property 8: Doctor conflict check correctness**
     - **Validates: Requirements 18.1, 18.3, 18.4**
 
-  - [ ] 6.4 Create `js/firestore.js` — Prescriptions CRUD
+  - [x] 6.4 Create `js/firestore.js` — Prescriptions CRUD
     - Implement `createPrescription`, `getPrescriptionsByPatient`, `getPrescriptionsByAppointment`
     - _Requirements: 11.3, 12.1_
 
-  - [ ] 6.5 Create `js/firestore.js` — Users and Patient History
+  - [x] 6.5 Create `js/firestore.js` — Users and Patient History
     - Implement `getDoctorList`, `getUserProfile`, `updatePatientProfile`, `getPatientHistory`
     - _Requirements: 7.1, 10.1, 19.1, 19.2_
 
-  - [ ] 6.6 Create `js/firestore.js` — Real-time listeners
+  - [x] 6.6 Create `js/firestore.js` — Real-time listeners
     - Implement `onSubmissionsChange`, `onAppointmentsChange`, `onStatsChange`
     - _Requirements: 21.4_
 
@@ -102,7 +102,7 @@ Incremental implementation of a multi-role clinic management web app using vanil
     - **Property 11: Prescription supports multiple medicines** (`tests/property/status-transitions.property.test.js`)
     - **Validates: Requirements 11.2**
 
-- [ ] 7. Checkpoint
+- [x] 7. Checkpoint
   - Ensure all Firestore operations work correctly. Ask the user if questions arise.
 
 - [ ] 8. Patient module pages
