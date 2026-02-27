@@ -3,30 +3,32 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login - Clinic Management</title>
+  <title>Login - ClinicCare</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body class="auth-page">
   <div class="auth-container">
-    <h1>Login</h1>
+    <div class="auth-brand">&#9764; ClinicCare</div>
+    <h1>Welcome Back</h1>
+    <p>Sign in to access your dashboard</p>
     <div id="message" class="message" style="display:none;"></div>
     <form id="loginForm" novalidate>
       <div class="form-group">
         <label for="email">Email</label>
-        <input type="email" id="email" name="email" required>
+        <input type="email" id="email" name="email" placeholder="you@example.com" required>
       </div>
       <div class="form-group">
         <label for="password">Password</label>
         <div class="password-wrapper">
-          <input type="password" id="password" name="password" required>
+          <input type="password" id="password" name="password" placeholder="Enter your password" required>
           <button type="button" class="password-toggle" aria-label="Toggle password visibility">&#128065;</button>
         </div>
       </div>
-      <button type="submit" class="btn btn-primary" id="submitBtn">Login</button>
+      <button type="submit" class="btn btn-primary" id="submitBtn">Sign In</button>
     </form>
     <div class="auth-links">
       <a href="reset-password.html">Forgot Password?</a>
-      <a href="register.html">Register as Patient</a>
+      <a href="register.html">Don't have an account? Register</a>
     </div>
   </div>
 
@@ -41,7 +43,6 @@
     var messageEl = document.getElementById('message');
     var submitBtn = document.getElementById('submitBtn');
 
-    // Password toggle
     document.querySelectorAll('.password-toggle').forEach(function(btn) {
       btn.addEventListener('click', function() {
         var input = this.previousElementSibling;
