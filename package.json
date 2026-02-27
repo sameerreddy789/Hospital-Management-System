@@ -1,15 +1,5 @@
 {
   "name": "clinic-management-app",
   "version": "1.0.0",
-  "private": true,
-  "scripts": {
-    "test": "jest",
-    "test:unit": "jest tests/unit",
-    "test:property": "jest tests/property"
-  },
-  "devDependencies": {
-    "jest": "^29.7.0",
-    "jest-environment-jsdom": "^29.7.0",
-    "fast-check": "^3.15.0"
-  }
+  "private": true
 }
