@@ -149,13 +149,13 @@ Incremental implementation of a multi-role clinic management web app using vanil
     - **Property 7: Assignment creates appointment with correct references and updates submission status** (`tests/property/conflict-check.property.test.js`)
     - **Validates: Requirements 7.3, 7.4**
 
-- [ ] 10. Doctor module pages
-  - [ ] 10.1 Create `doctor/dashboard.html` with summary cards and assigned patients list
+- [x] 10. Doctor module pages
+  - [x] 10.1 Create `doctor/dashboard.html` with summary cards and assigned patients list
     - Display today's appointments count and assigned patients count via real-time listeners
     - List all assigned appointments with patient name, problem title, date, time
     - _Requirements: 9.1, 9.2, 9.3, 21.2, 21.4_
 
-  - [ ] 10.2 Create `doctor/patient-details.html` with patient details, history, and prescription form
+  - [x] 10.2 Create `doctor/patient-details.html` with patient details, history, and prescription form
     - Display patient profile (read-only), patient history (past appointments + prescriptions, descending date order)
     - Prescription form: medicine name, dosage, frequency fields with add/remove rows, notes field
     - On submit: create prescription, update appointment status to "prescribed", prescription is immutable
@@ -166,7 +166,7 @@ Incremental implementation of a multi-role clinic management web app using vanil
     - **Property 21: Patient history ordered by date descending**
     - **Validates: Requirements 10.4**
 
-- [ ] 11. Checkpoint
+- [x] 11. Checkpoint
   - Ensure all three role modules render correctly, CRUD operations work, and role-based access is enforced. Ask the user if questions arise.
 
 - [ ] 12. Notifications system

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Doctor Dashboard - Clinic Management</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-brand">Clinic Management</div>
+    <button class="nav-toggle" aria-label="Toggle navigation">&#9776;</button>
+    <div class="nav-links">
+      <a href="dashboard.html" class="active">Dashboard</a>
+      <a href="notifications.html">Notifications <span id="notifBadge" class="badge" style="display:none;">0</span></a>
+      <a href="#" id="logoutBtn">Logout</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h1>Doctor Dashboard</h1>
+
+    <div class="summary-cards">
+      <div class="summary-card">
+        <h3>Today's Appointments</h3>
+        <p class="stat" id="todayCount">0</p>
+      </div>
+      <div class="summary-card">
+        <h3>Assigned Patients</h3>
+        <p class="stat" id="assignedCount">0</p>
+      </div>
+    </div>
+
+    <h2>Assigned Appointments</h2>
+    <div id="appointmentList" class="list-container">
+      <p class="loading">Loading...</p>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="../js/firebase-config.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/auth-guard.js"></script>
+  <script src="../js/firestore.js"></script>
+  <script>
+    requireAuth('doctor').then(function(user) {
+      var container = document.getElementById('appointmentList');
+
+      // Real-time stats
+      onStatsChange('doctor', user.uid, function(stats) {
+        if (stats.todayCount !== undefined) document.getElementById('todayCount').textContent = stats.todayCount;
+        if (stats.assignedCount !== undefined) document.getElementById('assignedCount').textContent = stats.assignedCount;
+      });
+
+      // Real-time appointments
+      onAppointmentsChange(user.uid, 'doctor', function(appointments) {
+        var active = appointments.filter(function(a) { return a.status === 'assigned' || a.status === 'prescribed'; });
+        if (active.length === 0) { container.innerHTML = '<p>No assigned appointments.</p>'; return; }
+        container.innerHTML = '';
+        active.forEach(function(apt) {
+          var card = createElement('div', { className: 'card' });
+          card.innerHTML = '<h3>' + apt.patientName + '</h3>' +
+            '<p>Problem: ' + (apt.problemTitle || 'N/A') + '</p>' +
+            '<p>Date: ' + formatDate(apt.scheduledDate) + ' at ' + formatTime(apt.scheduledTime) + '</p>' +
+            '<p>Status: <span class="status status-' + apt.status + '">' + apt.status + '</span></p>' +
+            '<div class="card-actions">' +
+              '<a href="patient-details.html?appointmentId=' + apt.id + '&patientId=' + apt.patientId + '" class="btn btn-primary">View Details</a>' +
+            '</div>';
+          container.appendChild(card);
+        });
+      });
+
+      document.getElementById('logoutBtn').addEventListener('click', function(e) { e.preventDefault(); logoutUser(); });
+      var toggle = document.querySelector('.nav-toggle');
+      var navLinks = document.querySelector('.nav-links');
+      if (toggle) toggle.addEventListener('click', function() { navLinks.classList.toggle('nav-open'); });
+    });
+  </script>
+</body>
+</html>
