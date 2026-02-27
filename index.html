@@ -35,15 +35,15 @@
 
   <!-- About -->
   <section id="about" class="section">
-    <h2>About ClinicCare</h2>
-    <p>We are a modern healthcare facility committed to providing excellent medical care. Our experienced team ensures every patient receives personalized attention and the best possible treatment — now with the convenience of digital tools that bring healthcare to your fingertips.</p>
+    <h2 class="reveal">About ClinicCare</h2>
+    <p class="reveal">We are a modern healthcare facility committed to providing excellent medical care. Our experienced team ensures every patient receives personalized attention and the best possible treatment — now with the convenience of digital tools that bring healthcare to your fingertips.</p>
   </section>
 
   <!-- Services -->
   <section id="services" class="section section-alt">
-    <h2>Our Services</h2>
-    <p class="section-subtitle">Everything you need for a seamless healthcare experience</p>
-    <div class="card-grid">
+    <h2 class="reveal">Our Services</h2>
+    <p class="section-subtitle reveal">Everything you need for a seamless healthcare experience</p>
+    <div class="card-grid reveal">
       <div class="card service-card service-card-blue">
         <div class="service-icon">&#128197;</div>
         <h3>Online Appointments</h3>
@@ -64,9 +64,9 @@
 
   <!-- Features -->
   <section id="features" class="section">
-    <h2>Why ClinicCare?</h2>
-    <p class="section-subtitle">Built with modern technology for a better healthcare experience</p>
-    <div class="features-grid">
+    <h2 class="reveal">Why ClinicCare?</h2>
+    <p class="section-subtitle reveal">Built with modern technology for a better healthcare experience</p>
+    <div class="features-grid reveal">
       <div class="feature-item">
         <div class="feature-icon">&#128274;</div>
         <div>
@@ -140,9 +140,9 @@
 
   <!-- Testimonials -->
   <section id="testimonials" class="section">
-    <h2>What Our Patients Say</h2>
-    <p class="section-subtitle">Real experiences from real patients</p>
-    <div class="testimonial-grid">
+    <h2 class="reveal">What Our Patients Say</h2>
+    <p class="section-subtitle reveal">Real experiences from real patients</p>
+    <div class="testimonial-grid reveal">
       <div class="testimonial-card">
         <p class="testimonial-text">"ClinicCare made managing my appointments so easy. I love being able to see my prescriptions digitally and download them as PDFs."</p>
         <div class="testimonial-author">
@@ -178,9 +178,9 @@
 
   <!-- Contact -->
   <section id="contact" class="section section-alt">
-    <h2>Get In Touch</h2>
-    <p class="section-subtitle">We'd love to hear from you</p>
-    <div class="contact-grid">
+    <h2 class="reveal">Get In Touch</h2>
+    <p class="section-subtitle reveal">We'd love to hear from you</p>
+    <div class="contact-grid reveal">
       <div class="contact-card">
         <div class="contact-icon">&#128222;</div>
         <h4>Phone</h4>
@@ -223,6 +223,18 @@
         if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
       });
     });
+
+    // Scroll reveal
+    var revealEls = document.querySelectorAll('.reveal');
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    revealEls.forEach(function(el) { observer.observe(el); });
 
     // Animate stats on scroll
     var animated = false;

@@ -954,3 +954,90 @@ a:hover { color: var(--primary-dark); text-decoration: none; }
 }
 .error-content h2 { color: #e2e8f0; font-size: 1.5rem; margin-bottom: 0.75rem; }
 .error-content p { color: #94a3b8; margin-bottom: 2rem; font-size: 1.05rem; }
+
+/* ============================================================
+   Scroll reveal animations
+   ============================================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.6s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ============================================================
+   Focus visible for accessibility
+   ============================================================ */
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* ============================================================
+   Selection color
+   ============================================================ */
+::selection {
+  background: rgba(59, 130, 246, 0.2);
+  color: inherit;
+}
+
+/* ============================================================
+   Scrollbar styling
+   ============================================================ */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.4);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(148, 163, 184, 0.6); }
+
+/* ============================================================
+   Smooth page transitions
+   ============================================================ */
+html { scroll-behavior: smooth; }
+
+/* ============================================================
+   Landing page nav transparent on top
+   ============================================================ */
+body:not(.dashboard-body):not(.auth-page):not(.error-page) .navbar {
+  background: rgba(15, 23, 42, 0.6);
+}
+
+/* ============================================================
+   Pulse animation for notification badge
+   ============================================================ */
+.badge {
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+}
+
+/* ============================================================
+   Card hover glow effect
+   ============================================================ */
+.summary-card:hover::before {
+  background: linear-gradient(90deg, var(--primary), var(--accent), var(--primary));
+  background-size: 200% 100%;
+  animation: gradientShift 2s linear infinite;
+}
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+/* ============================================================
+   Responsive nav brand on landing
+   ============================================================ */
+@media (max-width: 768px) {
+  .hero h1 { font-size: 1.8rem; }
+  .features-grid { grid-template-columns: 1fr; }
+  .testimonial-grid { grid-template-columns: 1fr; }
+  .cta-section { padding: 3rem 1.5rem; }
+  .cta-section h2 { font-size: 1.5rem; }
+}
