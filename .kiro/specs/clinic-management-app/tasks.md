@@ -105,16 +105,16 @@ Incremental implementation of a multi-role clinic management web app using vanil
 - [x] 7. Checkpoint
   - Ensure all Firestore operations work correctly. Ask the user if questions arise.
 
-- [ ] 8. Patient module pages
-  - [ ] 8.1 Create `patient/dashboard.html` with summary cards and appointment list
+- [x] 8. Patient module pages
+  - [x] 8.1 Create `patient/dashboard.html` with summary cards and appointment list
     - Display upcoming appointments count and prescriptions count via real-time listeners
     - _Requirements: 21.3, 21.4_
 
-  - [ ] 8.2 Create `patient/submit-problem.html` with problem submission form
+  - [x] 8.2 Create `patient/submit-problem.html` with problem submission form
     - Title and description fields, validation, calls `createProblemSubmission`, confirmation message
     - _Requirements: 5.1, 5.2, 5.3, 5.4_
 
-  - [ ] 8.3 Create `patient/appointments.html` with appointment list
+  - [x] 8.3 Create `patient/appointments.html` with appointment list
     - Display all patient appointments with doctor name, date, time, status
     - "Cancel Appointment" button for assigned + future appointments, "Request Follow-Up" button for prescribed appointments
     - _Requirements: 8.1, 8.2, 8.3, 13.1, 13.2, 13.3, 17.2, 17.3_
@@ -123,11 +123,11 @@ Incremental implementation of a multi-role clinic management web app using vanil
     - **Property 19: Status-driven action button visibility**
     - **Validates: Requirements 13.1, 17.2, 17.4**
 
-  - [ ] 8.5 Create `patient/prescriptions.html` with prescription list and detail view
+  - [x] 8.5 Create `patient/prescriptions.html` with prescription list and detail view
     - Display all prescriptions with doctor name, date, medicines, notes
     - _Requirements: 12.1, 12.2, 12.3_
 
-  - [ ] 8.6 Create `patient/profile.html` with editable profile form
+  - [x] 8.6 Create `patient/profile.html` with editable profile form
     - Display and edit name, email (read-only), phone, address; save to Firestore
     - _Requirements: 19.1, 19.2, 19.3_
 

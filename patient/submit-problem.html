@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Submit Problem - Clinic Management</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-brand">Clinic Management</div>
+    <button class="nav-toggle" aria-label="Toggle navigation">&#9776;</button>
+    <div class="nav-links">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="submit-problem.html" class="active">Submit Problem</a>
+      <a href="appointments.html">Appointments</a>
+      <a href="prescriptions.html">Prescriptions</a>
+      <a href="profile.html">Profile</a>
+      <a href="notifications.html">Notifications</a>
+      <a href="#" id="logoutBtn">Logout</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h1>Submit a Health Problem</h1>
+    <div id="message" class="message" style="display:none;"></div>
+    <form id="problemForm" novalidate>
+      <div class="form-group">
+        <label for="title">Problem Title</label>
+        <input type="text" id="title" name="title" placeholder="Brief description of your problem" required>
+      </div>
+      <div class="form-group">
+        <label for="description">Detailed Description</label>
+        <textarea id="description" name="description" rows="6" placeholder="Describe your symptoms, duration, etc." required></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="../js/firebase-config.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/validation.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/auth-guard.js"></script>
+  <script src="../js/firestore.js"></script>
+  <script>
+    requireAuth('patient').then(function(user) {
+      var form = document.getElementById('problemForm');
+      var messageEl = document.getElementById('message');
+
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        clearFieldErrors(form);
+        messageEl.style.display = 'none';
+
+        var title = document.getElementById('title').value;
+        var description = document.getElementById('description').value;
+
+        var result = validateForm([
+          { value: title, fieldName: 'Title', validators: [validateRequired] },
+          { value: description, fieldName: 'Description', validators: [validateRequired] }
+        ]);
+
+        if (!result.isValid) {
+          for (var field in result.errors) {
+            var input = document.getElementById(field.toLowerCase());
+            if (input) showFieldError(input, result.errors[field]);
+          }
+          return;
+        }
+
+        createProblemSubmission(user.uid, title, description)
+          .then(function() {
+            showMessage(messageEl, 'Problem submitted successfully! The admin will review it shortly.', 'success');
+            form.reset();
+          })
+          .catch(function(err) {
+            showMessage(messageEl, err.message || 'Failed to submit. Please try again.', 'error');
+          });
+      });
+
+      document.getElementById('logoutBtn').addEventListener('click', function(e) { e.preventDefault(); logoutUser(); });
+      var toggle = document.querySelector('.nav-toggle');
+      var navLinks = document.querySelector('.nav-links');
+      if (toggle) toggle.addEventListener('click', function() { navLinks.classList.toggle('nav-open'); });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Prescriptions - Clinic Management</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-brand">Clinic Management</div>
+    <button class="nav-toggle" aria-label="Toggle navigation">&#9776;</button>
+    <div class="nav-links">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="submit-problem.html">Submit Problem</a>
+      <a href="appointments.html">Appointments</a>
+      <a href="prescriptions.html" class="active">Prescriptions</a>
+      <a href="profile.html">Profile</a>
+      <a href="notifications.html">Notifications</a>
+      <a href="#" id="logoutBtn">Logout</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h1>My Prescriptions</h1>
+    <div id="prescriptionList" class="list-container">
+      <p class="loading">Loading...</p>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="../js/firebase-config.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/auth-guard.js"></script>
+  <script src="../js/firestore.js"></script>
+  <script>
+    requireAuth('patient').then(function(user) {
+      var container = document.getElementById('prescriptionList');
+
+      getPrescriptionsByPatient(user.uid).then(function(prescriptions) {
+        if (prescriptions.length === 0) { container.innerHTML = '<p>No prescriptions yet.</p>'; return; }
+        container.innerHTML = '';
+        prescriptions.forEach(function(rx) {
+          var card = createElement('div', { className: 'card' });
+          var medsHtml = '<table class="table"><thead><tr><th>Medicine</th><th>Dosage</th><th>Frequency</th></tr></thead><tbody>';
+          (rx.medicines || []).forEach(function(m) {
+            medsHtml += '<tr><td>' + m.name + '</td><td>' + m.dosage + '</td><td>' + m.frequency + '</td></tr>';
+          });
+          medsHtml += '</tbody></table>';
+          var dateStr = rx.createdAt ? new Date(rx.createdAt.seconds * 1000).toLocaleDateString() : '';
+          card.innerHTML = '<h3>Prescription - ' + dateStr + '</h3>' +
+            '<p>Doctor: ' + rx.doctorName + '</p>' +
+            medsHtml +
+            (rx.notes ? '<p><strong>Notes:</strong> ' + rx.notes + '</p>' : '') +
+            '<div class="card-actions">' +
+              '<button class="btn btn-primary print-btn" data-id="' + rx.id + '">Print</button>' +
+            '</div>';
+          container.appendChild(card);
+        });
+
+        container.querySelectorAll('.print-btn').forEach(function(btn) {
+          btn.addEventListener('click', function() { window.print(); });
+        });
+      });
+
+      document.getElementById('logoutBtn').addEventListener('click', function(e) { e.preventDefault(); logoutUser(); });
+      var toggle = document.querySelector('.nav-toggle');
+      var navLinks = document.querySelector('.nav-links');
+      if (toggle) toggle.addEventListener('click', function() { navLinks.classList.toggle('nav-open'); });
+    });
+  </script>
+</body>
+</html>

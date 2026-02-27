@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Appointments - Clinic Management</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-brand">Clinic Management</div>
+    <button class="nav-toggle" aria-label="Toggle navigation">&#9776;</button>
+    <div class="nav-links">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="submit-problem.html">Submit Problem</a>
+      <a href="appointments.html" class="active">Appointments</a>
+      <a href="prescriptions.html">Prescriptions</a>
+      <a href="profile.html">Profile</a>
+      <a href="notifications.html">Notifications</a>
+      <a href="#" id="logoutBtn">Logout</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h1>My Appointments</h1>
+    <div id="message" class="message" style="display:none;"></div>
+    <div id="appointmentList" class="list-container">
+      <p class="loading">Loading...</p>
+    </div>
+  </div>
+
+  <!-- Follow-up Modal -->
+  <div id="followUpModal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <h2>Request Follow-Up</h2>
+      <form id="followUpForm" novalidate>
+        <div class="form-group">
+          <label for="fuTitle">Problem Title</label>
+          <input type="text" id="fuTitle" required>
+        </div>
+        <div class="form-group">
+          <label for="fuDescription">Description</label>
+          <textarea id="fuDescription" rows="4" required></textarea>
+        </div>
+        <input type="hidden" id="fuAppointmentId">
+        <button type="submit" class="btn btn-primary">Submit Follow-Up</button>
+        <button type="button" class="btn btn-outline" id="closeModal">Cancel</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="../js/firebase-config.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/validation.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/auth-guard.js"></script>
+  <script src="../js/firestore.js"></script>
+  <script>
+    requireAuth('patient').then(function(user) {
+      var container = document.getElementById('appointmentList');
+      var messageEl = document.getElementById('message');
+      var modal = document.getElementById('followUpModal');
+
+      function loadAppointments() {
+        getAppointmentsByPatient(user.uid).then(function(appointments) {
+          if (appointments.length === 0) { container.innerHTML = '<p>No appointments found.</p>'; return; }
+          container.innerHTML = '';
+          var today = new Date().toISOString().split('T')[0];
+          appointments.forEach(function(apt) {
+            var card = createElement('div', { className: 'card' });
+            var actions = '';
+            if (apt.status === 'assigned' && apt.scheduledDate >= today) {
+              actions += '<button class="btn btn-danger cancel-btn" data-id="' + apt.id + '">Cancel Appointment</button> ';
+            }
+            if (apt.status === 'prescribed') {
+              actions += '<button class="btn btn-outline followup-btn" data-id="' + apt.id + '">Request Follow-Up</button>';
+            }
+            card.innerHTML = '<h3>' + (apt.problemTitle || 'Appointment') + '</h3>' +
+              '<p>Doctor: ' + apt.doctorName + '</p>' +
+              '<p>Date: ' + formatDate(apt.scheduledDate) + ' at ' + formatTime(apt.scheduledTime) + '</p>' +
+              '<p>Status: <span class="status status-' + apt.status + '">' + apt.status + '</span></p>' +
+              '<div class="card-actions">' + actions + '</div>';
+            container.appendChild(card);
+          });
+
+          // Cancel buttons
+          container.querySelectorAll('.cancel-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+              if (!confirm('Are you sure you want to cancel this appointment?')) return;
+              updateAppointmentStatus(btn.dataset.id, 'cancelled').then(function() {
+                showMessage(messageEl, 'Appointment cancelled.', 'success');
+                loadAppointments();
+              }).catch(function(err) { showMessage(messageEl, err.message, 'error'); });
+            });
+          });
+
+          // Follow-up buttons
+          container.querySelectorAll('.followup-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+              document.getElementById('fuAppointmentId').value = btn.dataset.id;
+              modal.style.display = 'flex';
+            });
+          });
+        });
+      }
+
+      loadAppointments();
+
+      // Follow-up form
+      document.getElementById('followUpForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        var title = document.getElementById('fuTitle').value;
+        var desc = document.getElementById('fuDescription').value;
+        var aptId = document.getElementById('fuAppointmentId').value;
+        if (!title.trim() || !desc.trim()) { alert('Please fill in all fields.'); return; }
+        createProblemSubmission(user.uid, title, desc, 'follow-up', aptId).then(function() {
+          modal.style.display = 'none';
+          document.getElementById('followUpForm').reset();
+          showMessage(messageEl, 'Follow-up request submitted!', 'success');
+        }).catch(function(err) { showMessage(messageEl, err.message, 'error'); });
+      });
+
+      document.getElementById('closeModal').addEventListener('click', function() { modal.style.display = 'none'; });
+      document.getElementById('logoutBtn').addEventListener('click', function(e) { e.preventDefault(); logoutUser(); });
+      var toggle = document.querySelector('.nav-toggle');
+      var navLinks = document.querySelector('.nav-links');
+      if (toggle) toggle.addEventListener('click', function() { navLinks.classList.toggle('nav-open'); });
+    });
+  </script>
+</body>
+</html>
