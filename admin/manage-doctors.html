@@ -54,7 +54,8 @@
     <div class="filter-bar">
       <input type="text" id="searchInput" placeholder="Search doctors..." class="search-input">
     </div>
-    <div id="doctorList">
+    <div id="doctorList" class="card-grid">
+      <div class="skeleton skeleton-card"></div>
       <div class="skeleton skeleton-card"></div>
       <div class="skeleton skeleton-card"></div>
     </div>
@@ -79,16 +80,21 @@
 
       function renderDoctors(doctors) {
         if (doctors.length === 0) {
-          listEl.innerHTML = '<div class="empty-state"><div class="empty-state-icon">&#128105;&#8205;&#9877;&#65039;</div><p>No doctors registered yet.</p></div>';
+          listEl.innerHTML = '<div class="empty-state"><div class="empty-state-icon">&#128105;&#8205;&#9877;&#65039;</div><h3>No Doctors Yet</h3><p>Add your first doctor using the form above.</p></div>';
           return;
         }
         listEl.innerHTML = '';
         doctors.forEach(function(doc) {
           var card = createElement('div', { className: 'card' });
-          card.innerHTML = '<h3>' + escapeHtml(doc.name) + '</h3>' +
-            '<p>' + escapeHtml(doc.email) + '</p>' +
-            (doc.specialization ? '<p class="text-muted">' + escapeHtml(doc.specialization) + '</p>' : '') +
-            '<p class="text-muted">Joined: ' + (doc.createdAt ? new Date(doc.createdAt.seconds * 1000).toLocaleDateString() : 'N/A') + '</p>';
+          var initials = (doc.name || '?').split(' ').map(function(w) { return w[0]; }).join('').toUpperCase().slice(0, 2);
+          var joinDate = doc.createdAt ? new Date(doc.createdAt.seconds * 1000).toLocaleDateString() : 'N/A';
+          card.innerHTML = '<div style="display:flex;align-items:center;gap:1rem;margin-bottom:0.75rem;">' +
+            '<div class="testimonial-avatar" style="flex-shrink:0;">' + initials + '</div>' +
+            '<div><h3 style="margin:0;">' + escapeHtml(doc.name) + '</h3>' +
+            (doc.specialization ? '<span class="badge-info">' + escapeHtml(doc.specialization) + '</span>' : '') +
+            '</div></div>' +
+            '<p style="font-size:0.88rem;color:#64748b;">&#9993; ' + escapeHtml(doc.email) + '</p>' +
+            '<p class="text-muted" style="font-size:0.82rem;">Joined: ' + joinDate + '</p>';
           listEl.appendChild(card);
         });
       }

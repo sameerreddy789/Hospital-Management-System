@@ -247,7 +247,28 @@
   </section>
 
   <footer class="footer">
-    <p>&copy; 2026 ClinicCare. All rights reserved. Built with care for better healthcare.</p>
+    <div style="max-width:1140px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:2rem;text-align:left;padding:0 1.5rem 2rem;">
+      <div>
+        <div style="font-size:1.2rem;font-weight:700;background:linear-gradient(135deg,#60a5fa,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.75rem;">&#9764; ClinicCare</div>
+        <p style="font-size:0.85rem;line-height:1.6;">Modern healthcare management for patients, doctors, and administrators.</p>
+      </div>
+      <div>
+        <h4 style="color:#e2e8f0;font-size:0.9rem;margin-bottom:0.75rem;">Quick Links</h4>
+        <p><a href="#about">About Us</a></p>
+        <p><a href="#services">Services</a></p>
+        <p><a href="#features">Features</a></p>
+        <p><a href="#contact">Contact</a></p>
+      </div>
+      <div>
+        <h4 style="color:#e2e8f0;font-size:0.9rem;margin-bottom:0.75rem;">Get Started</h4>
+        <p><a href="login.html">Sign In</a></p>
+        <p><a href="register.html">Register</a></p>
+        <p><a href="reset-password.html">Reset Password</a></p>
+      </div>
+    </div>
+    <div style="border-top:1px solid rgba(255,255,255,0.06);padding-top:1.5rem;">
+      <p>&copy; 2026 ClinicCare. All rights reserved. Built with care for better healthcare.</p>
+    </div>
   </footer>
 
   <script>
@@ -262,6 +283,16 @@
         var target = document.querySelector(this.getAttribute('href'));
         if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
       });
+    });
+
+    // Navbar solid on scroll
+    var navbar = document.querySelector('.navbar');
+    window.addEventListener('scroll', function() {
+      if (window.scrollY > 50) {
+        navbar.style.background = 'rgba(15, 23, 42, 0.92)';
+      } else {
+        navbar.style.background = 'rgba(15, 23, 42, 0.6)';
+      }
     });
 
     // Scroll reveal
