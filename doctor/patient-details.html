@@ -89,6 +89,7 @@
   <script src="../js/auth.js"></script>
   <script src="../js/auth-guard.js"></script>
   <script src="../js/firestore.js"></script>
+  <script src="../js/notifications.js"></script>
   <script>
     requireAuth('doctor').then(function(user) {
       var params = new URLSearchParams(window.location.search);
@@ -187,6 +188,8 @@
         createPrescription(appointmentId, patientId, user.uid, medicines, notes)
           .then(function() { return updateAppointmentStatus(appointmentId, 'prescribed'); })
           .then(function() {
+            // Notify patient about prescription
+            createNotification(patientId, 'A new prescription has been issued for you.', 'prescription');
             showMessage(messageEl, 'Prescription submitted successfully!', 'success');
             document.getElementById('prescriptionSection').style.display = 'none';
             document.getElementById('aptStatus').textContent = 'prescribed';
@@ -199,6 +202,8 @@
       // Mark as completed
       document.getElementById('completeBtn').addEventListener('click', function() {
         updateAppointmentStatus(appointmentId, 'completed').then(function() {
+          // Notify patient about completion
+          createNotification(patientId, 'Your appointment has been marked as completed.', 'completion');
           showMessage(messageEl, 'Appointment marked as completed.', 'success');
           document.getElementById('completeSection').style.display = 'none';
           document.getElementById('aptStatus').textContent = 'completed';

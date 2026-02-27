@@ -169,16 +169,16 @@ Incremental implementation of a multi-role clinic management web app using vanil
 - [x] 11. Checkpoint
   - Ensure all three role modules render correctly, CRUD operations work, and role-based access is enforced. Ask the user if questions arise.
 
-- [ ] 12. Notifications system
-  - [ ] 12.1 Create `js/notifications.js` with notification functions
+- [x] 12. Notifications system
+  - [x] 12.1 Create `js/notifications.js` with notification functions
     - Implement `createNotification`, `onNotificationsChange`, `markAsRead`, `getUnreadCount`, `setupNotificationBadge`
     - _Requirements: 14.1, 14.2, 14.3, 14.4, 14.5, 14.6, 14.7_
 
-  - [ ] 12.2 Create notification pages (`patient/notifications.html`, `doctor/notifications.html`, `admin/notifications.html`)
+  - [x] 12.2 Create notification pages (`patient/notifications.html`, `doctor/notifications.html`, `admin/notifications.html`)
     - Display notifications list ordered by date descending, mark as read on view, unread badge in nav
     - _Requirements: 14.5, 14.6, 14.7_
 
-  - [ ] 12.3 Wire notification creation into existing flows
+  - [x] 12.3 Wire notification creation into existing flows
     - Assignment → notify patient + doctor; Prescription → notify patient; Problem submission/follow-up → notify admin; Cancellation → notify doctor + admin; Completion → notify patient
     - _Requirements: 14.1, 14.2, 14.3, 14.4, 17.7, 17.8_
 
