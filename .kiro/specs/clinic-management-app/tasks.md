@@ -203,17 +203,17 @@ Incremental implementation of a multi-role clinic management web app using vanil
     - **Property 18: Combined search and status filter**
     - **Validates: Requirements 16.2, 16.3, 16.4, 16.6, 16.7, 16.8**
 
-- [ ] 14. PDF export
-  - [ ] 14.1 Create `js/pdf-export.js` with PDF generation and print functions
+- [x] 14. PDF export
+  - [x] 14.1 Create `js/pdf-export.js` with PDF generation and print functions
     - Implement `generatePrescriptionPDF` using jsPDF (CDN), `printPrescription` using browser print dialog
     - Include clinic name, date, doctor/patient names, medicines table, notes
     - _Requirements: 20.1, 20.2, 20.3, 20.4_
 
-  - [ ] 14.2 Wire PDF export into `patient/prescriptions.html`
+  - [x] 14.2 Wire PDF export into `patient/prescriptions.html`
     - Add "Download PDF" and "Print" buttons to prescription detail view
     - _Requirements: 20.1_
 
-  - [ ] 14.3 Create `css/print.css` for print-friendly prescription layout
+  - [x] 14.3 Create `css/print.css` for print-friendly prescription layout
     - _Requirements: 20.3_
 
 - [ ] 15. CSS styling and responsive layout

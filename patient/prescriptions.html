@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Prescriptions - Clinic Management</title>
   <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/print.css" media="print">
 </head>
 <body>
   <nav class="navbar">
@@ -36,6 +37,8 @@
   <script src="../js/auth.js"></script>
   <script src="../js/auth-guard.js"></script>
   <script src="../js/firestore.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="../js/pdf-export.js"></script>
   <script>
     requireAuth('patient').then(function(user) {
       var container = document.getElementById('prescriptionList');
@@ -56,11 +59,18 @@
             medsHtml +
             (rx.notes ? '<p><strong>Notes:</strong> ' + rx.notes + '</p>' : '') +
             '<div class="card-actions">' +
-              '<button class="btn btn-primary print-btn" data-id="' + rx.id + '">Print</button>' +
+              '<button class="btn btn-primary download-btn" data-idx="' + prescriptions.indexOf(rx) + '">Download PDF</button> ' +
+              '<button class="btn btn-outline print-btn">Print</button>' +
             '</div>';
           container.appendChild(card);
         });
 
+        container.querySelectorAll('.download-btn').forEach(function(btn) {
+          btn.addEventListener('click', function() {
+            var idx = parseInt(btn.dataset.idx);
+            generatePrescriptionPDF(prescriptions[idx]);
+          });
+        });
         container.querySelectorAll('.print-btn').forEach(function(btn) {
           btn.addEventListener('click', function() { window.print(); });
         });

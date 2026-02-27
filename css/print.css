@@ -1,0 +1,36 @@
+/* Print-friendly prescription styles */
+@media print {
+  .navbar, .nav-toggle, .nav-links, .btn, .card-actions, .filter-bar, .summary-cards {
+    display: none !important;
+  }
+  body {
+    font-family: serif;
+    color: #000;
+    background: #fff;
+  }
+  .container {
+    max-width: 100%;
+    padding: 0;
+    margin: 0;
+  }
+  .card {
+    border: 1px solid #000;
+    box-shadow: none;
+    page-break-inside: avoid;
+    margin-bottom: 20px;
+    padding: 15px;
+  }
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .table th, .table td {
+    border: 1px solid #000;
+    padding: 6px 10px;
+    text-align: left;
+  }
+  h1 {
+    font-size: 18pt;
+    text-align: center;
+  }
+}
