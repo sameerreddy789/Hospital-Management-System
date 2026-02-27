@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Assign Patient - Clinic Management</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-brand">Clinic Management</div>
+    <button class="nav-toggle" aria-label="Toggle navigation">&#9776;</button>
+    <div class="nav-links">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="notifications.html">Notifications</a>
+      <a href="#" id="logoutBtn">Logout</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <h1>Assign Patient to Doctor</h1>
+    <div id="message" class="message" style="display:none;"></div>
+    <form id="assignForm" novalidate>
+      <div class="form-group">
+        <label for="doctor">Select Doctor</label>
+        <select id="doctor" required>
+          <option value="">-- Select a Doctor --</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="date">Appointment Date</label>
+        <input type="date" id="date" required>
+      </div>
+      <div class="form-group">
+        <label for="time">Appointment Time</label>
+        <input type="time" id="time" required>
+      </div>
+      <div id="conflictWarning" class="message message-error" style="display:none;">
+        This doctor already has an appointment at the selected date and time.
+      </div>
+      <button type="submit" class="btn btn-primary">Assign</button>
+      <a href="dashboard.html" class="btn btn-outline">Cancel</a>
+    </form>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="../js/firebase-config.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/validation.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/auth-guard.js"></script>
+  <script src="../js/firestore.js"></script>
+  <script>
+    requireAuth('admin').then(function(user) {
+      var params = new URLSearchParams(window.location.search);
+      var submissionId = params.get('id');
+      var patientId = params.get('patientId');
+      var messageEl = document.getElementById('message');
+      var conflictEl = document.getElementById('conflictWarning');
+      var doctorSelect = document.getElementById('doctor');
+
+      if (!submissionId || !patientId) {
+        showMessage(messageEl, 'Invalid request. Please go back to dashboard.', 'error');
+        return;
+      }
+
+      // Load doctors
+      getDoctorList().then(function(doctors) {
+        doctors.forEach(function(doc) {
+          var opt = document.createElement('option');
+          opt.value = doc.uid;
+          opt.textContent = doc.name;
+          doctorSelect.appendChild(opt);
+        });
+      });
+
+      // Check conflict on date/time change
+      function checkConflict() {
+        var doctorId = doctorSelect.value;
+        var date = document.getElementById('date').value;
+        var time = document.getElementById('time').value;
+        if (!doctorId || !date || !time) { conflictEl.style.display = 'none'; return; }
+        checkDoctorConflict(doctorId, date, time).then(function(hasConflict) {
+          conflictEl.style.display = hasConflict ? 'block' : 'none';
+        });
+      }
+
+      doctorSelect.addEventListener('change', checkConflict);
+      document.getElementById('date').addEventListener('change', checkConflict);
+      document.getElementById('time').addEventListener('change', checkConflict);
+
+      document.getElementById('assignForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        var doctorId = doctorSelect.value;
+        var date = document.getElementById('date').value;
+        var time = document.getElementById('time').value;
+
+        if (!doctorId || !date || !time) {
+          showMessage(messageEl, 'Please fill in all fields.', 'error');
+          return;
+        }
+
+        checkDoctorConflict(doctorId, date, time).then(function(hasConflict) {
+          if (hasConflict) {
+            showMessage(messageEl, 'Cannot assign: doctor has a conflict at this time.', 'error');
+            return;
+          }
+          return createAppointment(patientId, doctorId, submissionId, date, time)
+            .then(function() {
+              return updateSubmissionStatus(submissionId, 'assigned');
+            })
+            .then(function() {
+              showMessage(messageEl, 'Patient assigned successfully!', 'success');
+              setTimeout(function() { window.location.href = 'dashboard.html'; }, 1500);
+            });
+        }).catch(function(err) {
+          showMessage(messageEl, err.message || 'Assignment failed.', 'error');
+        });
+      });
+
+      document.getElementById('logoutBtn').addEventListener('click', function(e) { e.preventDefault(); logoutUser(); });
+      var toggle = document.querySelector('.nav-toggle');
+      var navLinks = document.querySelector('.nav-links');
+      if (toggle) toggle.addEventListener('click', function() { navLinks.classList.toggle('nav-open'); });
+    });
+  </script>
+</body>
+</html>

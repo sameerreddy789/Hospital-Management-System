@@ -135,13 +135,13 @@ Incremental implementation of a multi-role clinic management web app using vanil
     - **Property 22: Patient profile update round-trip**
     - **Validates: Requirements 19.2**
 
-- [ ] 9. Admin module pages
-  - [ ] 9.1 Create `admin/dashboard.html` with summary cards and pending requests list
+- [x] 9. Admin module pages
+  - [x] 9.1 Create `admin/dashboard.html` with summary cards and pending requests list
     - Display pending submissions count, assigned appointments count, doctors count via real-time listeners
     - List all problem submissions with patient name, title, description, date
     - _Requirements: 6.1, 6.2, 6.3, 21.1, 21.4_
 
-  - [ ] 9.2 Create `admin/assign.html` with assignment page
+  - [x] 9.2 Create `admin/assign.html` with assignment page
     - Doctor list, date/time pickers, conflict check before confirming, updates submission status to "assigned"
     - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5, 18.1, 18.2, 18.3, 18.4_
 
