@@ -225,8 +225,8 @@ Incremental implementation of a multi-role clinic management web app using vanil
     - Landing page sections stack vertically below 768px, forms usable at 320px, dashboards single-column on mobile, touch-friendly buttons/inputs
     - _Requirements: 23.2, 23.3, 23.4, 23.5, 23.6, 23.7_
 
-- [ ] 16. Firestore security rules
-  - [ ] 16.1 Create `firestore.rules` with role-based security rules
+- [x] 16. Firestore security rules
+  - [x] 16.1 Create `firestore.rules` with role-based security rules
     - Users: read own + admin/doctor can read others, patients update own profile only
     - Problem submissions: patients create own, admin reads all, admin updates status
     - Appointments: admin creates, relevant users read, status updates by role
@@ -242,8 +242,8 @@ Incremental implementation of a multi-role clinic management web app using vanil
     - **Property 20: Admin views all appointments regardless of status** (`tests/property/data-filtering.property.test.js`)
     - **Validates: Requirements 17.6**
 
-- [ ] 17. Dashboard summary stats wiring
-  - [ ] 17.1 Wire real-time summary stats into all three dashboards
+- [x] 17. Dashboard summary stats wiring
+  - [x] 17.1 Wire real-time summary stats into all three dashboards
     - Admin: pending count, assigned count, doctor count; Doctor: today's appointments, assigned patients; Patient: upcoming appointments, prescriptions count
     - Use `onStatsChange` real-time listener for live updates
     - _Requirements: 21.1, 21.2, 21.3, 21.4_
@@ -252,8 +252,8 @@ Incremental implementation of a multi-role clinic management web app using vanil
     - **Property 25: Dashboard summary stats match actual data counts**
     - **Validates: Requirements 21.1, 21.2, 21.3**
 
-- [ ] 18. Follow-up request wiring
-  - [ ] 18.1 Wire follow-up request flow in `patient/appointments.html`
+- [x] 18. Follow-up request wiring
+  - [x] 18.1 Wire follow-up request flow in `patient/appointments.html`
     - Follow-up form creates new problem submission with type "follow-up" and reference to original appointment
     - _Requirements: 13.1, 13.2, 13.3, 13.4, 13.5_
 
@@ -261,7 +261,7 @@ Incremental implementation of a multi-role clinic management web app using vanil
     - **Property 12: Follow-up request creates submission with correct type and reference**
     - **Validates: Requirements 13.3**
 
-- [ ] 19. Final checkpoint
+- [x] 19. Final checkpoint
   - Ensure all tests pass, all pages render correctly, notifications fire on all events, search/filter works on dashboards, PDF export generates correctly, responsive layout adapts on mobile. Ask the user if questions arise.
 
 ## Notes
