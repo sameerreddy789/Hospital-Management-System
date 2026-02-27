@@ -216,12 +216,12 @@ Incremental implementation of a multi-role clinic management web app using vanil
   - [x] 14.3 Create `css/print.css` for print-friendly prescription layout
     - _Requirements: 20.3_
 
-- [ ] 15. CSS styling and responsive layout
-  - [ ] 15.1 Create `css/style.css` with global styles
+- [x] 15. CSS styling and responsive layout
+  - [x] 15.1 Create `css/style.css` with global styles
     - Base styles, navigation (with hamburger menu for mobile), form styles, card components, summary cards, notification badge, list styles
     - _Requirements: 23.1, 23.6_
 
-  - [ ] 15.2 Add responsive media queries
+  - [x] 15.2 Add responsive media queries
     - Landing page sections stack vertically below 768px, forms usable at 320px, dashboards single-column on mobile, touch-friendly buttons/inputs
     - _Requirements: 23.2, 23.3, 23.4, 23.5, 23.6, 23.7_
 
