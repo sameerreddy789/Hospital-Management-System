@@ -6,7 +6,7 @@ Incremental implementation of a multi-role clinic management web app using vanil
 
 ## Tasks
 
-- [-] 1. Project setup and shared utilities
+- [x] 1. Project setup and shared utilities
   - [x] 1.1 Create `firebase.json` hosting config and `js/firebase-config.js`
     - Initialize Firebase app, export `app`, `auth`, and `db` instances
     - _Requirements: 2.2, 4.2_
@@ -23,8 +23,8 @@ Incremental implementation of a multi-role clinic management web app using vanil
     - Date formatting, time formatting, DOM query helpers
     - _Requirements: 7.3, 8.2, 10.2_
 
-- [ ] 2. Authentication module
-  - [ ] 2.1 Create `js/auth.js` with auth functions
+- [x] 2. Authentication module
+  - [x] 2.1 Create `js/auth.js` with auth functions
     - Implement `registerPatient`, `loginUser`, `logoutUser`, `sendPasswordReset`, `getCurrentUser`
     - `registerPatient` creates Firebase Auth user and writes Firestore user doc with role `"patient"`
     - `loginUser` authenticates and fetches role from Firestore, returns `{uid, role}`
@@ -34,7 +34,7 @@ Incremental implementation of a multi-role clinic management web app using vanil
     - **Property 1: Patient registration always assigns patient role with correct fields**
     - **Validates: Requirements 2.2, 3.3**
 
-  - [ ] 2.3 Create `js/auth-guard.js` with route protection
+  - [x] 2.3 Create `js/auth-guard.js` with route protection
     - Implement `requireAuth(allowedRole)` — redirects to login if unauthenticated, redirects to role dashboard if wrong role
     - _Requirements: 15.1, 15.2, 15.3, 15.4, 15.5_
 
