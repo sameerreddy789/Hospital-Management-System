@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Doctors - ClinicCare</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-brand">&#9764; ClinicCare</div>
+    <button class="nav-toggle" aria-label="Toggle navigation">&#9776;</button>
+    <div class="nav-links">
+      <a href="dashboard.html">Dashboard</a>
+      <a href="manage-doctors.html" class="active">Manage Doctors</a>
+      <a href="notifications.html">Notifications</a>
+      <a href="#" id="logoutBtn">Logout</a>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="breadcrumb"><a href="dashboard.html">Dashboard</a> <span>›</span> Manage Doctors</div>
+    <h1>Manage Doctors</h1>
+
+    <div class="card" style="margin-bottom:2rem;">
+      <h3>Add New Doctor</h3>
+      <div id="addMessage" class="message" style="display:none;"></div>
+      <form id="addDoctorForm" novalidate>
+        <div class="form-group">
+          <label for="doctorName">Full Name</label>
+          <input type="text" id="doctorName" required>
+        </div>
+        <div class="form-group">
+          <label for="doctorEmail">Email</label>
+          <input type="email" id="doctorEmail" required>
+        </div>
+        <div class="form-group">
+          <label for="doctorPassword">Temporary Password</label>
+          <div class="password-wrapper">
+            <input type="password" id="doctorPassword" required>
+            <button type="button" class="password-toggle" aria-label="Toggle password visibility">&#128065;</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="specialization">Specialization</label>
+          <input type="text" id="specialization" placeholder="e.g. Cardiology, Dermatology">
+        </div>
+        <button type="submit" class="btn btn-primary" id="addBtn">Add Doctor</button>
+      </form>
+    </div>
+
+    <h2>Registered Doctors</h2>
+    <div class="filter-bar">
+      <input type="text" id="searchInput" placeholder="Search doctors..." class="search-input">
+    </div>
+    <div id="doctorList">
+      <div class="skeleton skeleton-card"></div>
+      <div class="skeleton skeleton-card"></div>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="../js/firebase-config.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/validation.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/auth-guard.js"></script>
+  <script src="../js/firestore.js"></script>
+  <script src="../js/search-filter.js"></script>
+  <script>
+    requireAuth('admin').then(function(user) {
+      var listEl = document.getElementById('doctorList');
+      var addMsg = document.getElementById('addMessage');
+      var addBtn = document.getElementById('addBtn');
+      var allDoctors = [];
+
+      function renderDoctors(doctors) {
+        if (doctors.length === 0) {
+          listEl.innerHTML = '<div class="empty-state"><div class="empty-state-icon">&#128105;&#8205;&#9877;&#65039;</div><p>No doctors registered yet.</p></div>';
+          return;
+        }
+        listEl.innerHTML = '';
+        doctors.forEach(function(doc) {
+          var card = createElement('div', { className: 'card' });
+          card.innerHTML = '<h3>' + escapeHtml(doc.name) + '</h3>' +
+            '<p>' + escapeHtml(doc.email) + '</p>' +
+            (doc.specialization ? '<p class="text-muted">' + escapeHtml(doc.specialization) + '</p>' : '') +
+            '<p class="text-muted">Joined: ' + (doc.createdAt ? new Date(doc.createdAt.seconds * 1000).toLocaleDateString() : 'N/A') + '</p>';
+          listEl.appendChild(card);
+        });
+      }
+
+      function loadDoctors() {
+        getDoctorList().then(function(doctors) {
+          allDoctors = doctors;
+          renderDoctors(doctors);
+        });
+      }
+      loadDoctors();
+
+      document.getElementById('searchInput').addEventListener('input', function() {
+        renderDoctors(filterByText(allDoctors, this.value, 'name'));
+      });
+
+      // Password toggle
+      document.querySelectorAll('.password-toggle').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var input = this.previousElementSibling;
+          var isPassword = input.type === 'password';
+          input.type = isPassword ? 'text' : 'password';
+          this.innerHTML = isPassword ? '&#128064;' : '&#128065;';
+        });
+      });
+
+      document.getElementById('addDoctorForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        clearFieldErrors(this);
+        addMsg.style.display = 'none';
+
+        var name = document.getElementById('doctorName').value.trim();
+        var email = document.getElementById('doctorEmail').value.trim();
+        var password = document.getElementById('doctorPassword').value;
+        var specialization = document.getElementById('specialization').value.trim();
+
+        var result = validateForm([
+          { value: name, fieldName: 'DoctorName', validators: [validateRequired] },
+          { value: email, fieldName: 'DoctorEmail', validators: [validateRequired, validateEmail] },
+          { value: password, fieldName: 'DoctorPassword', validators: [validateRequired, validatePassword] }
+        ]);
+
+        if (!result.isValid) {
+          for (var field in result.errors) {
+            var id = field.charAt(0).toLowerCase() + field.slice(1);
+            var input = document.getElementById(id);
+            if (input) showFieldError(input, result.errors[field]);
+          }
+          return;
+        }
+
+        addBtn.classList.add('btn-loading');
+
+        // Create doctor via Firebase Auth then add Firestore profile
+        firebase.auth().createUserWithEmailAndPassword(email, password)
+          .then(function(cred) {
+            return db.collection('users').doc(cred.user.uid).set({
+              name: name,
+              email: email,
+              role: 'doctor',
+              specialization: specialization,
+              createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+          })
+          .then(function() {
+            addBtn.classList.remove('btn-loading');
+            showToast('Doctor added successfully!', 'success');
+            document.getElementById('addDoctorForm').reset();
+            loadDoctors();
+          })
+          .catch(function(err) {
+            addBtn.classList.remove('btn-loading');
+            showMessage(addMsg, err.message || 'Failed to add doctor.', 'error');
+          });
+      });
+
+      document.getElementById('logoutBtn').addEventListener('click', function(e) { e.preventDefault(); logoutUser(); });
+      var toggle = document.querySelector('.nav-toggle');
+      var navLinks = document.querySelector('.nav-links');
+      if (toggle) toggle.addEventListener('click', function() { navLinks.classList.toggle('nav-open'); });
+    });
+  </script>
+</body>
+</html>

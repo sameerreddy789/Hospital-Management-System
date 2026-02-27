@@ -21,13 +21,19 @@
       </div>
       <div class="form-group">
         <label for="password">Password</label>
-        <input type="password" id="password" name="password" required>
+        <div class="password-wrapper">
+          <input type="password" id="password" name="password" required>
+          <button type="button" class="password-toggle" aria-label="Toggle password visibility">&#128065;</button>
+        </div>
       </div>
       <div class="form-group">
         <label for="confirmPassword">Confirm Password</label>
-        <input type="password" id="confirmPassword" name="confirmPassword" required>
+        <div class="password-wrapper">
+          <input type="password" id="confirmPassword" name="confirmPassword" required>
+          <button type="button" class="password-toggle" aria-label="Toggle password visibility">&#128065;</button>
+        </div>
       </div>
-      <button type="submit" class="btn btn-primary">Register</button>
+      <button type="submit" class="btn btn-primary" id="submitBtn">Register</button>
     </form>
     <div class="auth-links">
       <a href="login.html">Already have an account? Login</a>
@@ -43,6 +49,17 @@
   <script>
     var form = document.getElementById('registerForm');
     var messageEl = document.getElementById('message');
+    var submitBtn = document.getElementById('submitBtn');
+
+    // Password toggle
+    document.querySelectorAll('.password-toggle').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var input = this.previousElementSibling;
+        var isPassword = input.type === 'password';
+        input.type = isPassword ? 'text' : 'password';
+        this.innerHTML = isPassword ? '&#128064;' : '&#128065;';
+      });
+    });
 
     form.addEventListener('submit', function(e) {
       e.preventDefault();
@@ -75,8 +92,10 @@
         return;
       }
 
+      submitBtn.classList.add('btn-loading');
       registerPatient(name, email, password)
         .then(function() {
+          submitBtn.classList.remove('btn-loading');
           messageEl.textContent = 'Registration successful! Redirecting to login...';
           messageEl.className = 'message message-success';
           messageEl.style.display = 'block';
@@ -85,6 +104,7 @@
           }, 2000);
         })
         .catch(function(err) {
+          submitBtn.classList.remove('btn-loading');
           messageEl.textContent = err.message || 'Registration failed. Please try again.';
           messageEl.className = 'message message-error';
           messageEl.style.display = 'block';
