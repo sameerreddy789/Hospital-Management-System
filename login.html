@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Clinic Management</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="auth-container">
+    <h1>Login</h1>
+    <div id="message" class="message" style="display:none;"></div>
+    <form id="loginForm" novalidate>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Login</button>
+    </form>
+    <div class="auth-links">
+      <a href="reset-password.html">Forgot Password?</a>
+      <a href="register.html">Register as Patient</a>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/validation.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    var form = document.getElementById('loginForm');
+    var messageEl = document.getElementById('message');
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      clearFieldErrors(form);
+      messageEl.style.display = 'none';
+
+      var email = document.getElementById('email').value;
+      var password = document.getElementById('password').value;
+
+      var result = validateForm([
+        { value: email, fieldName: 'Email', validators: [validateRequired, validateEmail] },
+        { value: password, fieldName: 'Password', validators: [validateRequired] }
+      ]);
+
+      if (!result.isValid) {
+        for (var field in result.errors) {
+          var input = form.querySelector('[name="' + field.toLowerCase() + '"]');
+          if (input) showFieldError(input, result.errors[field]);
+        }
+        return;
+      }
+
+      loginUser(email, password)
+        .then(function(user) {
+          var dashboards = {
+            patient: '/patient/dashboard.html',
+            doctor: '/doctor/dashboard.html',
+            admin: '/admin/dashboard.html'
+          };
+          window.location.href = dashboards[user.role] || '/';
+        })
+        .catch(function(err) {
+          messageEl.textContent = err.message || 'Login failed. Please check your credentials.';
+          messageEl.className = 'message message-error';
+          messageEl.style.display = 'block';
+        });
+    });
+  </script>
+</body>
+</html>

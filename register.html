@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register - Clinic Management</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="auth-container">
+    <h1>Patient Registration</h1>
+    <div id="message" class="message" style="display:none;"></div>
+    <form id="registerForm" novalidate>
+      <div class="form-group">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" name="name" required>
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required>
+      </div>
+      <div class="form-group">
+        <label for="confirmPassword">Confirm Password</label>
+        <input type="password" id="confirmPassword" name="confirmPassword" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Register</button>
+    </form>
+    <div class="auth-links">
+      <a href="login.html">Already have an account? Login</a>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/validation.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    var form = document.getElementById('registerForm');
+    var messageEl = document.getElementById('message');
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      clearFieldErrors(form);
+      messageEl.style.display = 'none';
+
+      var name = document.getElementById('name').value;
+      var email = document.getElementById('email').value;
+      var password = document.getElementById('password').value;
+      var confirmPassword = document.getElementById('confirmPassword').value;
+
+      var result = validateForm([
+        { value: name, fieldName: 'Name', validators: [validateRequired] },
+        { value: email, fieldName: 'Email', validators: [validateRequired, validateEmail] },
+        { value: password, fieldName: 'Password', validators: [validateRequired, validatePassword] },
+        { value: confirmPassword, fieldName: 'ConfirmPassword', validators: [validateRequired] }
+      ]);
+
+      if (!result.isValid) {
+        for (var field in result.errors) {
+          var inputId = field === 'ConfirmPassword' ? 'confirmPassword' : field.toLowerCase();
+          var input = document.getElementById(inputId);
+          if (input) showFieldError(input, result.errors[field]);
+        }
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        showFieldError(document.getElementById('confirmPassword'), 'Passwords do not match');
+        return;
+      }
+
+      registerPatient(name, email, password)
+        .then(function() {
+          messageEl.textContent = 'Registration successful! Redirecting to login...';
+          messageEl.className = 'message message-success';
+          messageEl.style.display = 'block';
+          setTimeout(function() {
+            window.location.href = 'login.html';
+          }, 2000);
+        })
+        .catch(function(err) {
+          messageEl.textContent = err.message || 'Registration failed. Please try again.';
+          messageEl.className = 'message message-error';
+          messageEl.style.display = 'block';
+        });
+    });
+  </script>
+</body>
+</html>

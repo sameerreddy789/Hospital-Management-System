@@ -46,16 +46,16 @@ Incremental implementation of a multi-role clinic management web app using vanil
     - **Property 17: Role-based access control prevents cross-role access**
     - **Validates: Requirements 15.2, 15.3, 15.4, 15.5**
 
-- [ ] 3. Auth pages (HTML + wiring)
-  - [ ] 3.1 Create `login.html` with login form
+- [x] 3. Auth pages (HTML + wiring)
+  - [x] 3.1 Create `login.html` with login form
     - Email and password fields, submit handler calling `loginUser`, error display, "Forgot Password" link
     - _Requirements: 4.1, 4.2, 4.3, 22.1_
 
-  - [ ] 3.2 Create `register.html` with patient registration form
+  - [x] 3.2 Create `register.html` with patient registration form
     - Full name, email, password fields, submit handler calling `registerPatient`, validation errors, redirect to login on success
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5_
 
-  - [ ] 3.3 Create `reset-password.html` with password reset form
+  - [x] 3.3 Create `reset-password.html` with password reset form
     - Email field, submit handler calling `sendPasswordReset`, success/error messages
     - _Requirements: 22.2, 22.3, 22.4, 22.5, 22.6_
 
