@@ -20,6 +20,7 @@
 
   <div class="container">
     <h1>Doctor Dashboard</h1>
+    <p class="welcome-greeting" id="doctorGreeting"></p>
 
     <div class="summary-cards">
       <div class="summary-card">
@@ -58,6 +59,9 @@
   <script src="../js/search-filter.js"></script>
   <script>
     requireAuth('doctor').then(function(user) {
+      var hour = new Date().getHours();
+      var greeting = hour < 12 ? 'Good Morning' : hour < 17 ? 'Good Afternoon' : 'Good Evening';
+      document.getElementById('doctorGreeting').textContent = greeting + ', Dr. ' + user.name.split(' ').pop() + '!';
       var container = document.getElementById('appointmentList');
       var allAppointments = [];
 

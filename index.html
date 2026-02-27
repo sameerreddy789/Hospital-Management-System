@@ -33,6 +33,7 @@
   <!-- Hero -->
   <section class="hero">
     <div class="hero-content">
+      <div class="hero-badge">&#10024; Trusted Healthcare Platform</div>
       <h1>Your Health, Our Priority</h1>
       <p>Book appointments, consult with specialists, receive digital prescriptions, and manage your health journey — all from one place.</p>
       <div class="hero-actions">
@@ -246,6 +247,9 @@
     <a href="register.html" class="btn btn-primary btn-lg">Create Free Account</a>
   </section>
 
+  <!-- Back to Top -->
+  <button class="back-to-top" id="backToTop" aria-label="Back to top">&#8593;</button>
+
   <footer class="footer">
     <div style="max-width:1140px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:2rem;text-align:left;padding:0 1.5rem 2rem;">
       <div>
@@ -306,6 +310,14 @@
       });
     }, { threshold: 0.15 });
     revealEls.forEach(function(el) { observer.observe(el); });
+
+    // Back to top button
+    var backBtn = document.getElementById('backToTop');
+    window.addEventListener('scroll', function() {
+      if (window.scrollY > 400) { backBtn.classList.add('visible'); }
+      else { backBtn.classList.remove('visible'); }
+    });
+    backBtn.addEventListener('click', function() { window.scrollTo({ top: 0, behavior: 'smooth' }); });
 
     // Animate stats on scroll
     var animated = false;

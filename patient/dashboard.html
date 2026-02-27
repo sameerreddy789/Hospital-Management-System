@@ -54,6 +54,13 @@
   <script>
     requireAuth('patient').then(function(user) {
       document.getElementById('userName').textContent = user.name;
+      // Time-of-day greeting
+      var hour = new Date().getHours();
+      var greeting = hour < 12 ? 'Good Morning' : hour < 17 ? 'Good Afternoon' : 'Good Evening';
+      var greetEl = document.createElement('p');
+      greetEl.className = 'welcome-greeting';
+      greetEl.textContent = greeting + '! Here\'s your health overview.';
+      document.querySelector('.container > h1').after(greetEl);
 
       // Real-time stats
       onStatsChange('patient', user.uid, function(stats) {
