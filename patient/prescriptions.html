@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#127993;</text></svg>">
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#127993;</text></svg>">
   <title>My Prescriptions - TumourCare</title>
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/print.css" media="print">
 </head>
+
 <body class="dashboard-body">
   <nav class="navbar">
     <div class="nav-brand">&#127993; TumourCare</div>
@@ -27,8 +30,10 @@
     <div class="breadcrumb"><a href="dashboard.html">Dashboard</a> <span>›</span> Prescriptions</div>
     <h1>My Prescriptions</h1>
     <div id="prescriptionList" class="list-container">
-      <div class="skeleton skeleton-card"></div>
-      <div class="skeleton skeleton-card"></div>
+      <div class="loading-container">
+        <div class="loading-spinner"></div>
+        <span class="loading-text">Loading prescriptions...</span>
+      </div>
     </div>
   </div>
 
@@ -43,16 +48,24 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="../js/pdf-export.js"></script>
   <script>
-    requireAuth('patient').then(function(user) {
+    requireAuth('patient').then(function (user) {
       var container = document.getElementById('prescriptionList');
 
-      getPrescriptionsByPatient(user.uid).then(function(prescriptions) {
-        if (prescriptions.length === 0) { container.innerHTML = '<p>No prescriptions yet.</p>'; return; }
+      getPrescriptionsByPatient(user.uid).then(function (prescriptions) {
+        if (prescriptions.length === 0) {
+          container.innerHTML = '<div class="empty-state">' +
+            '<div class="empty-state-icon">&#128138;</div>' +
+            '<p style="font-size:1.05rem;color:#1e293b;font-weight:600;margin-bottom:0.25rem;">No Prescriptions Yet</p>' +
+            '<p>Prescriptions will appear here after your doctor completes a consultation and provides medication details.</p>' +
+            '<a href="appointments.html" class="btn btn-primary" style="margin-top:1rem;">View Appointments</a>' +
+            '</div>';
+          return;
+        }
         container.innerHTML = '';
-        prescriptions.forEach(function(rx) {
+        prescriptions.forEach(function (rx) {
           var card = createElement('div', { className: 'card' });
           var medsHtml = '<table class="table"><thead><tr><th>Medicine</th><th>Dosage</th><th>Frequency</th></tr></thead><tbody>';
-          (rx.medicines || []).forEach(function(m) {
+          (rx.medicines || []).forEach(function (m) {
             medsHtml += '<tr><td>' + escapeHtml(m.name) + '</td><td>' + escapeHtml(m.dosage) + '</td><td>' + escapeHtml(m.frequency) + '</td></tr>';
           });
           medsHtml += '</tbody></table>';
@@ -62,28 +75,36 @@
             medsHtml +
             (rx.notes ? '<p><strong>Notes:</strong> ' + escapeHtml(rx.notes) + '</p>' : '') +
             '<div class="card-actions">' +
-              '<button class="btn btn-primary download-btn" data-idx="' + prescriptions.indexOf(rx) + '">Download PDF</button> ' +
-              '<button class="btn btn-outline print-btn">Print</button>' +
+            '<button class="btn btn-primary download-btn" data-idx="' + prescriptions.indexOf(rx) + '">Download PDF</button> ' +
+            '<button class="btn btn-outline print-btn">Print</button>' +
             '</div>';
           container.appendChild(card);
         });
 
-        container.querySelectorAll('.download-btn').forEach(function(btn) {
-          btn.addEventListener('click', function() {
+        container.querySelectorAll('.download-btn').forEach(function (btn) {
+          btn.addEventListener('click', function () {
             var idx = parseInt(btn.dataset.idx);
             generatePrescriptionPDF(prescriptions[idx]);
           });
         });
-        container.querySelectorAll('.print-btn').forEach(function(btn) {
-          btn.addEventListener('click', function() { window.print(); });
+        container.querySelectorAll('.print-btn').forEach(function (btn) {
+          btn.addEventListener('click', function () { window.print(); });
         });
+      }).catch(function () {
+        container.innerHTML = '<div class="empty-state">' +
+          '<div class="empty-state-icon">&#128138;</div>' +
+          '<p style="font-size:1.05rem;color:#1e293b;font-weight:600;margin-bottom:0.25rem;">No Prescriptions Yet</p>' +
+          '<p>Prescriptions will appear here after your doctor completes a consultation and provides medication details.</p>' +
+          '<a href="appointments.html" class="btn btn-primary" style="margin-top:1rem;">View Appointments</a>' +
+          '</div>';
       });
 
-      document.getElementById('logoutBtn').addEventListener('click', function(e) { e.preventDefault(); logoutUser(); });
+      document.getElementById('logoutBtn').addEventListener('click', function (e) { e.preventDefault(); confirmLogout(); });
       var toggle = document.querySelector('.nav-toggle');
       var navLinks = document.querySelector('.nav-links');
-      if (toggle) toggle.addEventListener('click', function() { navLinks.classList.toggle('nav-open'); });
+      if (toggle) toggle.addEventListener('click', function () { navLinks.classList.toggle('nav-open'); });
     });
   </script>
 </body>
+
 </html>

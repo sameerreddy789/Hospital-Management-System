@@ -13,12 +13,13 @@
  * @param {string} description - Problem description
  * @param {string} [type='initial'] - 'initial' or 'follow-up'
  * @param {string} [originalAppointmentId=null] - For follow-ups
+ * @param {Object} [extras=null] - Additional fields (primaryConcern, bodyArea, painLevel, urgency)
  * @returns {Promise<string>} Submission ID
  */
-function createProblemSubmission(patientId, title, description, type, originalAppointmentId) {
-  return db.collection('users').doc(patientId).get().then(function(userDoc) {
+function createProblemSubmission(patientId, title, description, type, originalAppointmentId, extras) {
+  return db.collection('users').doc(patientId).get().then(function (userDoc) {
     var patientName = userDoc.exists ? userDoc.data().name : 'Unknown';
-    return db.collection('problemSubmissions').add({
+    var docData = {
       patientId: patientId,
       patientName: patientName,
       title: title,
@@ -27,8 +28,17 @@ function createProblemSubmission(patientId, title, description, type, originalAp
       type: type || 'initial',
       originalAppointmentId: originalAppointmentId || null,
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
-  }).then(function(docRef) {
+    };
+    // Merge extra fields if provided
+    if (extras) {
+      for (var key in extras) {
+        if (extras.hasOwnProperty(key)) {
+          docData[key] = extras[key];
+        }
+      }
+    }
+    return db.collection('problemSubmissions').add(docData);
+  }).then(function (docRef) {
     return docRef.id;
   });
 }
@@ -42,9 +52,9 @@ function getPendingSubmissions() {
     .where('status', '==', 'pending')
     .orderBy('createdAt', 'desc')
     .get()
-    .then(function(snapshot) {
+    .then(function (snapshot) {
       var results = [];
-      snapshot.forEach(function(doc) {
+      snapshot.forEach(function (doc) {
         results.push(Object.assign({ id: doc.id }, doc.data()));
       });
       return results;
@@ -61,9 +71,9 @@ function getSubmissionsByPatient(patientId) {
     .where('patientId', '==', patientId)
     .orderBy('createdAt', 'desc')
     .get()
-    .then(function(snapshot) {
+    .then(function (snapshot) {
       var results = [];
-      snapshot.forEach(function(doc) {
+      snapshot.forEach(function (doc) {
         results.push(Object.assign({ id: doc.id }, doc.data()));
       });
       return results;
@@ -93,7 +103,7 @@ function createAppointment(patientId, doctorId, submissionId, date, time) {
     db.collection('users').doc(patientId).get(),
     db.collection('users').doc(doctorId).get(),
     db.collection('problemSubmissions').doc(submissionId).get()
-  ]).then(function(docs) {
+  ]).then(function (docs) {
     var patientName = docs[0].exists ? docs[0].data().name : 'Unknown';
     var doctorName = docs[1].exists ? docs[1].data().name : 'Unknown';
     var submission = docs[2].exists ? docs[2].data() : {};
@@ -110,7 +120,7 @@ function createAppointment(patientId, doctorId, submissionId, date, time) {
       status: 'assigned',
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
     });
-  }).then(function(docRef) {
+  }).then(function (docRef) {
     return docRef.id;
   });
 }
@@ -125,9 +135,9 @@ function getAppointmentsByPatient(patientId) {
     .where('patientId', '==', patientId)
     .orderBy('scheduledDate', 'desc')
     .get()
-    .then(function(snapshot) {
+    .then(function (snapshot) {
       var results = [];
-      snapshot.forEach(function(doc) {
+      snapshot.forEach(function (doc) {
         results.push(Object.assign({ id: doc.id }, doc.data()));
       });
       return results;
@@ -144,9 +154,9 @@ function getAppointmentsByDoctor(doctorId) {
     .where('doctorId', '==', doctorId)
     .orderBy('scheduledDate', 'desc')
     .get()
-    .then(function(snapshot) {
+    .then(function (snapshot) {
       var results = [];
-      snapshot.forEach(function(doc) {
+      snapshot.forEach(function (doc) {
         results.push(Object.assign({ id: doc.id }, doc.data()));
       });
       return results;
@@ -161,9 +171,9 @@ function getAllAppointments() {
   return db.collection('appointments')
     .orderBy('scheduledDate', 'desc')
     .get()
-    .then(function(snapshot) {
+    .then(function (snapshot) {
       var results = [];
-      snapshot.forEach(function(doc) {
+      snapshot.forEach(function (doc) {
         results.push(Object.assign({ id: doc.id }, doc.data()));
       });
       return results;
@@ -194,7 +204,7 @@ function checkDoctorConflict(doctorId, date, time) {
     .where('scheduledTime', '==', time)
     .where('status', 'in', ['assigned', 'prescribed'])
     .get()
-    .then(function(snapshot) {
+    .then(function (snapshot) {
       return !snapshot.empty;
     });
 }
@@ -216,7 +226,7 @@ function createPrescription(appointmentId, patientId, doctorId, medicines, notes
   return Promise.all([
     db.collection('users').doc(doctorId).get(),
     db.collection('users').doc(patientId).get()
-  ]).then(function(docs) {
+  ]).then(function (docs) {
     var doctorName = docs[0].exists ? docs[0].data().name : 'Unknown';
     var patientName = docs[1].exists ? docs[1].data().name : 'Unknown';
     return db.collection('prescriptions').add({
@@ -229,7 +239,7 @@ function createPrescription(appointmentId, patientId, doctorId, medicines, notes
       notes: notes || '',
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
     });
-  }).then(function(docRef) {
+  }).then(function (docRef) {
     return docRef.id;
   });
 }
@@ -244,9 +254,9 @@ function getPrescriptionsByPatient(patientId) {
     .where('patientId', '==', patientId)
     .orderBy('createdAt', 'desc')
     .get()
-    .then(function(snapshot) {
+    .then(function (snapshot) {
       var results = [];
-      snapshot.forEach(function(doc) {
+      snapshot.forEach(function (doc) {
         results.push(Object.assign({ id: doc.id }, doc.data()));
       });
       return results;
@@ -262,9 +272,9 @@ function getPrescriptionsByAppointment(appointmentId) {
   return db.collection('prescriptions')
     .where('appointmentId', '==', appointmentId)
     .get()
-    .then(function(snapshot) {
+    .then(function (snapshot) {
       var results = [];
-      snapshot.forEach(function(doc) {
+      snapshot.forEach(function (doc) {
         results.push(Object.assign({ id: doc.id }, doc.data()));
       });
       return results;
@@ -283,9 +293,9 @@ function getDoctorList() {
   return db.collection('users')
     .where('role', '==', 'doctor')
     .get()
-    .then(function(snapshot) {
+    .then(function (snapshot) {
       var results = [];
-      snapshot.forEach(function(doc) {
+      snapshot.forEach(function (doc) {
         results.push(Object.assign({ id: doc.id }, doc.data()));
       });
       return results;
@@ -298,7 +308,7 @@ function getDoctorList() {
  * @returns {Promise<Object>}
  */
 function getUserProfile(uid) {
-  return db.collection('users').doc(uid).get().then(function(doc) {
+  return db.collection('users').doc(uid).get().then(function (doc) {
     if (!doc.exists) return null;
     return Object.assign({ id: doc.id }, doc.data());
   });
@@ -323,7 +333,7 @@ function getPatientHistory(patientId) {
   return Promise.all([
     getAppointmentsByPatient(patientId),
     getPrescriptionsByPatient(patientId)
-  ]).then(function(results) {
+  ]).then(function (results) {
     return { appointments: results[0], prescriptions: results[1] };
   });
 }
@@ -341,9 +351,9 @@ function onSubmissionsChange(callback) {
   return db.collection('problemSubmissions')
     .where('status', '==', 'pending')
     .orderBy('createdAt', 'desc')
-    .onSnapshot(function(snapshot) {
+    .onSnapshot(function (snapshot) {
       var results = [];
-      snapshot.forEach(function(doc) {
+      snapshot.forEach(function (doc) {
         results.push(Object.assign({ id: doc.id }, doc.data()));
       });
       callback(results);
@@ -366,9 +376,9 @@ function onAppointmentsChange(userId, role, callback) {
   } else {
     query = db.collection('appointments').where('patientId', '==', userId).orderBy('scheduledDate', 'desc');
   }
-  return query.onSnapshot(function(snapshot) {
+  return query.onSnapshot(function (snapshot) {
     var results = [];
-    snapshot.forEach(function(doc) {
+    snapshot.forEach(function (doc) {
       results.push(Object.assign({ id: doc.id }, doc.data()));
     });
     callback(results);
@@ -388,39 +398,39 @@ function onStatsChange(role, userId, callback) {
   if (role === 'admin') {
     unsubscribers.push(
       db.collection('problemSubmissions').where('status', '==', 'pending')
-        .onSnapshot(function(snap) { callback({ pendingCount: snap.size }); })
+        .onSnapshot(function (snap) { callback({ pendingCount: snap.size }); })
     );
     unsubscribers.push(
       db.collection('appointments').where('status', '==', 'assigned')
-        .onSnapshot(function(snap) { callback({ assignedCount: snap.size }); })
+        .onSnapshot(function (snap) { callback({ assignedCount: snap.size }); })
     );
     unsubscribers.push(
       db.collection('users').where('role', '==', 'doctor')
-        .onSnapshot(function(snap) { callback({ doctorCount: snap.size }); })
+        .onSnapshot(function (snap) { callback({ doctorCount: snap.size }); })
     );
   } else if (role === 'doctor') {
     var today = new Date().toISOString().split('T')[0];
     unsubscribers.push(
       db.collection('appointments').where('doctorId', '==', userId).where('scheduledDate', '==', today)
-        .onSnapshot(function(snap) { callback({ todayCount: snap.size }); })
+        .onSnapshot(function (snap) { callback({ todayCount: snap.size }); })
     );
     unsubscribers.push(
       db.collection('appointments').where('doctorId', '==', userId).where('status', '==', 'assigned')
-        .onSnapshot(function(snap) { callback({ assignedCount: snap.size }); })
+        .onSnapshot(function (snap) { callback({ assignedCount: snap.size }); })
     );
   } else {
     unsubscribers.push(
       db.collection('appointments').where('patientId', '==', userId).where('status', 'in', ['assigned', 'prescribed'])
-        .onSnapshot(function(snap) { callback({ upcomingCount: snap.size }); })
+        .onSnapshot(function (snap) { callback({ upcomingCount: snap.size }); })
     );
     unsubscribers.push(
       db.collection('prescriptions').where('patientId', '==', userId)
-        .onSnapshot(function(snap) { callback({ prescriptionCount: snap.size }); })
+        .onSnapshot(function (snap) { callback({ prescriptionCount: snap.size }); })
     );
   }
 
-  return function() {
-    unsubscribers.forEach(function(unsub) { unsub(); });
+  return function () {
+    unsubscribers.forEach(function (unsub) { unsub(); });
   };
 }
 
@@ -437,9 +447,9 @@ function getPendingUsers() {
     .where('status', '==', 'pending')
     .orderBy('createdAt', 'desc')
     .get()
-    .then(function(snapshot) {
+    .then(function (snapshot) {
       var results = [];
-      snapshot.forEach(function(doc) {
+      snapshot.forEach(function (doc) {
         results.push(Object.assign({ id: doc.id }, doc.data()));
       });
       return results;
@@ -452,7 +462,7 @@ function getPendingUsers() {
  * @returns {Promise<void>}
  */
 function approveUser(uid) {
-  return db.collection('users').doc(uid).update({ status: 'active' }).then(function() {
+  return db.collection('users').doc(uid).update({ status: 'active' }).then(function () {
     return db.collection('notifications').add({
       userId: uid,
       message: 'Your account has been approved! You can now sign in.',
@@ -469,7 +479,7 @@ function approveUser(uid) {
  * @returns {Promise<void>}
  */
 function rejectUser(uid) {
-  return db.collection('users').doc(uid).update({ status: 'rejected' }).then(function() {
+  return db.collection('users').doc(uid).update({ status: 'rejected' }).then(function () {
     return db.collection('notifications').add({
       userId: uid,
       message: 'Your registration request was not approved. Please contact the administrator for details.',
@@ -489,9 +499,9 @@ function onPendingUsersChange(callback) {
   return db.collection('users')
     .where('status', '==', 'pending')
     .orderBy('createdAt', 'desc')
-    .onSnapshot(function(snapshot) {
+    .onSnapshot(function (snapshot) {
       var results = [];
-      snapshot.forEach(function(doc) {
+      snapshot.forEach(function (doc) {
         results.push(Object.assign({ id: doc.id }, doc.data()));
       });
       callback(results);

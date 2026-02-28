@@ -171,6 +171,48 @@ function loginUser(email, password) {
 
 
 /**
+ * Shows a glassmorphic confirmation modal before logging out.
+ * Creates the modal dynamically on first call and reuses it.
+ */
+function confirmLogout() {
+  var modal = document.getElementById('logoutConfirmModal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'logoutConfirmModal';
+    modal.className = 'modal';
+    modal.style.display = 'none';
+    modal.innerHTML =
+      '<div class="modal-content" style="text-align:center;max-width:400px;">' +
+        '<div style="font-size:2.5rem;margin-bottom:0.75rem;">&#128682;</div>' +
+        '<h2 style="margin-bottom:0.5rem;color:#1e293b;">Logout</h2>' +
+        '<p style="color:#64748b;margin-bottom:1.5rem;">Are you sure you want to logout?</p>' +
+        '<div style="display:flex;gap:0.75rem;justify-content:center;">' +
+          '<button id="logoutCancelBtn" class="btn btn-outline">Cancel</button>' +
+          '<button id="logoutConfirmBtn" class="btn btn-danger">Yes, Logout</button>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(modal);
+
+    // Close on Cancel
+    document.getElementById('logoutCancelBtn').addEventListener('click', function() {
+      modal.style.display = 'none';
+    });
+
+    // Confirm logout
+    document.getElementById('logoutConfirmBtn').addEventListener('click', function() {
+      modal.style.display = 'none';
+      logoutUser();
+    });
+
+    // Close on backdrop click
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) modal.style.display = 'none';
+    });
+  }
+  modal.style.display = 'flex';
+}
+
+/**
  * Logs out the current user and redirects to landing page.
  * @returns {Promise<void>}
  */
@@ -227,5 +269,6 @@ window.registerPatient = registerPatient;
 window.registerUser = registerUser;
 window.loginUser = loginUser;
 window.logoutUser = logoutUser;
+window.confirmLogout = confirmLogout;
 window.sendPasswordReset = sendPasswordReset;
 window.getCurrentUser = getCurrentUser;

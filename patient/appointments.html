@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#127993;</text></svg>">
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#127993;</text></svg>">
   <title>My Appointments - TumourCare</title>
   <link rel="stylesheet" href="../css/style.css">
 </head>
+
 <body class="dashboard-body">
   <nav class="navbar">
     <div class="nav-brand">&#127993; TumourCare</div>
@@ -27,8 +30,10 @@
     <h1>My Appointments</h1>
     <div id="message" class="message" style="display:none;"></div>
     <div id="appointmentList" class="list-container">
-      <div class="skeleton skeleton-card"></div>
-      <div class="skeleton skeleton-card"></div>
+      <div class="loading-container">
+        <div class="loading-spinner"></div>
+        <span class="loading-text">Loading appointments...</span>
+      </div>
     </div>
   </div>
 
@@ -63,17 +68,25 @@
   <script src="../js/firestore.js"></script>
   <script src="../js/notifications.js"></script>
   <script>
-    requireAuth('patient').then(function(user) {
+    requireAuth('patient').then(function (user) {
       var container = document.getElementById('appointmentList');
       var messageEl = document.getElementById('message');
       var modal = document.getElementById('followUpModal');
 
       function loadAppointments() {
-        getAppointmentsByPatient(user.uid).then(function(appointments) {
-          if (appointments.length === 0) { container.innerHTML = '<p>No appointments found.</p>'; return; }
+        getAppointmentsByPatient(user.uid).then(function (appointments) {
+          if (appointments.length === 0) {
+            container.innerHTML = '<div class="empty-state">' +
+              '<div class="empty-state-icon">&#128197;</div>' +
+              '<p style="font-size:1.05rem;color:#1e293b;font-weight:600;margin-bottom:0.25rem;">No Appointments Yet</p>' +
+              '<p>Submit a health concern and our admin team will assign you to a specialist and schedule your appointment.</p>' +
+              '<a href="submit-problem.html" class="btn btn-primary" style="margin-top:1rem;">Submit a Health Problem</a>' +
+              '</div>';
+            return;
+          }
           container.innerHTML = '';
           var today = new Date().toISOString().split('T')[0];
-          appointments.forEach(function(apt) {
+          appointments.forEach(function (apt) {
             var card = createElement('div', { className: 'card' });
             var actions = '';
             if (apt.status === 'assigned' && apt.scheduledDate >= today) {
@@ -91,63 +104,71 @@
           });
 
           // Cancel buttons
-          container.querySelectorAll('.cancel-btn').forEach(function(btn) {
-            btn.addEventListener('click', function() {
+          container.querySelectorAll('.cancel-btn').forEach(function (btn) {
+            btn.addEventListener('click', function () {
               if (!confirm('Are you sure you want to cancel this appointment?')) return;
-              updateAppointmentStatus(btn.dataset.id, 'cancelled').then(function() {
+              updateAppointmentStatus(btn.dataset.id, 'cancelled').then(function () {
                 // Notify doctor and admin about cancellation
                 var aptCard = btn.closest('.card');
-                db.collection('appointments').doc(btn.dataset.id).get().then(function(doc) {
+                db.collection('appointments').doc(btn.dataset.id).get().then(function (doc) {
                   if (doc.exists) {
                     var data = doc.data();
                     createNotification(data.doctorId, 'Appointment cancelled by patient on ' + data.scheduledDate, 'cancellation');
-                    db.collection('users').where('role', '==', 'admin').get().then(function(snap) {
-                      snap.forEach(function(d) { createNotification(d.id, 'Appointment cancelled by patient', 'cancellation'); });
+                    db.collection('users').where('role', '==', 'admin').get().then(function (snap) {
+                      snap.forEach(function (d) { createNotification(d.id, 'Appointment cancelled by patient', 'cancellation'); });
                     });
                   }
                 });
                 showToast('Appointment cancelled.', 'success');
                 loadAppointments();
-              }).catch(function(err) { showMessage(messageEl, err.message, 'error'); });
+              }).catch(function (err) { showMessage(messageEl, err.message, 'error'); });
             });
           });
 
           // Follow-up buttons
-          container.querySelectorAll('.followup-btn').forEach(function(btn) {
-            btn.addEventListener('click', function() {
+          container.querySelectorAll('.followup-btn').forEach(function (btn) {
+            btn.addEventListener('click', function () {
               document.getElementById('fuAppointmentId').value = btn.dataset.id;
               modal.style.display = 'flex';
             });
           });
+        }).catch(function () {
+          container.innerHTML = '<div class="empty-state">' +
+            '<div class="empty-state-icon">&#128197;</div>' +
+            '<p style="font-size:1.05rem;color:#1e293b;font-weight:600;margin-bottom:0.25rem;">No Appointments Yet</p>' +
+            '<p>Submit a health concern and our admin team will assign you to a specialist and schedule your appointment.</p>' +
+            '<a href="submit-problem.html" class="btn btn-primary" style="margin-top:1rem;">Submit a Health Problem</a>' +
+            '</div>';
         });
       }
 
       loadAppointments();
 
       // Follow-up form
-      document.getElementById('followUpForm').addEventListener('submit', function(e) {
+      document.getElementById('followUpForm').addEventListener('submit', function (e) {
         e.preventDefault();
         var title = document.getElementById('fuTitle').value;
         var desc = document.getElementById('fuDescription').value;
         var aptId = document.getElementById('fuAppointmentId').value;
         if (!title.trim() || !desc.trim()) { alert('Please fill in all fields.'); return; }
-        createProblemSubmission(user.uid, title, desc, 'follow-up', aptId).then(function() {
+        createProblemSubmission(user.uid, title, desc, 'follow-up', aptId).then(function () {
           modal.style.display = 'none';
           document.getElementById('followUpForm').reset();
           // Notify admin about follow-up
-          db.collection('users').where('role', '==', 'admin').get().then(function(snap) {
-            snap.forEach(function(d) { createNotification(d.id, 'Follow-up request: ' + title, 'request'); });
+          db.collection('users').where('role', '==', 'admin').get().then(function (snap) {
+            snap.forEach(function (d) { createNotification(d.id, 'Follow-up request: ' + title, 'request'); });
           });
           showToast('Follow-up request submitted!', 'success');
-        }).catch(function(err) { showMessage(messageEl, err.message, 'error'); });
+        }).catch(function (err) { showMessage(messageEl, err.message, 'error'); });
       });
 
-      document.getElementById('closeModal').addEventListener('click', function() { modal.style.display = 'none'; });
-      document.getElementById('logoutBtn').addEventListener('click', function(e) { e.preventDefault(); logoutUser(); });
+      document.getElementById('closeModal').addEventListener('click', function () { modal.style.display = 'none'; });
+      document.getElementById('logoutBtn').addEventListener('click', function (e) { e.preventDefault(); confirmLogout(); });
       var toggle = document.querySelector('.nav-toggle');
       var navLinks = document.querySelector('.nav-links');
-      if (toggle) toggle.addEventListener('click', function() { navLinks.classList.toggle('nav-open'); });
+      if (toggle) toggle.addEventListener('click', function () { navLinks.classList.toggle('nav-open'); });
     });
   </script>
 </body>
+
 </html>

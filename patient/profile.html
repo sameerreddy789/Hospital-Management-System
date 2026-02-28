@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#127993;</text></svg>">
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#127993;</text></svg>">
   <title>My Profile - TumourCare</title>
   <link rel="stylesheet" href="../css/style.css">
 </head>
+
 <body class="dashboard-body">
   <nav class="navbar">
     <div class="nav-brand">&#127993; TumourCare</div>
@@ -25,28 +28,165 @@
   <div class="container">
     <div class="breadcrumb"><a href="dashboard.html">Dashboard</a> <span>›</span> Profile</div>
     <h1>My Profile</h1>
-    <div class="card">
     <div id="message" class="message" style="display:none;"></div>
+
     <form id="profileForm" novalidate>
-      <div class="form-group">
-        <label for="name">Full Name</label>
-        <input type="text" id="name" autocomplete="name" required>
+
+      <!-- Section 1: Personal Information -->
+      <div class="card profile-section">
+        <h2 class="section-title">Personal Information</h2>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" autocomplete="name" required>
+          </div>
+          <div class="form-group">
+            <label for="email">Email (read-only)</label>
+            <input type="email" id="email" autocomplete="email" readonly>
+          </div>
+          <div class="form-group">
+            <label for="dob">Date of Birth</label>
+            <input type="date" id="dob">
+          </div>
+          <div class="form-group">
+            <label for="age">Age</label>
+            <input type="text" id="age" readonly style="background:#f1f5f9;cursor:default;">
+          </div>
+          <div class="form-group">
+            <label for="gender">Gender</label>
+            <select id="gender">
+              <option value="">-- Select --</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+              <option value="Prefer not to say">Prefer not to say</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="bloodGroup">Blood Group</label>
+            <select id="bloodGroup">
+              <option value="">-- Select --</option>
+              <option value="A+">A+</option>
+              <option value="A-">A-</option>
+              <option value="B+">B+</option>
+              <option value="B-">B-</option>
+              <option value="AB+">AB+</option>
+              <option value="AB-">AB-</option>
+              <option value="O+">O+</option>
+              <option value="O-">O-</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <div class="phone-input-wrap">
+              <span class="phone-prefix">+91</span>
+              <input type="tel" id="phone" autocomplete="tel" maxlength="10" pattern="[0-9]{10}"
+                placeholder="10-digit number"
+                oninput="this.value=this.value.replace(/[^0-9]/g,'');var t=this.parentNode.querySelector('.phone-tick');if(this.value.length===10){t.style.display='inline-flex'}else{t.style.display='none'};var e=this.parentNode.parentNode.querySelector('.field-error');if(e)e.remove()">
+              <span class="phone-tick" style="display:none;">&#10003;</span>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="address">Address</label>
+          <textarea id="address" rows="2" autocomplete="street-address"></textarea>
+        </div>
       </div>
-      <div class="form-group">
-        <label for="email">Email (read-only)</label>
-        <input type="email" id="email" autocomplete="email" readonly>
+
+      <!-- Section 2: Emergency Contact -->
+      <div class="card profile-section">
+        <h2 class="section-title">Emergency Contact</h2>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="emergencyName">Contact Person Name</label>
+            <input type="text" id="emergencyName" placeholder="e.g. John Doe">
+          </div>
+          <div class="form-group">
+            <label for="emergencyRelation">Relationship</label>
+            <select id="emergencyRelation">
+              <option value="">-- Select --</option>
+              <option value="Spouse">Spouse</option>
+              <option value="Parent">Parent</option>
+              <option value="Sibling">Sibling</option>
+              <option value="Child">Child</option>
+              <option value="Friend">Friend</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="emergencyPhone">Phone Number</label>
+            <div class="phone-input-wrap">
+              <span class="phone-prefix">+91</span>
+              <input type="tel" id="emergencyPhone" maxlength="10" pattern="[0-9]{10}" placeholder="10-digit number"
+                oninput="this.value=this.value.replace(/[^0-9]/g,'');var t=this.parentNode.querySelector('.phone-tick');if(this.value.length===10){t.style.display='inline-flex'}else{t.style.display='none'};var e=this.parentNode.parentNode.querySelector('.field-error');if(e)e.remove()">
+              <span class="phone-tick" style="display:none;">&#10003;</span>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="form-group">
-        <label for="phone">Phone</label>
-        <input type="tel" id="phone" autocomplete="tel">
+
+      <!-- Section 3: Medical Summary -->
+      <div class="card profile-section">
+        <h2 class="section-title">Medical Summary</h2>
+
+        <div class="form-group">
+          <label>Known Conditions</label>
+          <div class="checkbox-group">
+            <label class="checkbox-pill"><input type="checkbox" name="conditions"
+                value="Diabetes"><span>Diabetes</span></label>
+            <label class="checkbox-pill"><input type="checkbox" name="conditions"
+                value="Hypertension"><span>Hypertension</span></label>
+            <label class="checkbox-pill"><input type="checkbox" name="conditions"
+                value="Thyroid"><span>Thyroid</span></label>
+            <label class="checkbox-pill"><input type="checkbox" name="conditions" value="Heart Disease"><span>Heart
+                Disease</span></label>
+            <label class="checkbox-pill"><input type="checkbox" name="conditions"
+                value="Asthma"><span>Asthma</span></label>
+            <label class="checkbox-pill"><input type="checkbox" name="conditions" value="None"><span>None</span></label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Allergies</label>
+          <div class="checkbox-group">
+            <label class="checkbox-pill"><input type="checkbox" name="allergies"
+                value="Medicines"><span>Medicines</span></label>
+            <label class="checkbox-pill"><input type="checkbox" name="allergies" value="Food"><span>Food</span></label>
+            <label class="checkbox-pill"><input type="checkbox" name="allergies"
+                value="Latex"><span>Latex</span></label>
+            <label class="checkbox-pill"><input type="checkbox" name="allergies" value="Dust/Pollen"><span>Dust /
+                Pollen</span></label>
+            <label class="checkbox-pill"><input type="checkbox" name="allergies" value="None"><span>None</span></label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="medications">Current Medications</label>
+          <textarea id="medications" rows="3"
+            placeholder="List any medications you are currently taking, including dosage and frequency."></textarea>
+        </div>
       </div>
-      <div class="form-group">
-        <label for="address">Address</label>
-        <textarea id="address" rows="3" autocomplete="street-address"></textarea>
+
+      <!-- Section 4: Treatment Status -->
+      <div class="card profile-section">
+        <h2 class="section-title">Treatment Status</h2>
+        <div class="form-group">
+          <label for="treatmentStatus">Current Status</label>
+          <select id="treatmentStatus">
+            <option value="">-- Select --</option>
+            <option value="Not started">Not started yet</option>
+            <option value="Under treatment">Under treatment</option>
+            <option value="Completed treatment">Completed treatment</option>
+            <option value="Follow-up phase">Follow-up phase</option>
+            <option value="Recurrence monitoring">Recurrence monitoring</option>
+          </select>
+        </div>
       </div>
-      <button type="submit" class="btn btn-primary">Save Changes</button>
+
+      <p style="text-align:center;color:#94a3b8;font-size:0.85rem;margin-bottom:1rem;">Please ensure all your details
+        are correct before saving.</p>
+      <button type="submit" class="btn btn-primary btn-lg btn-block" id="saveBtn">Save Profile</button>
     </form>
-    </div>
   </div>
 
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -59,44 +199,143 @@
   <script src="../js/auth-guard.js"></script>
   <script src="../js/firestore.js"></script>
   <script>
-    requireAuth('patient').then(function(user) {
+    requireAuth('patient').then(function (user) {
       var form = document.getElementById('profileForm');
       var messageEl = document.getElementById('message');
 
-      getUserProfile(user.uid).then(function(profile) {
-        if (profile) {
-          document.getElementById('name').value = profile.name || '';
-          document.getElementById('email').value = profile.email || '';
-          document.getElementById('phone').value = profile.phone || '';
-          document.getElementById('address').value = profile.address || '';
-        }
+      function calculateAge(dob) {
+        if (!dob) return '';
+        var birth = new Date(dob);
+        var today = new Date();
+        var age = today.getFullYear() - birth.getFullYear();
+        var m = today.getMonth() - birth.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+        return age + ' years';
+      }
+
+      document.getElementById('dob').addEventListener('change', function () {
+        document.getElementById('age').value = calculateAge(this.value);
       });
 
-      form.addEventListener('submit', function(e) {
+      // Load existing profile
+      getUserProfile(user.uid).then(function (profile) {
+        if (!profile) return;
+        // Personal Info
+        document.getElementById('name').value = profile.name || '';
+        document.getElementById('email').value = profile.email || '';
+        document.getElementById('dob').value = profile.dob || '';
+        document.getElementById('age').value = calculateAge(profile.dob);
+        document.getElementById('gender').value = profile.gender || '';
+        document.getElementById('bloodGroup').value = profile.bloodGroup || '';
+        document.getElementById('phone').value = profile.phone || '';
+        document.getElementById('address').value = profile.address || '';
+
+        // Emergency Contact
+        document.getElementById('emergencyName').value = profile.emergencyName || '';
+        document.getElementById('emergencyRelation').value = profile.emergencyRelation || '';
+        document.getElementById('emergencyPhone').value = profile.emergencyPhone || '';
+
+        // Medical Summary - checkboxes
+        if (profile.conditions && profile.conditions.length) {
+          profile.conditions.forEach(function (c) {
+            var cb = document.querySelector('input[name="conditions"][value="' + c + '"]');
+            if (cb) cb.checked = true;
+          });
+        }
+        if (profile.allergies && profile.allergies.length) {
+          profile.allergies.forEach(function (a) {
+            var cb = document.querySelector('input[name="allergies"][value="' + a + '"]');
+            if (cb) cb.checked = true;
+          });
+        }
+        document.getElementById('medications').value = profile.medications || '';
+
+        // Treatment Status
+        document.getElementById('treatmentStatus').value = profile.treatmentStatus || '';
+      }).catch(function () {
+        // New user, form stays empty
+      });
+
+      // Save profile
+      form.addEventListener('submit', function (e) {
         e.preventDefault();
         clearFieldErrors(form);
-        var name = document.getElementById('name').value;
-        var result = validateForm([{ value: name, fieldName: 'Name', validators: [validateRequired] }]);
-        if (!result.isValid) {
-          showFieldError(document.getElementById('name'), result.errors['Name']);
+        messageEl.style.display = 'none';
+
+        var name = document.getElementById('name').value.trim();
+        var phone = document.getElementById('phone').value.trim();
+        var emergencyPhone = document.getElementById('emergencyPhone').value.trim();
+        var hasError = false;
+
+        if (!name) {
+          showFieldError(document.getElementById('name'), 'Full name is required.');
+          hasError = true;
+        }
+        if (phone && !/^\d{10}$/.test(phone)) {
+          showFieldError(document.getElementById('phone'), 'Enter a valid 10-digit phone number.');
+          hasError = true;
+        }
+        if (emergencyPhone && !/^\d{10}$/.test(emergencyPhone)) {
+          showFieldError(document.getElementById('emergencyPhone'), 'Enter a valid 10-digit phone number.');
+          hasError = true;
+        }
+        if (hasError) {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
           return;
         }
-        updatePatientProfile(user.uid, {
-          name: name,
-          phone: document.getElementById('phone').value,
-          address: document.getElementById('address').value
-        }).then(function() {
-          showMessage(messageEl, 'Profile updated successfully!', 'success');
-        }).catch(function(err) {
-          showMessage(messageEl, err.message || 'Failed to update profile.', 'error');
+
+        // Collect checkbox values
+        var conditions = [];
+        document.querySelectorAll('input[name="conditions"]:checked').forEach(function (cb) {
+          conditions.push(cb.value);
         });
+        var allergies = [];
+        document.querySelectorAll('input[name="allergies"]:checked').forEach(function (cb) {
+          allergies.push(cb.value);
+        });
+
+        var profileData = {
+          name: name,
+          dob: document.getElementById('dob').value,
+          gender: document.getElementById('gender').value,
+          bloodGroup: document.getElementById('bloodGroup').value,
+          phone: document.getElementById('phone').value,
+          age: calculateAge(document.getElementById('dob').value),
+          address: document.getElementById('address').value,
+          emergencyName: document.getElementById('emergencyName').value,
+          emergencyRelation: document.getElementById('emergencyRelation').value,
+          emergencyPhone: document.getElementById('emergencyPhone').value,
+          conditions: conditions,
+          allergies: allergies,
+          medications: document.getElementById('medications').value,
+          treatmentStatus: document.getElementById('treatmentStatus').value
+        };
+
+        var saveBtn = document.getElementById('saveBtn');
+        saveBtn.classList.add('btn-loading');
+        saveBtn.disabled = true;
+
+        updatePatientProfile(user.uid, profileData)
+          .then(function () {
+            showMessage(messageEl, 'Profile saved successfully!', 'success');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          })
+          .catch(function (err) {
+            showMessage(messageEl, err.message || 'Failed to save profile.', 'error');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          })
+          .finally(function () {
+            saveBtn.classList.remove('btn-loading');
+            saveBtn.disabled = false;
+          });
       });
 
-      document.getElementById('logoutBtn').addEventListener('click', function(e) { e.preventDefault(); logoutUser(); });
+      document.getElementById('logoutBtn').addEventListener('click', function (e) { e.preventDefault(); confirmLogout(); });
       var toggle = document.querySelector('.nav-toggle');
       var navLinks = document.querySelector('.nav-links');
-      if (toggle) toggle.addEventListener('click', function() { navLinks.classList.toggle('nav-open'); });
+      if (toggle) toggle.addEventListener('click', function () { navLinks.classList.toggle('nav-open'); });
     });
   </script>
 </body>
+
 </html>

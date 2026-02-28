@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#127993;</text></svg>">
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#127993;</text></svg>">
   <title>Notifications - TumourCare</title>
   <link rel="stylesheet" href="../css/style.css">
 </head>
+
 <body class="dashboard-body">
   <nav class="navbar">
     <div class="nav-brand">&#127993; TumourCare</div>
@@ -24,7 +27,12 @@
   <div class="container">
     <div class="breadcrumb"><a href="dashboard.html">Dashboard</a> <span>›</span> Notifications</div>
     <h1>Notifications</h1>
-    <div id="notifList" class="list-container"><p class="loading">Loading...</p></div>
+    <div id="notifList" class="list-container">
+      <div class="loading-container">
+        <div class="loading-spinner"></div>
+        <span class="loading-text">Loading notifications...</span>
+      </div>
+    </div>
   </div>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
@@ -35,26 +43,35 @@
   <script src="../js/auth-guard.js"></script>
   <script src="../js/notifications.js"></script>
   <script>
-    requireAuth('patient').then(function(user) {
-      onNotificationsChange(user.uid, function(notifs) {
+    requireAuth('patient').then(function (user) {
+      var emptyHtml = '<div class="empty-state">' +
+        '<div class="empty-state-icon">&#128276;</div>' +
+        '<p style="font-size:1.05rem;color:#1e293b;font-weight:600;margin-bottom:0.25rem;">No Notifications</p>' +
+        '<p>You\'re all caught up! Notifications about your appointments, prescriptions, and updates will appear here.</p>' +
+        '</div>';
+
+      onNotificationsChange(user.uid, function (notifs) {
         var container = document.getElementById('notifList');
-        if (notifs.length === 0) { container.innerHTML = '<p>No notifications.</p>'; return; }
+        if (notifs.length === 0) { container.innerHTML = emptyHtml; return; }
         container.innerHTML = '';
-        notifs.forEach(function(n) {
+        notifs.forEach(function (n) {
           var card = createElement('div', { className: 'card' + (n.read ? '' : ' card-unread') });
           var dateStr = n.createdAt ? new Date(n.createdAt.seconds * 1000).toLocaleString() : '';
           card.innerHTML = '<p>' + escapeHtml(n.message) + '</p><p class="text-muted">' + dateStr + '</p>';
           if (!n.read) {
-            card.addEventListener('click', function() { markAsRead(n.id); card.classList.remove('card-unread'); });
+            card.addEventListener('click', function () { markAsRead(n.id); card.classList.remove('card-unread'); });
           }
           container.appendChild(card);
         });
+      }, function () {
+        document.getElementById('notifList').innerHTML = emptyHtml;
       });
-      document.getElementById('logoutBtn').addEventListener('click', function(e) { e.preventDefault(); logoutUser(); });
+      document.getElementById('logoutBtn').addEventListener('click', function (e) { e.preventDefault(); confirmLogout(); });
       var toggle = document.querySelector('.nav-toggle');
       var navLinks = document.querySelector('.nav-links');
-      if (toggle) toggle.addEventListener('click', function() { navLinks.classList.toggle('nav-open'); });
+      if (toggle) toggle.addEventListener('click', function () { navLinks.classList.toggle('nav-open'); });
     });
   </script>
 </body>
+
 </html>

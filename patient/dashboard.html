@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#127993;</text></svg>">
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#127993;</text></svg>">
   <title>Patient Dashboard - TumourCare</title>
   <link rel="stylesheet" href="../css/style.css">
 </head>
+
 <body class="dashboard-body">
   <nav class="navbar">
     <div class="nav-brand">&#127993; TumourCare</div>
@@ -43,8 +46,10 @@
         <h2>Recent Appointments</h2>
       </div>
       <div id="appointmentList" class="list-container">
-        <div class="skeleton skeleton-card"></div>
-        <div class="skeleton skeleton-card"></div>
+        <div class="loading-container">
+          <div class="loading-spinner"></div>
+          <span class="loading-text">Loading appointments...</span>
+        </div>
       </div>
     </div>
   </div>
@@ -58,7 +63,7 @@
   <script src="../js/auth-guard.js"></script>
   <script src="../js/firestore.js"></script>
   <script>
-    requireAuth('patient').then(function(user) {
+    requireAuth('patient').then(function (user) {
       document.getElementById('userName').textContent = user.name;
       // Time-of-day greeting
       var hour = new Date().getHours();
@@ -69,20 +74,25 @@
       document.querySelector('.container > h1').after(greetEl);
 
       // Real-time stats
-      onStatsChange('patient', user.uid, function(stats) {
+      onStatsChange('patient', user.uid, function (stats) {
         if (stats.upcomingCount !== undefined) document.getElementById('upcomingCount').textContent = stats.upcomingCount;
         if (stats.prescriptionCount !== undefined) document.getElementById('prescriptionCount').textContent = stats.prescriptionCount;
       });
 
       // Load recent appointments
-      getAppointmentsByPatient(user.uid).then(function(appointments) {
+      getAppointmentsByPatient(user.uid).then(function (appointments) {
         var container = document.getElementById('appointmentList');
         if (appointments.length === 0) {
-          container.innerHTML = '<p>No appointments yet.</p>';
+          container.innerHTML = '<div class="empty-state">' +
+            '<div class="empty-state-icon">&#128197;</div>' +
+            '<p style="font-size:1.05rem;color:#1e293b;font-weight:600;margin-bottom:0.25rem;">No Appointments Yet</p>' +
+            '<p>Once you submit a health concern, our team will review it and schedule an appointment with a specialist.</p>' +
+            '<a href="submit-problem.html" class="btn btn-primary" style="margin-top:1rem;">Submit a Health Problem</a>' +
+            '</div>';
           return;
         }
         container.innerHTML = '';
-        appointments.slice(0, 5).forEach(function(apt) {
+        appointments.slice(0, 5).forEach(function (apt) {
           var card = createElement('div', { className: 'card' });
           card.innerHTML = '<h3>' + escapeHtml(apt.problemTitle || 'Appointment') + '</h3>' +
             '<p>Doctor: ' + escapeHtml(apt.doctorName) + '</p>' +
@@ -90,18 +100,27 @@
             '<p>Status: <span class="status status-' + apt.status + '">' + apt.status + '</span></p>';
           container.appendChild(card);
         });
+      }).catch(function () {
+        var container = document.getElementById('appointmentList');
+        container.innerHTML = '<div class="empty-state">' +
+          '<div class="empty-state-icon">&#128197;</div>' +
+          '<p style="font-size:1.05rem;color:#1e293b;font-weight:600;margin-bottom:0.25rem;">No Appointments Yet</p>' +
+          '<p>Once you submit a health concern, our team will review it and schedule an appointment with a specialist.</p>' +
+          '<a href="submit-problem.html" class="btn btn-primary" style="margin-top:1rem;">Submit a Health Problem</a>' +
+          '</div>';
       });
 
-      document.getElementById('logoutBtn').addEventListener('click', function(e) {
+      document.getElementById('logoutBtn').addEventListener('click', function (e) {
         e.preventDefault();
-        logoutUser();
+        confirmLogout();
       });
 
       // Nav toggle
       var toggle = document.querySelector('.nav-toggle');
       var navLinks = document.querySelector('.nav-links');
-      if (toggle) toggle.addEventListener('click', function() { navLinks.classList.toggle('nav-open'); });
+      if (toggle) toggle.addEventListener('click', function () { navLinks.classList.toggle('nav-open'); });
     });
   </script>
 </body>
+
 </html>

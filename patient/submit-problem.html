@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#127993;</text></svg>">
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#127993;</text></svg>">
   <title>Submit Problem - TumourCare</title>
   <link rel="stylesheet" href="../css/style.css">
 </head>
+
 <body class="dashboard-body">
   <nav class="navbar">
     <div class="nav-brand">&#127993; TumourCare</div>
@@ -23,21 +26,88 @@
   </nav>
 
   <div class="container">
-    <div class="breadcrumb"><a href="dashboard.html">Dashboard</a> <span>›</span> Submit Problem</div>
-    <h1>Submit a Health Problem</h1>
+    <div class="breadcrumb"><a href="dashboard.html">Dashboard</a> <span>›</span> Submit Medical Concern</div>
+    <h1>Submit a Medical Concern</h1>
     <div class="card">
-    <div id="message" class="message" style="display:none;"></div>
-    <form id="problemForm" novalidate>
-      <div class="form-group">
-        <label for="title">Problem Title</label>
-        <input type="text" id="title" name="title" placeholder="Brief description of your problem" required>
-      </div>
-      <div class="form-group">
-        <label for="description">Detailed Description</label>
-        <textarea id="description" name="description" rows="6" placeholder="Describe your symptoms, duration, etc." required></textarea>
-      </div>
-      <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
+      <div id="message" class="message" style="display:none;"></div>
+      <form id="problemForm" novalidate>
+
+        <div class="form-group">
+          <label for="primaryConcern">Primary Concern</label>
+          <select id="primaryConcern" name="primaryConcern" required>
+            <option value="">-- Select your concern --</option>
+            <option value="New lump/swelling">New lump or swelling</option>
+            <option value="Pain in specific area">Pain in a specific area</option>
+            <option value="Follow-up consultation">Follow-up consultation</option>
+            <option value="Report review">Report review</option>
+            <option value="Treatment side effects">Treatment side effects</option>
+            <option value="Post-surgery concern">Post-surgery concern</option>
+            <option value="Second opinion">Second opinion</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="bodyArea">Affected Body Area</label>
+          <select id="bodyArea" name="bodyArea" required>
+            <option value="">-- Select affected area --</option>
+            <option value="Breast">Breast</option>
+            <option value="Brain">Brain</option>
+            <option value="Lung">Lung</option>
+            <option value="Oral">Oral</option>
+            <option value="Neck">Neck</option>
+            <option value="Abdomen">Abdomen</option>
+            <option value="Bone">Bone</option>
+            <option value="Skin">Skin</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="description">Describe Your Symptoms</label>
+          <textarea id="description" name="description" rows="5"
+            placeholder="Describe your symptoms in detail — include pain level changes, when they started, anything you've noticed, or concerns you'd like addressed."
+            required></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Pain Level</label>
+          <div class="radio-group" id="painLevel">
+            <label class="radio-option"><input type="radio" name="painLevel" value="None" checked><span
+                class="radio-label">None</span></label>
+            <label class="radio-option"><input type="radio" name="painLevel" value="Mild"><span
+                class="radio-label">Mild</span></label>
+            <label class="radio-option"><input type="radio" name="painLevel" value="Moderate"><span
+                class="radio-label">Moderate</span></label>
+            <label class="radio-option"><input type="radio" name="painLevel" value="Severe"><span
+                class="radio-label">Severe</span></label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>How Urgent Is This?</label>
+          <div class="radio-group" id="urgency">
+            <label class="radio-option"><input type="radio" name="urgency" value="Routine" checked><span
+                class="radio-label">Routine</span></label>
+            <label class="radio-option"><input type="radio" name="urgency" value="Soon"><span class="radio-label">Soon
+                (within a few days)</span></label>
+            <label class="radio-option"><input type="radio" name="urgency" value="Urgent"><span
+                class="radio-label">Urgent (within 24 hrs)</span></label>
+            <label class="radio-option"><input type="radio" name="urgency" value="Emergency"><span
+                class="radio-label">Emergency (severe pain / bleeding)</span></label>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-top:1.25rem;">
+          <label class="checkbox-option">
+            <input type="checkbox" id="consent" required>
+            <span>I confirm the information provided is accurate and I consent to share my medical details with the
+              hospital specialists for review.</span>
+          </label>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-lg btn-block" id="submitBtn">Submit Medical Concern</button>
+      </form>
     </div>
   </div>
 
@@ -52,52 +122,98 @@
   <script src="../js/firestore.js"></script>
   <script src="../js/notifications.js"></script>
   <script>
-    requireAuth('patient').then(function(user) {
+    requireAuth('patient').then(function (user) {
       var form = document.getElementById('problemForm');
       var messageEl = document.getElementById('message');
 
-      form.addEventListener('submit', function(e) {
+      form.addEventListener('submit', function (e) {
         e.preventDefault();
         clearFieldErrors(form);
         messageEl.style.display = 'none';
 
-        var title = document.getElementById('title').value;
+        var primaryConcern = document.getElementById('primaryConcern').value;
+        var bodyArea = document.getElementById('bodyArea').value;
         var description = document.getElementById('description').value;
+        var painLevel = document.querySelector('input[name="painLevel"]:checked').value;
+        var urgency = document.querySelector('input[name="urgency"]:checked').value;
+        var consent = document.getElementById('consent').checked;
 
-        var result = validateForm([
-          { value: title, fieldName: 'Title', validators: [validateRequired] },
-          { value: description, fieldName: 'Description', validators: [validateRequired] }
-        ]);
-
-        if (!result.isValid) {
-          for (var field in result.errors) {
-            var input = document.getElementById(field.toLowerCase());
-            if (input) showFieldError(input, result.errors[field]);
-          }
+        // Validation
+        var hasError = false;
+        if (!primaryConcern) {
+          showFieldError(document.getElementById('primaryConcern'), 'Please select your primary concern.');
+          hasError = true;
+        }
+        if (!bodyArea) {
+          showFieldError(document.getElementById('bodyArea'), 'Please select the affected body area.');
+          hasError = true;
+        }
+        if (!description.trim()) {
+          showFieldError(document.getElementById('description'), 'Please describe your symptoms.');
+          hasError = true;
+        }
+        if (!consent) {
+          showMessage(messageEl, 'Please confirm your consent before submitting.', 'error');
+          hasError = true;
+        }
+        if (hasError) {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
           return;
         }
 
-        createProblemSubmission(user.uid, title, description)
-          .then(function() {
-            // Notify all admins
-            db.collection('users').where('role', '==', 'admin').get().then(function(snap) {
-              snap.forEach(function(doc) {
-                createNotification(doc.id, 'New problem submission: ' + title, 'request');
+        // Auto-generate title for backward compatibility
+        var title = primaryConcern + ' — ' + bodyArea;
+
+        var submitBtn = document.getElementById('submitBtn');
+        submitBtn.classList.add('btn-loading');
+        submitBtn.disabled = true;
+
+        createProblemSubmission(user.uid, title, description, 'initial', null, {
+          primaryConcern: primaryConcern,
+          bodyArea: bodyArea,
+          painLevel: painLevel,
+          urgency: urgency
+        })
+          .then(function () {
+            db.collection('users').where('role', '==', 'admin').get().then(function (snap) {
+              snap.forEach(function (doc) {
+                createNotification(doc.id, 'New medical concern: ' + title + ' [' + urgency + ']', 'request');
               });
             });
-            showMessage(messageEl, 'Problem submitted successfully! The admin will review it shortly.', 'success');
             form.reset();
+
+            // Show success popup
+            var successModal = document.getElementById('successModal');
+            if (!successModal) {
+              successModal = document.createElement('div');
+              successModal.id = 'successModal';
+              successModal.className = 'modal';
+              successModal.innerHTML =
+                '<div class="modal-content" style="text-align:center;max-width:440px;">' +
+                '<div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#10b981,#059669);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;"><span style="color:#fff;font-size:1.75rem;font-weight:700;">&#10003;</span></div>' +
+                '<h2 style="margin-bottom:0.5rem;color:#1e293b;">Concern Submitted</h2>' +
+                '<p style="color:#64748b;margin-bottom:1.5rem;line-height:1.6;">Your medical concern has been submitted successfully. Our oncology team will review it and schedule an appointment with the right specialist.</p>' +
+                '<a href="dashboard.html" class="btn btn-primary">Back to Dashboard</a>' +
+                '</div>';
+              document.body.appendChild(successModal);
+            }
+            successModal.style.display = 'flex';
           })
-          .catch(function(err) {
+          .catch(function (err) {
             showMessage(messageEl, err.message || 'Failed to submit. Please try again.', 'error');
+          })
+          .finally(function () {
+            submitBtn.classList.remove('btn-loading');
+            submitBtn.disabled = false;
           });
       });
 
-      document.getElementById('logoutBtn').addEventListener('click', function(e) { e.preventDefault(); logoutUser(); });
+      document.getElementById('logoutBtn').addEventListener('click', function (e) { e.preventDefault(); confirmLogout(); });
       var toggle = document.querySelector('.nav-toggle');
       var navLinks = document.querySelector('.nav-links');
-      if (toggle) toggle.addEventListener('click', function() { navLinks.classList.toggle('nav-open'); });
+      if (toggle) toggle.addEventListener('click', function () { navLinks.classList.toggle('nav-open'); });
     });
   </script>
 </body>
+
 </html>

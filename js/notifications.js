@@ -23,18 +23,21 @@ function createNotification(userId, message, type) {
  * Listens for notification changes for a user.
  * @param {string} userId - User ID
  * @param {Function} callback - Called with array of notifications
+ * @param {Function} [onError] - Called on error
  * @returns {Function} Unsubscribe function
  */
-function onNotificationsChange(userId, callback) {
+function onNotificationsChange(userId, callback, onError) {
   return db.collection('notifications')
     .where('userId', '==', userId)
     .orderBy('createdAt', 'desc')
-    .onSnapshot(function(snapshot) {
+    .onSnapshot(function (snapshot) {
       var results = [];
-      snapshot.forEach(function(doc) {
+      snapshot.forEach(function (doc) {
         results.push(Object.assign({ id: doc.id }, doc.data()));
       });
       callback(results);
+    }, function (err) {
+      if (onError) onError(err);
     });
 }
 
@@ -57,7 +60,7 @@ function getUnreadCount(userId) {
     .where('userId', '==', userId)
     .where('read', '==', false)
     .get()
-    .then(function(snapshot) {
+    .then(function (snapshot) {
       return snapshot.size;
     });
 }
@@ -73,7 +76,7 @@ function setupNotificationBadge(userId) {
   db.collection('notifications')
     .where('userId', '==', userId)
     .where('read', '==', false)
-    .onSnapshot(function(snapshot) {
+    .onSnapshot(function (snapshot) {
       var count = snapshot.size;
       if (count > 0) {
         badge.textContent = count;
