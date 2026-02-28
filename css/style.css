@@ -1471,3 +1471,154 @@ body {
     align-items: flex-start;
   }
 }
+
+/* ============================================================
+   Role Selection Cards - Login/Register
+   ============================================================ */
+.auth-container-wide {
+  max-width: 580px;
+}
+.role-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin: 1.5rem 0;
+}
+.role-card {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius);
+  padding: 1.25rem 0.75rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  font-family: inherit;
+  color: inherit;
+}
+.role-card:hover:not(:disabled) {
+  border-color: var(--primary);
+  background: rgba(59, 130, 246, 0.08);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.15);
+}
+.role-card:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+.auth-page .role-card h3 {
+  color: #e2e8f0;
+  font-size: 0.95rem;
+  margin-bottom: 0.3rem;
+}
+.auth-page .role-card p {
+  color: #64748b;
+  font-size: 0.78rem;
+  margin: 0;
+  line-height: 1.4;
+}
+.role-card-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+.role-icon-blue {
+  background: rgba(59, 130, 246, 0.15);
+}
+.role-icon-green {
+  background: rgba(16, 185, 129, 0.15);
+}
+.role-icon-purple {
+  background: rgba(139, 92, 246, 0.15);
+}
+
+/* Disabled role card (doctor/admin on register) */
+.role-card-disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.role-card-disabled:hover {
+  transform: none;
+  border-color: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: none;
+}
+.role-card-badge {
+  display: inline-block;
+  margin-top: 0.5rem;
+  padding: 0.15rem 0.5rem;
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border-radius: 10px;
+  font-size: 0.68rem;
+  font-weight: 600;
+}
+
+/* Back link in auth pages */
+.back-link {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  font-size: 0.88rem;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 1rem;
+  display: inline-block;
+  font-family: inherit;
+  transition: color 0.2s;
+}
+.back-link:hover {
+  color: var(--primary-light);
+}
+
+@media (max-width: 520px) {
+  .role-cards {
+    grid-template-columns: 1fr;
+    gap: 0.6rem;
+  }
+  .role-card {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-align: left;
+    padding: 0.85rem 1rem;
+  }
+  .role-card-icon {
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+  .auth-container-wide {
+    max-width: 440px;
+  }
+}
+
+/* ============================================================
+   Info message style (for approval notices)
+   ============================================================ */
+.message-info {
+  background: rgba(59, 130, 246, 0.1);
+  color: #3b82f6;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+.auth-page .message-info {
+  background: rgba(59, 130, 246, 0.15);
+  color: #93c5fd;
+  border-color: rgba(59, 130, 246, 0.25);
+}
+
+/* Approval badge variant */
+.role-card-badge-info {
+  display: inline-block;
+  margin-top: 0.5rem;
+  padding: 0.15rem 0.5rem;
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+  border-radius: 10px;
+  font-size: 0.68rem;
+  font-weight: 600;
+}

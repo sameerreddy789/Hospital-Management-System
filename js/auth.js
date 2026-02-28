@@ -38,24 +38,45 @@ function authError(err) {
 }
 
 /**
- * Registers a new patient account.
- * Creates Firebase Auth user and writes Firestore user doc with role "patient".
+ * Registers a new patient account (backward-compatible wrapper).
+ */
+function registerPatient(name, email, password) {
+  return registerUser(name, email, password, 'patient');
+}
+
+/**
+ * Registers a new user account with role-based approval.
+ * Patients are auto-approved. Doctors/Admins get status "pending".
  * @param {string} name - Full name
  * @param {string} email - Email address
  * @param {string} password - Password (min 6 chars)
+ * @param {string} role - 'patient', 'doctor', or 'admin'
+ * @param {string} [specialization] - Doctor specialization (optional)
  * @returns {Promise<void>}
  */
-function registerPatient(name, email, password) {
+function registerUser(name, email, password, role, specialization) {
+  var status = (role === 'patient') ? 'active' : 'pending';
   return auth.createUserWithEmailAndPassword(email, password)
     .then(function(cred) {
-      return db.collection('users').doc(cred.user.uid).set({
+      var userData = {
         uid: cred.user.uid,
         name: name,
         email: email,
-        role: 'patient',
+        role: role,
+        status: status,
         phone: '',
         address: '',
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      };
+      if (role === 'doctor' && specialization) {
+        userData.specialization = specialization;
+      }
+      return db.collection('users').doc(cred.user.uid).set(userData).then(function() {
+        if (status === 'pending') {
+          return notifyAdminsOfPendingUser(name, role, cred.user.uid).then(function() {
+            return auth.signOut();
+          });
+        }
       });
     })
     .catch(function(err) {
@@ -65,6 +86,99 @@ function registerPatient(name, email, password) {
         throw new Error('Connection error. Please disable any ad blockers and check your internet connection.');
       }
       throw new Error('Registration failed. Please try again.');
+    });
+}
+
+/**
+ * Notifies all admin users about a pending registration.
+ */
+function notifyAdminsOfPendingUser(name, role, uid) {
+  return db.collection('users').where('role', '==', 'admin').get()
+    .then(function(snap) {
+      var promises = [];
+      snap.forEach(function(doc) {
+        promises.push(db.collection('notifications').add({
+          userId: doc.id,
+          message: 'New ' + role + ' registration request from ' + name + '. Please review and approve.',
+          type: 'approval_request',
+          read: false,
+          relatedUserId: uid,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        }));
+      });
+      return Promise.all(promises);
+    })
+    .catch(function() {
+      // Silently fail notification — registration still succeeds
+    });
+}
+/**
+ * Registers a new user account with role-based approval.
+ * Patients are auto-approved. Doctors/Admins get status "pending".
+ * @param {string} name - Full name
+ * @param {string} email - Email address
+ * @param {string} password - Password (min 6 chars)
+ * @param {string} role - 'patient', 'doctor', or 'admin'
+ * @param {string} [specialization] - Doctor specialization (optional)
+ * @returns {Promise<void>}
+ */
+function registerUser(name, email, password, role, specialization) {
+  var status = (role === 'patient') ? 'active' : 'pending';
+  return auth.createUserWithEmailAndPassword(email, password)
+    .then(function(cred) {
+      var userData = {
+        uid: cred.user.uid,
+        name: name,
+        email: email,
+        role: role,
+        status: status,
+        phone: '',
+        address: '',
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      };
+      if (role === 'doctor' && specialization) {
+        userData.specialization = specialization;
+      }
+      return db.collection('users').doc(cred.user.uid).set(userData).then(function() {
+        // If pending, notify all admins and sign out immediately
+        if (status === 'pending') {
+          return notifyAdminsOfPendingUser(name, role, cred.user.uid).then(function() {
+            return auth.signOut();
+          });
+        }
+      });
+    })
+    .catch(function(err) {
+      if (err.code && err.code.indexOf('auth/') === 0) throw authError(err);
+      var msg = (err.message || '').toLowerCase();
+      if (msg.indexOf('network') !== -1 || msg.indexOf('blocked') !== -1 || msg.indexOf('failed to fetch') !== -1 || msg.indexOf('firestore') !== -1) {
+        throw new Error('Connection error. Please disable any ad blockers and check your internet connection.');
+      }
+      throw new Error('Registration failed. Please try again.');
+    });
+}
+
+/**
+ * Notifies all admin users about a pending registration.
+ */
+function notifyAdminsOfPendingUser(name, role, uid) {
+  return db.collection('users').where('role', '==', 'admin').where('status', '==', 'active').get()
+    .then(function(snap) {
+      var promises = [];
+      snap.forEach(function(doc) {
+        promises.push(db.collection('notifications').add({
+          userId: doc.id,
+          message: 'New ' + role + ' registration request from ' + name + '. Please review and approve.',
+          type: 'approval_request',
+          read: false,
+          relatedUserId: uid,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        }));
+      });
+      return Promise.all(promises);
+    })
+    .catch(function() {
+      // Silently fail notification — registration still succeeds
     });
 }
 
@@ -90,6 +204,7 @@ function loginUser(email, password) {
           name: currentCred.user.displayName || email.split('@')[0],
           email: email,
           role: 'patient',
+          status: 'active',
           phone: '',
           address: '',
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -98,10 +213,20 @@ function loginUser(email, password) {
         });
       }
       var data = doc.data();
+      // Block pending accounts
+      if (data.status === 'pending') {
+        return auth.signOut().then(function() {
+          throw new Error('Your account is pending admin approval. You will be notified once approved.');
+        });
+      }
+      if (data.status === 'rejected') {
+        return auth.signOut().then(function() {
+          throw new Error('Your registration request was not approved. Please contact the administrator.');
+        });
+      }
       return { uid: data.uid, role: data.role };
     })
     .catch(function(err) {
-      console.error('Login error:', err.code, err.message, err);
       if (err.code && err.code.indexOf('auth/') === 0) throw authError(err);
       var msg = (err.message || '').toLowerCase();
       if (msg.indexOf('network') !== -1 || msg.indexOf('failed to fetch') !== -1 || msg.indexOf('blocked') !== -1 || msg.indexOf('firestore') !== -1) {
@@ -167,6 +292,7 @@ function getCurrentUser() {
 
 // Export to window for cross-file access
 window.registerPatient = registerPatient;
+window.registerUser = registerUser;
 window.loginUser = loginUser;
 window.logoutUser = logoutUser;
 window.sendPasswordReset = sendPasswordReset;

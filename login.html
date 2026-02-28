@@ -8,28 +8,59 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="auth-page">
-  <div class="auth-container">
+  <div class="auth-container auth-container-wide">
     <div class="auth-brand">&#127993; TumourCare</div>
-    <h1>Welcome Back</h1>
-    <p>Sign in to access your dashboard</p>
-    <div id="message" class="message" style="display:none;"></div>
-    <form id="loginForm" novalidate>
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email" required>
+
+    <!-- Step 1: Role Selection -->
+    <div id="roleSelection">
+      <h1>Welcome Back</h1>
+      <p>Select your role to sign in</p>
+      <div class="role-cards">
+        <button class="role-card" data-role="patient" type="button">
+          <div class="role-card-icon role-icon-blue">&#128100;</div>
+          <h3>Patient</h3>
+          <p>View appointments, prescriptions &amp; reports</p>
+        </button>
+        <button class="role-card" data-role="doctor" type="button">
+          <div class="role-card-icon role-icon-green">&#129657;</div>
+          <h3>Doctor</h3>
+          <p>Manage patients, prescribe &amp; review history</p>
+        </button>
+        <button class="role-card" data-role="admin" type="button">
+          <div class="role-card-icon role-icon-purple">&#128736;</div>
+          <h3>Admin</h3>
+          <p>Assign doctors, manage system &amp; reports</p>
+        </button>
       </div>
-      <div class="form-group">
-        <label for="password">Password</label>
-        <div class="password-wrapper">
-          <input type="password" id="password" name="password" placeholder="Enter your password" autocomplete="current-password" required>
-          <button type="button" class="password-toggle" aria-label="Toggle password visibility">&#128065;</button>
+      <div class="auth-links">
+        <a href="register.html">&#128101; New patient? Register here</a>
+      </div>
+    </div>
+
+    <!-- Step 2: Login Form (hidden initially) -->
+    <div id="loginStep" style="display:none;">
+      <button type="button" class="back-link" id="backToRoles">&larr; Back to role selection</button>
+      <h1>Sign In as <span id="roleLabel" class="gradient-text"></span></h1>
+      <p id="roleSubtext"></p>
+      <div id="message" class="message" style="display:none;"></div>
+      <form id="loginForm" novalidate>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email" required>
         </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <div class="password-wrapper">
+            <input type="password" id="password" name="password" placeholder="Enter your password" autocomplete="current-password" required>
+            <button type="button" class="password-toggle" aria-label="Toggle password visibility">&#128065;</button>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary" id="submitBtn">Sign In</button>
+      </form>
+      <div class="auth-links">
+        <a href="reset-password.html">Forgot Password?</a>
+        <a href="register.html">Don't have an account? Register</a>
       </div>
-      <button type="submit" class="btn btn-primary" id="submitBtn">Sign In</button>
-    </form>
-    <div class="auth-links">
-      <a href="reset-password.html">Forgot Password?</a>
-      <a href="register.html">Don't have an account? Register</a>
     </div>
   </div>
 
@@ -40,10 +71,42 @@
   <script src="js/validation.js"></script>
   <script src="js/auth.js"></script>
   <script>
+    var selectedRole = null;
+    var roleSelection = document.getElementById('roleSelection');
+    var loginStep = document.getElementById('loginStep');
+    var roleLabel = document.getElementById('roleLabel');
+    var roleSubtext = document.getElementById('roleSubtext');
     var form = document.getElementById('loginForm');
     var messageEl = document.getElementById('message');
     var submitBtn = document.getElementById('submitBtn');
 
+    var roleInfo = {
+      patient: { label: 'Patient', sub: 'Access your appointments and prescriptions' },
+      doctor: { label: 'Doctor', sub: 'View assigned patients and prescribe treatments' },
+      admin: { label: 'Admin', sub: 'Manage assignments, doctors and system reports' }
+    };
+
+    // Role card click
+    document.querySelectorAll('.role-card').forEach(function(card) {
+      card.addEventListener('click', function() {
+        selectedRole = this.getAttribute('data-role');
+        roleLabel.textContent = roleInfo[selectedRole].label;
+        roleSubtext.textContent = roleInfo[selectedRole].sub;
+        roleSelection.style.display = 'none';
+        loginStep.style.display = 'block';
+        document.getElementById('email').focus();
+      });
+    });
+
+    // Back button
+    document.getElementById('backToRoles').addEventListener('click', function() {
+      loginStep.style.display = 'none';
+      roleSelection.style.display = 'block';
+      messageEl.style.display = 'none';
+      selectedRole = null;
+    });
+
+    // Password toggle
     document.querySelectorAll('.password-toggle').forEach(function(btn) {
       btn.addEventListener('click', function() {
         var input = this.previousElementSibling;
@@ -53,6 +116,7 @@
       });
     });
 
+    // Login submit
     form.addEventListener('submit', function(e) {
       e.preventDefault();
       clearFieldErrors(form);
@@ -77,6 +141,15 @@
       submitBtn.classList.add('btn-loading');
       loginUser(email, password)
         .then(function(user) {
+          // Verify role matches selection
+          if (user.role !== selectedRole) {
+            submitBtn.classList.remove('btn-loading');
+            messageEl.textContent = 'This account is registered as ' + roleInfo[user.role].label + '. Please go back and select the correct role.';
+            messageEl.className = 'message message-error';
+            messageEl.style.display = 'block';
+            auth.signOut();
+            return;
+          }
           var dashboards = {
             patient: '/patient/dashboard.html',
             doctor: '/doctor/dashboard.html',

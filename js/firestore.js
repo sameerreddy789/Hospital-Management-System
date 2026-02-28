@@ -424,6 +424,80 @@ function onStatsChange(role, userId, callback) {
   };
 }
 
+// ============================================================
+// User Approval (Admin)
+// ============================================================
+
+/**
+ * Gets all users with pending approval status.
+ * @returns {Promise<Array>}
+ */
+function getPendingUsers() {
+  return db.collection('users')
+    .where('status', '==', 'pending')
+    .orderBy('createdAt', 'desc')
+    .get()
+    .then(function(snapshot) {
+      var results = [];
+      snapshot.forEach(function(doc) {
+        results.push(Object.assign({ id: doc.id }, doc.data()));
+      });
+      return results;
+    });
+}
+
+/**
+ * Approves a pending user account.
+ * @param {string} uid - User UID
+ * @returns {Promise<void>}
+ */
+function approveUser(uid) {
+  return db.collection('users').doc(uid).update({ status: 'active' }).then(function() {
+    return db.collection('notifications').add({
+      userId: uid,
+      message: 'Your account has been approved! You can now sign in.',
+      type: 'approval_result',
+      read: false,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+  });
+}
+
+/**
+ * Rejects a pending user account.
+ * @param {string} uid - User UID
+ * @returns {Promise<void>}
+ */
+function rejectUser(uid) {
+  return db.collection('users').doc(uid).update({ status: 'rejected' }).then(function() {
+    return db.collection('notifications').add({
+      userId: uid,
+      message: 'Your registration request was not approved. Please contact the administrator for details.',
+      type: 'approval_result',
+      read: false,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+  });
+}
+
+/**
+ * Listens for pending user registrations (admin).
+ * @param {Function} callback - Called with array of pending users
+ * @returns {Function} Unsubscribe function
+ */
+function onPendingUsersChange(callback) {
+  return db.collection('users')
+    .where('status', '==', 'pending')
+    .orderBy('createdAt', 'desc')
+    .onSnapshot(function(snapshot) {
+      var results = [];
+      snapshot.forEach(function(doc) {
+        results.push(Object.assign({ id: doc.id }, doc.data()));
+      });
+      callback(results);
+    });
+}
+
 // Export to window for cross-file access
 window.createProblemSubmission = createProblemSubmission;
 window.getPendingSubmissions = getPendingSubmissions;
@@ -445,3 +519,7 @@ window.getPatientHistory = getPatientHistory;
 window.onSubmissionsChange = onSubmissionsChange;
 window.onAppointmentsChange = onAppointmentsChange;
 window.onStatsChange = onStatsChange;
+window.getPendingUsers = getPendingUsers;
+window.approveUser = approveUser;
+window.rejectUser = rejectUser;
+window.onPendingUsersChange = onPendingUsersChange;

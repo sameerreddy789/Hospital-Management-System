@@ -46,6 +46,16 @@
       </div>
     </div>
 
+    <!-- Pending Approvals -->
+    <div class="dashboard-section">
+      <div class="section-header">
+        <h2>&#128274; Pending Approvals</h2>
+      </div>
+      <div id="pendingApprovalsList" class="list-container">
+        <div class="skeleton skeleton-card"></div>
+      </div>
+    </div>
+
     <!-- Patients to Assign -->
     <div class="dashboard-section">
       <div class="section-header">
@@ -100,6 +110,7 @@
       var container = document.getElementById('submissionList');
       var doctorsContainer = document.getElementById('doctorsList');
       var assignedContainer = document.getElementById('assignedList');
+      var approvalsContainer = document.getElementById('pendingApprovalsList');
       var allSubmissions = [];
 
       // Priority badge helper
@@ -178,6 +189,50 @@
         });
       }
 
+      // Render pending approvals
+      function renderApprovals(users) {
+        if (users.length === 0) { approvalsContainer.innerHTML = '<p class="empty-text">No pending approvals.</p>'; return; }
+        approvalsContainer.innerHTML = '';
+        users.forEach(function(u) {
+          var card = createElement('div', { className: 'card list-row' });
+          var initials = (u.name || '?').split(' ').map(function(w) { return w[0]; }).join('').toUpperCase().slice(0, 2);
+          var roleBadge = u.role === 'doctor'
+            ? '<span class="badge badge-info">Doctor</span>'
+            : '<span class="badge badge-info" style="background:linear-gradient(135deg,#8b5cf6,#a78bfa);">Admin</span>';
+          var spec = (u.role === 'doctor' && u.specialization) ? ' <span class="text-muted">' + escapeHtml(u.specialization) + '</span>' : '';
+          var dateStr = u.createdAt ? new Date(u.createdAt.seconds * 1000).toLocaleDateString() : '';
+          card.innerHTML = '<div class="list-row-info">' +
+              '<div class="list-row-avatar" style="background:linear-gradient(135deg,#f59e0b,#d97706);">' + initials + '</div>' +
+              '<div><strong>' + escapeHtml(u.name) + '</strong> ' + roleBadge + spec +
+              '<br><span class="text-muted">' + escapeHtml(u.email) + ' &middot; ' + dateStr + '</span></div>' +
+            '</div>' +
+            '<div class="list-row-actions" style="display:flex;gap:0.4rem;">' +
+              '<button class="btn btn-success btn-sm approve-btn" data-uid="' + u.id + '">&#10003; Approve</button>' +
+              '<button class="btn btn-danger btn-sm reject-btn" data-uid="' + u.id + '">&#10007; Reject</button>' +
+            '</div>';
+          card.querySelector('.approve-btn').addEventListener('click', function() {
+            var uid = this.getAttribute('data-uid');
+            this.classList.add('btn-loading');
+            approveUser(uid).then(function() {
+              showToast('User approved successfully!', 'success');
+            }).catch(function() {
+              showToast('Failed to approve user.', 'error');
+            });
+          });
+          card.querySelector('.reject-btn').addEventListener('click', function() {
+            var uid = this.getAttribute('data-uid');
+            if (!confirm('Are you sure you want to reject this registration?')) return;
+            this.classList.add('btn-loading');
+            rejectUser(uid).then(function() {
+              showToast('Registration rejected.', 'info');
+            }).catch(function() {
+              showToast('Failed to reject user.', 'error');
+            });
+          });
+          approvalsContainer.appendChild(card);
+        });
+      }
+
       // Real-time stats
       onStatsChange('admin', user.uid, function(stats) {
         if (stats.pendingCount !== undefined) document.getElementById('pendingCount').textContent = stats.pendingCount;
@@ -219,6 +274,11 @@
         allSubmissions = submissions;
         var searchText = document.getElementById('searchInput').value;
         renderSubmissions(filterByText(submissions, searchText, 'patientName'));
+      });
+
+      // Real-time pending approvals
+      onPendingUsersChange(function(users) {
+        renderApprovals(users);
       });
 
       // Wire search

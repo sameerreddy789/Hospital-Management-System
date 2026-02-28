@@ -8,12 +8,14 @@ service cloud.firestore {
         : 'unknown';
     }
 
-    // Users: read own profile + admin/doctor can read others, patients update own profile only
+    // Users: read own profile + admin/doctor can read others
+    // Create own profile, update own profile, admin can update any user (for approvals)
     match /users/{uid} {
       allow read: if request.auth != null &&
         (request.auth.uid == uid || getUserRole() == "admin" || getUserRole() == "doctor");
       allow create: if request.auth != null && request.auth.uid == uid;
-      allow update: if request.auth != null && request.auth.uid == uid;
+      allow update: if request.auth != null &&
+        (request.auth.uid == uid || getUserRole() == "admin");
     }
 
     // Problem Submissions: patients create own, admin reads all, admin updates status

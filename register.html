@@ -8,38 +8,78 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="auth-page">
-  <div class="auth-container">
+  <div class="auth-container auth-container-wide">
     <div class="auth-brand">&#127993; TumourCare</div>
-    <h1>Create Account</h1>
-    <p>Register as a patient to get started</p>
-    <div id="message" class="message" style="display:none;"></div>
-    <form id="registerForm" novalidate>
-      <div class="form-group">
-        <label for="name">Full Name</label>
-        <input type="text" id="name" name="name" placeholder="John Doe" autocomplete="name" required>
+
+    <!-- Step 1: Role Selection -->
+    <div id="roleSelection">
+      <h1>Create Account</h1>
+      <p>Select your role to get started</p>
+      <div class="role-cards">
+        <button class="role-card" data-role="patient" type="button">
+          <div class="role-card-icon role-icon-blue">&#128100;</div>
+          <h3>Patient</h3>
+          <p>Submit problems &amp; view prescriptions</p>
+        </button>
+        <button class="role-card" data-role="doctor" type="button">
+          <div class="role-card-icon role-icon-green">&#129657;</div>
+          <h3>Doctor</h3>
+          <p>Manage patients &amp; prescribe</p>
+          <span class="role-card-badge role-card-badge-info">Requires Approval</span>
+        </button>
+        <button class="role-card" data-role="admin" type="button">
+          <div class="role-card-icon role-icon-purple">&#128736;</div>
+          <h3>Admin</h3>
+          <p>Manage system &amp; assignments</p>
+          <span class="role-card-badge role-card-badge-info">Requires Approval</span>
+        </button>
       </div>
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email" required>
+      <div class="auth-links">
+        <a href="login.html">Already have an account? Sign In</a>
       </div>
-      <div class="form-group">
-        <label for="password">Password</label>
-        <div class="password-wrapper">
-          <input type="password" id="password" name="password" placeholder="Min 6 characters" autocomplete="new-password" required>
-          <button type="button" class="password-toggle" aria-label="Toggle password visibility">&#128065;</button>
+    </div>
+
+    <!-- Step 2: Registration Form -->
+    <div id="registerStep" style="display:none;">
+      <button type="button" class="back-link" id="backToRoles">&larr; Back to role selection</button>
+      <h1>Register as <span id="roleLabel" class="gradient-text"></span></h1>
+      <p id="roleSubtext"></p>
+      <div id="approvalNotice" class="message message-info" style="display:none;">
+        &#128274; Your account will require admin approval before you can sign in.
+      </div>
+      <div id="message" class="message" style="display:none;"></div>
+      <form id="registerForm" novalidate>
+        <div class="form-group">
+          <label for="name">Full Name</label>
+          <input type="text" id="name" name="name" placeholder="John Doe" autocomplete="name" required>
         </div>
-      </div>
-      <div class="form-group">
-        <label for="confirmPassword">Confirm Password</label>
-        <div class="password-wrapper">
-          <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Repeat password" autocomplete="new-password" required>
-          <button type="button" class="password-toggle" aria-label="Toggle password visibility">&#128065;</button>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email" required>
         </div>
+        <div class="form-group" id="specializationGroup" style="display:none;">
+          <label for="specialization">Specialization</label>
+          <input type="text" id="specialization" name="specialization" placeholder="e.g. Surgical Oncology, Radiation Oncology">
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <div class="password-wrapper">
+            <input type="password" id="password" name="password" placeholder="Min 6 characters" autocomplete="new-password" required>
+            <button type="button" class="password-toggle" aria-label="Toggle password visibility">&#128065;</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="confirmPassword">Confirm Password</label>
+          <div class="password-wrapper">
+            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Repeat password" autocomplete="new-password" required>
+            <button type="button" class="password-toggle" aria-label="Toggle password visibility">&#128065;</button>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary" id="submitBtn">Create Account</button>
+      </form>
+      <div class="auth-links">
+        <a href="login.html">Already have an account? Sign In</a>
       </div>
-      <button type="submit" class="btn btn-primary" id="submitBtn">Create Account</button>
-    </form>
-    <div class="auth-links">
-      <a href="login.html">Already have an account? Sign In</a>
     </div>
   </div>
 
@@ -50,10 +90,46 @@
   <script src="js/validation.js"></script>
   <script src="js/auth.js"></script>
   <script>
+    var selectedRole = null;
+    var roleSelection = document.getElementById('roleSelection');
+    var registerStep = document.getElementById('registerStep');
+    var roleLabel = document.getElementById('roleLabel');
+    var roleSubtext = document.getElementById('roleSubtext');
+    var approvalNotice = document.getElementById('approvalNotice');
+    var specGroup = document.getElementById('specializationGroup');
     var form = document.getElementById('registerForm');
     var messageEl = document.getElementById('message');
     var submitBtn = document.getElementById('submitBtn');
 
+    var roleInfo = {
+      patient: { label: 'Patient', sub: 'Fill in your details to create an account' },
+      doctor: { label: 'Doctor', sub: 'Register and wait for admin approval to get started' },
+      admin: { label: 'Admin', sub: 'Register and wait for existing admin approval' }
+    };
+
+    // Role card click
+    document.querySelectorAll('.role-card').forEach(function(card) {
+      card.addEventListener('click', function() {
+        selectedRole = this.getAttribute('data-role');
+        roleLabel.textContent = roleInfo[selectedRole].label;
+        roleSubtext.textContent = roleInfo[selectedRole].sub;
+        approvalNotice.style.display = (selectedRole !== 'patient') ? 'block' : 'none';
+        specGroup.style.display = (selectedRole === 'doctor') ? 'block' : 'none';
+        roleSelection.style.display = 'none';
+        registerStep.style.display = 'block';
+        document.getElementById('name').focus();
+      });
+    });
+
+    // Back button
+    document.getElementById('backToRoles').addEventListener('click', function() {
+      registerStep.style.display = 'none';
+      roleSelection.style.display = 'block';
+      messageEl.style.display = 'none';
+      selectedRole = null;
+    });
+
+    // Password toggles
     document.querySelectorAll('.password-toggle').forEach(function(btn) {
       btn.addEventListener('click', function() {
         var input = this.previousElementSibling;
@@ -63,6 +139,7 @@
       });
     });
 
+    // Register submit
     form.addEventListener('submit', function(e) {
       e.preventDefault();
       clearFieldErrors(form);
@@ -72,6 +149,7 @@
       var email = document.getElementById('email').value;
       var password = document.getElementById('password').value;
       var confirmPassword = document.getElementById('confirmPassword').value;
+      var specialization = document.getElementById('specialization').value.trim();
 
       var result = validateForm([
         { value: name, fieldName: 'Name', validators: [validateRequired] },
@@ -95,13 +173,18 @@
       }
 
       submitBtn.classList.add('btn-loading');
-      registerPatient(name, email, password)
+      registerUser(name, email, password, selectedRole, specialization)
         .then(function() {
           submitBtn.classList.remove('btn-loading');
-          messageEl.textContent = 'Registration successful! Redirecting to login...';
-          messageEl.className = 'message message-success';
+          if (selectedRole === 'patient') {
+            messageEl.textContent = 'Registration successful! Redirecting to login...';
+            messageEl.className = 'message message-success';
+          } else {
+            messageEl.textContent = 'Registration submitted! Your account is pending admin approval. You will be notified once approved.';
+            messageEl.className = 'message message-success';
+          }
           messageEl.style.display = 'block';
-          setTimeout(function() { window.location.href = 'login.html'; }, 2000);
+          setTimeout(function() { window.location.href = 'login.html'; }, 3000);
         })
         .catch(function(err) {
           submitBtn.classList.remove('btn-loading');
