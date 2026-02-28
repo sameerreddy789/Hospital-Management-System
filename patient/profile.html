@@ -29,19 +29,19 @@
     <form id="profileForm" novalidate>
       <div class="form-group">
         <label for="name">Full Name</label>
-        <input type="text" id="name" required>
+        <input type="text" id="name" autocomplete="name" required>
       </div>
       <div class="form-group">
         <label for="email">Email (read-only)</label>
-        <input type="email" id="email" readonly>
+        <input type="email" id="email" autocomplete="email" readonly>
       </div>
       <div class="form-group">
         <label for="phone">Phone</label>
-        <input type="tel" id="phone">
+        <input type="tel" id="phone" autocomplete="tel">
       </div>
       <div class="form-group">
         <label for="address">Address</label>
-        <textarea id="address" rows="3"></textarea>
+        <textarea id="address" rows="3" autocomplete="street-address"></textarea>
       </div>
       <button type="submit" class="btn btn-primary">Save Changes</button>
     </form>
