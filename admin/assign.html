@@ -22,6 +22,7 @@
   <div class="container">
     <div class="breadcrumb"><a href="dashboard.html">Dashboard</a> <span>›</span> Assign Patient</div>
     <h1>Assign Patient to Doctor</h1>
+    <div class="card">
     <div id="message" class="message" style="display:none;"></div>
     <form id="assignForm" novalidate>
       <div class="form-group">
@@ -41,9 +42,12 @@
       <div id="conflictWarning" class="message message-error" style="display:none;">
         This doctor already has an appointment at the selected date and time.
       </div>
-      <button type="submit" class="btn btn-primary">Assign</button>
-      <a href="dashboard.html" class="btn btn-outline">Cancel</a>
+      <div class="card-actions">
+        <button type="submit" class="btn btn-primary">Assign</button>
+        <a href="dashboard.html" class="btn btn-outline">Cancel</a>
+      </div>
     </form>
+    </div>
   </div>
 
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>

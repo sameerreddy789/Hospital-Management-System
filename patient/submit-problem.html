@@ -17,7 +17,7 @@
       <a href="appointments.html">Appointments</a>
       <a href="prescriptions.html">Prescriptions</a>
       <a href="profile.html">Profile</a>
-      <a href="notifications.html">Notifications</a>
+      <a href="notifications.html">Notifications <span id="notifBadge" class="badge" style="display:none;">0</span></a>
       <a href="#" id="logoutBtn">Logout</a>
     </div>
   </nav>
@@ -25,6 +25,7 @@
   <div class="container">
     <div class="breadcrumb"><a href="dashboard.html">Dashboard</a> <span>›</span> Submit Problem</div>
     <h1>Submit a Health Problem</h1>
+    <div class="card">
     <div id="message" class="message" style="display:none;"></div>
     <form id="problemForm" novalidate>
       <div class="form-group">
@@ -37,6 +38,7 @@
       </div>
       <button type="submit" class="btn btn-primary">Submit</button>
     </form>
+    </div>
   </div>
 
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
