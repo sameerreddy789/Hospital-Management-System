@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#9764;</text></svg>">
-  <title>Admin Dashboard - ClinicCare</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#127993;</text></svg>">
+  <title>Admin Dashboard - TumourCare</title>
   <link rel="stylesheet" href="../css/style.css">
 </head>
 <body class="dashboard-body">
   <nav class="navbar">
-    <div class="nav-brand">&#9764; ClinicCare</div>
+    <div class="nav-brand">&#127993; TumourCare</div>
     <button class="nav-toggle" aria-label="Toggle navigation">&#9776;</button>
     <div class="nav-links">
       <a href="dashboard.html" class="active">Dashboard</a>
@@ -22,28 +22,67 @@
   <div class="container">
     <h1>Admin Dashboard</h1>
 
+    <!-- Summary Stats -->
     <div class="summary-cards">
       <div class="summary-card">
+        <div class="summary-card-icon">&#128101;</div>
+        <h3>Total Patients</h3>
+        <p class="stat" id="totalPatientCount">0</p>
+      </div>
+      <div class="summary-card">
+        <div class="summary-card-icon">&#128276;</div>
         <h3>Pending Requests</h3>
         <p class="stat" id="pendingCount">0</p>
       </div>
       <div class="summary-card">
-        <h3>Assigned Appointments</h3>
-        <p class="stat" id="assignedCount">0</p>
+        <div class="summary-card-icon">&#129657;</div>
+        <h3>Oncologists Available</h3>
+        <p class="stat" id="doctorCount">0</p>
       </div>
       <div class="summary-card">
-        <h3>Doctors</h3>
-        <p class="stat" id="doctorCount">0</p>
+        <div class="summary-card-icon">&#128197;</div>
+        <h3>Today's Appointments</h3>
+        <p class="stat" id="todayAppointmentCount">0</p>
       </div>
     </div>
 
-    <h2>Pending Problem Submissions</h2>
-    <div class="filter-bar">
-      <input type="text" id="searchInput" placeholder="Search by patient name..." class="search-input">
+    <!-- Patients to Assign -->
+    <div class="dashboard-section">
+      <div class="section-header">
+        <h2>Patients to Assign</h2>
+        <div class="section-actions">
+          <input type="text" id="searchInput" placeholder="Search by patient name..." class="search-input">
+        </div>
+      </div>
+      <div id="submissionList" class="list-container">
+        <div class="skeleton skeleton-card"></div>
+        <div class="skeleton skeleton-card"></div>
+      </div>
     </div>
-    <div id="submissionList" class="list-container">
-      <div class="skeleton skeleton-card"></div>
-      <div class="skeleton skeleton-card"></div>
+
+    <!-- Doctors Overview -->
+    <div class="dashboard-section">
+      <div class="section-header">
+        <h2>Oncologists</h2>
+      </div>
+      <div id="doctorsList" class="list-container">
+        <div class="skeleton skeleton-card"></div>
+      </div>
+    </div>
+
+    <!-- Assigned Patients -->
+    <div class="dashboard-section">
+      <div class="section-header">
+        <h2>Assigned Patients</h2>
+      </div>
+      <div id="assignedList" class="list-container">
+        <div class="skeleton skeleton-card"></div>
+      </div>
+    </div>
+
+    <!-- Export -->
+    <div style="margin-top:1.5rem;">
+      <button class="btn btn-outline" id="exportBtn">&#128196; Export Report</button>
     </div>
   </div>
 
@@ -59,31 +98,120 @@
   <script>
     requireAuth('admin').then(function(user) {
       var container = document.getElementById('submissionList');
+      var doctorsContainer = document.getElementById('doctorsList');
+      var assignedContainer = document.getElementById('assignedList');
       var allSubmissions = [];
 
+      // Priority badge helper
+      function getPriorityBadge(description) {
+        var desc = (description || '').toLowerCase();
+        if (desc.indexOf('urgent') !== -1 || desc.indexOf('severe') !== -1 || desc.indexOf('emergency') !== -1 || desc.indexOf('critical') !== -1) {
+          return '<span class="priority-badge priority-high">High</span>';
+        }
+        if (desc.indexOf('moderate') !== -1 || desc.indexOf('growing') !== -1 || desc.indexOf('pain') !== -1) {
+          return '<span class="priority-badge priority-medium">Medium</span>';
+        }
+        return '<span class="priority-badge priority-low">Normal</span>';
+      }
+
       function renderSubmissions(submissions) {
-        if (submissions.length === 0) { container.innerHTML = '<p>No pending submissions.</p>'; return; }
+        if (submissions.length === 0) { container.innerHTML = '<p class="empty-text">No pending submissions.</p>'; return; }
         container.innerHTML = '';
         submissions.forEach(function(sub) {
-          var card = createElement('div', { className: 'card' });
+          var card = createElement('div', { className: 'card list-row' });
           var dateStr = sub.createdAt ? new Date(sub.createdAt.seconds * 1000).toLocaleDateString() : '';
           var typeLabel = sub.type === 'follow-up' ? ' <span class="badge badge-info">Follow-up</span>' : '';
-          card.innerHTML = '<h3>' + escapeHtml(sub.title) + typeLabel + '</h3>' +
-            '<p>Patient: ' + escapeHtml(sub.patientName) + '</p>' +
-            '<p>' + escapeHtml(sub.description) + '</p>' +
-            '<p class="text-muted">Submitted: ' + dateStr + '</p>' +
-            '<div class="card-actions">' +
-              '<a href="assign.html?id=' + sub.id + '&patientId=' + sub.patientId + '" class="btn btn-primary">Assign to Doctor</a>' +
+          var priority = getPriorityBadge(sub.description);
+          card.innerHTML = '<div class="list-row-info">' +
+              '<div class="list-row-avatar">' + (sub.patientName || '?').charAt(0).toUpperCase() + '</div>' +
+              '<div><strong>' + escapeHtml(sub.patientName) + '</strong> ' + priority + typeLabel +
+              '<br><span class="text-muted">' + escapeHtml(sub.title) + ' &middot; ' + dateStr + '</span></div>' +
+            '</div>' +
+            '<div class="list-row-actions">' +
+              '<a href="assign.html?id=' + sub.id + '&patientId=' + sub.patientId + '" class="btn btn-primary btn-sm">Assign</a>' +
             '</div>';
           container.appendChild(card);
+        });
+      }
+
+      // Render doctors with patient count and specialization
+      function renderDoctors(doctors, appointments) {
+        if (doctors.length === 0) { doctorsContainer.innerHTML = '<p class="empty-text">No oncologists registered.</p>'; return; }
+        doctorsContainer.innerHTML = '';
+        doctors.forEach(function(doc) {
+          var patientCount = 0;
+          (appointments || []).forEach(function(apt) {
+            if (apt.doctorId === doc.uid && (apt.status === 'assigned' || apt.status === 'prescribed')) patientCount++;
+          });
+          var card = createElement('div', { className: 'card list-row' });
+          var initials = (doc.name || '?').split(' ').map(function(w) { return w[0]; }).join('').toUpperCase().slice(0, 2);
+          var spec = doc.specialization ? '<span class="badge badge-info">' + escapeHtml(doc.specialization) + '</span>' : '';
+          card.innerHTML = '<div class="list-row-info">' +
+              '<div class="list-row-avatar doctor-avatar"><span class="status-dot status-online"></span>' + initials + '</div>' +
+              '<div><strong>Dr. ' + escapeHtml(doc.name) + '</strong> ' + spec +
+              '</div>' +
+            '</div>' +
+            '<div class="list-row-meta">' +
+              '<span>' + patientCount + ' patient' + (patientCount !== 1 ? 's' : '') + '</span>' +
+            '</div>';
+          doctorsContainer.appendChild(card);
+        });
+      }
+
+      // Render assigned patients
+      function renderAssigned(appointments) {
+        var assigned = (appointments || []).filter(function(a) { return a.status === 'assigned' || a.status === 'prescribed'; });
+        if (assigned.length === 0) { assignedContainer.innerHTML = '<p class="empty-text">No assigned patients.</p>'; return; }
+        assignedContainer.innerHTML = '';
+        assigned.forEach(function(apt) {
+          var card = createElement('div', { className: 'card list-row' });
+          var statusClass = apt.status === 'prescribed' ? 'status-prescribed' : 'status-assigned';
+          card.innerHTML = '<div class="list-row-info">' +
+              '<div class="list-row-avatar">' + (apt.patientName || '?').charAt(0).toUpperCase() + '</div>' +
+              '<div><strong>' + escapeHtml(apt.patientName) + '</strong> <span class="status ' + statusClass + '">' + apt.status + '</span>' +
+              '</div>' +
+            '</div>' +
+            '<div class="list-row-meta">' +
+              '<span class="text-muted">&rarr; Dr. ' + escapeHtml(apt.doctorName) + '</span>' +
+            '</div>';
+          assignedContainer.appendChild(card);
         });
       }
 
       // Real-time stats
       onStatsChange('admin', user.uid, function(stats) {
         if (stats.pendingCount !== undefined) document.getElementById('pendingCount').textContent = stats.pendingCount;
-        if (stats.assignedCount !== undefined) document.getElementById('assignedCount').textContent = stats.assignedCount;
         if (stats.doctorCount !== undefined) document.getElementById('doctorCount').textContent = stats.doctorCount;
+      });
+
+      // Total patients count
+      db.collection('users').where('role', '==', 'patient').get().then(function(snap) {
+        document.getElementById('totalPatientCount').textContent = snap.size;
+      });
+
+      // Today's appointments
+      var today = new Date().toISOString().split('T')[0];
+      db.collection('appointments').where('scheduledDate', '==', today).get().then(function(snap) {
+        document.getElementById('todayAppointmentCount').textContent = snap.size;
+      });
+
+      // Load doctors and appointments for the doctors + assigned sections
+      var allDoctors = [];
+      var allAppointments = [];
+
+      function refreshSections() {
+        renderDoctors(allDoctors, allAppointments);
+        renderAssigned(allAppointments);
+      }
+
+      getDoctorList().then(function(doctors) {
+        allDoctors = doctors;
+        refreshSections();
+      });
+
+      getAllAppointments().then(function(appointments) {
+        allAppointments = appointments;
+        refreshSections();
       });
 
       // Real-time pending submissions
@@ -96,6 +224,30 @@
       // Wire search
       document.getElementById('searchInput').addEventListener('input', function() {
         renderSubmissions(filterByText(allSubmissions, this.value, 'patientName'));
+      });
+
+      // Export report
+      document.getElementById('exportBtn').addEventListener('click', function() {
+        var lines = ['TumourCare Admin Report', 'Generated: ' + new Date().toLocaleString(), ''];
+        lines.push('--- Pending Submissions ---');
+        allSubmissions.forEach(function(s) {
+          lines.push(s.patientName + ' | ' + s.title + ' | ' + (s.createdAt ? new Date(s.createdAt.seconds * 1000).toLocaleDateString() : ''));
+        });
+        lines.push('');
+        lines.push('--- Oncologists ---');
+        allDoctors.forEach(function(d) {
+          lines.push('Dr. ' + d.name + ' | ' + (d.specialization || 'General Oncology'));
+        });
+        lines.push('');
+        lines.push('--- Assigned Appointments ---');
+        allAppointments.filter(function(a) { return a.status === 'assigned' || a.status === 'prescribed'; }).forEach(function(a) {
+          lines.push(a.patientName + ' -> Dr. ' + a.doctorName + ' | ' + a.scheduledDate + ' | ' + a.status);
+        });
+        var blob = new Blob([lines.join('\n')], { type: 'text/plain' });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url; a.download = 'tumourcare-report-' + today + '.txt'; a.click();
+        URL.revokeObjectURL(url);
       });
 
       document.getElementById('logoutBtn').addEventListener('click', function(e) { e.preventDefault(); logoutUser(); });

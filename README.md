@@ -1,6 +1,6 @@
-# ClinicCare - Hospital Management System
+# TumourCare - Tumour Care Management System
 
-A modern, glassmorphic healthcare management web application built with vanilla HTML/CSS/JS and Firebase.
+A specialized oncology and tumour care management web application built with vanilla HTML/CSS/JS and Firebase.
 
 ## Features
 

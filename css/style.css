@@ -1,5 +1,5 @@
 /* ============================================================
-   ClinicCare - Glassmorphic Design System
+   TumourCare - Glassmorphic Design System
    National-level healthcare management UI
    ============================================================ */
 
@@ -1330,4 +1330,144 @@ body {
 }
 @media (max-width: 400px) {
   .steps-grid { grid-template-columns: 1fr; }
+}
+
+/* ============================================================
+   Admin Dashboard - Enhanced Sections
+   ============================================================ */
+.dashboard-section {
+  margin-top: 2rem;
+}
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+.section-header h2 {
+  margin: 0;
+}
+.section-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+/* Summary card icon */
+.summary-card-icon {
+  font-size: 1.5rem;
+  margin-bottom: 0.25rem;
+  opacity: 0.8;
+}
+
+/* List row layout */
+.list-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.5rem;
+  gap: 1rem;
+}
+.list-row-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+  min-width: 0;
+}
+.list-row-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+  position: relative;
+}
+.doctor-avatar {
+  background: linear-gradient(135deg, #10b981, #059669);
+}
+.list-row-meta {
+  font-size: 0.88rem;
+  color: #94a3b8;
+  white-space: nowrap;
+}
+.list-row-actions {
+  flex-shrink: 0;
+}
+
+/* Status dot for doctors */
+.status-dot {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid var(--surface);
+}
+.status-online {
+  background: #22c55e;
+}
+.status-offline {
+  background: #64748b;
+}
+
+/* Priority badges */
+.priority-badge {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  border-radius: 10px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.priority-high {
+  background: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+}
+.priority-medium {
+  background: rgba(245, 158, 11, 0.2);
+  color: #fbbf24;
+}
+.priority-low {
+  background: rgba(34, 197, 94, 0.2);
+  color: #4ade80;
+}
+
+/* Empty text */
+.empty-text {
+  color: #64748b;
+  font-size: 0.9rem;
+  padding: 1rem 0;
+}
+
+/* Button small variant */
+.btn-sm {
+  padding: 0.35rem 0.85rem;
+  font-size: 0.8rem;
+}
+
+@media (max-width: 768px) {
+  .list-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  .list-row-actions {
+    align-self: flex-end;
+  }
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 }
