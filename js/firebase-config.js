@@ -3,14 +3,14 @@
 //   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 //   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 
-// TODO: Replace with your own Firebase project config
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "YOUR_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyAGthbd9d8-5c8HYDezMKdv8_0naQ2Jn1o",
+  authDomain: "hospital-management-syst-f4b5f.firebaseapp.com",
+  projectId: "hospital-management-syst-f4b5f",
+  storageBucket: "hospital-management-syst-f4b5f.firebasestorage.app",
+  messagingSenderId: "788930281401",
+  appId: "1:788930281401:web:3a8e495696fee5c93d4068",
+  measurementId: "G-NXJ07EZBWM"
 };
 
 // Initialize Firebase
