@@ -122,7 +122,8 @@
     border-radius: 9999px;
     box-sizing: border-box;
     font-weight: 500;
-    font-size: 14px;
+    font-size: 16px;
+    /* Increased from 14px */
     line-height: 0;
     letter-spacing: 0.2px;
     white-space: nowrap;
