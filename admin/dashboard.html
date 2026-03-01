@@ -4,8 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon"
-    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#127993;</text></svg>">
+  <link rel="icon" href="../logo.png">
   <title>Admin Dashboard - TumourCare</title>
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/admin-layout.css">
@@ -38,6 +37,15 @@
             <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
           </svg>
           Manage Doctors
+        </a>
+        <a href="manage-patients.html">
+          <svg viewBox="0 0 24 24">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+          Manage Patients
         </a>
         <a href="notifications.html">
           <svg viewBox="0 0 24 24">
@@ -73,8 +81,7 @@
       <div class="summary-cards">
         <div class="summary-card">
           <div class="summary-card-icon" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6;">
-            <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="2" fill="none"
-              stroke-linecap="round" stroke-linejoin="round">
+            <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="2" fill="none">
               <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
               <circle cx="9" cy="7" r="4"></circle>
               <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
@@ -88,8 +95,7 @@
         </div>
         <div class="summary-card">
           <div class="summary-card-icon" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;">
-            <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="2" fill="none"
-              stroke-linecap="round" stroke-linejoin="round">
+            <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="2" fill="none">
               <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
             </svg>
           </div>
@@ -100,8 +106,7 @@
         </div>
         <div class="summary-card">
           <div class="summary-card-icon" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">
-            <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="2" fill="none"
-              stroke-linecap="round" stroke-linejoin="round">
+            <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="2" fill="none">
               <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
               <circle cx="9" cy="7" r="4"></circle>
               <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
@@ -113,42 +118,9 @@
             <p class="stat" id="doctorCount">0</p>
           </div>
         </div>
-        <div class="summary-card">
-          <div class="summary-card-icon" style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6;">
-            <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="2" fill="none"
-              stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-              <line x1="16" y1="2" x2="16" y2="6"></line>
-              <line x1="8" y1="2" x2="8" y2="6"></line>
-              <line x1="3" y1="10" x2="21" y2="10"></line>
-            </svg>
-          </div>
-          <div>
-            <h3>Today's Schedule</h3>
-            <p class="stat" id="todayAppointmentCount">0</p>
-          </div>
-        </div>
       </div>
 
-      <!-- Pending Approvals -->
-      <div class="dashboard-section">
-        <div class="section-header">
-          <h2>
-            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"
-              style="vertical-align:middle;margin-right:8px;">
-              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
-              <circle cx="9" cy="7" r="4"></circle>
-              <polyline points="16 11 18 13 22 9"></polyline>
-            </svg>
-            Review Access Requests
-          </h2>
-        </div>
-        <div id="pendingApprovalsList" class="list-container">
-          <div class="skeleton skeleton-card"></div>
-        </div>
-      </div>
-
-      <!-- Patients to Assign -->
+      <!-- Section 1: Patient Requests -->
       <div class="dashboard-section">
         <div class="section-header">
           <h2>
@@ -158,9 +130,8 @@
               <polyline points="14 2 14 8 20 8"></polyline>
               <line x1="16" y1="13" x2="8" y2="13"></line>
               <line x1="16" y1="17" x2="8" y2="17"></line>
-              <polyline points="10 9 9 9 8 9"></polyline>
             </svg>
-            Patients Needing Assignment
+            Patient Requests
           </h2>
           <div class="section-actions">
             <input type="text" id="searchInput" placeholder="Search by patient name..." class="search-input">
@@ -170,30 +141,30 @@
           <div class="skeleton skeleton-card"></div>
           <div class="skeleton skeleton-card"></div>
         </div>
+        <div id="submissionPagination" class="pagination-controls" style="display:none;"></div>
       </div>
 
-      <!-- Doctors Overview -->
+      <!-- Section 2: Doctors Active -->
       <div class="dashboard-section">
         <div class="section-header">
           <h2>
             <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"
               style="vertical-align:middle;margin-right:8px;">
-              <path d="M4.8 6.6a1 1 0 1 0 1.4 1.4 1 1 0 0 0-1.4-1.4Z"></path>
-              <path d="M3.5 12.3a1 1 0 1 0 1.4 1.4 1 1 0 0 0-1.4-1.4Z"></path>
-              <path d="M4.8 18a1 1 0 1 0 1.4 1.4A1 1 0 0 0 4.8 18Z"></path>
-              <path d="M9.1 7.3h10.4"></path>
-              <path d="M9.1 13h10.4"></path>
-              <path d="M9.1 18.7h10.4"></path>
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
             </svg>
-            Oncologists
+            Doctors Active
           </h2>
         </div>
         <div id="doctorsList" class="list-container">
           <div class="skeleton skeleton-card"></div>
         </div>
+        <div id="doctorsPagination" class="pagination-controls" style="display:none;"></div>
       </div>
 
-      <!-- Assigned Patients -->
+      <!-- Section 3: Patients Assigned -->
       <div class="dashboard-section">
         <div class="section-header">
           <h2>
@@ -204,12 +175,13 @@
               <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
               <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
             </svg>
-            Care Coordination Overview
+            Patients Assigned
           </h2>
         </div>
         <div id="assignedList" class="list-container">
           <div class="skeleton skeleton-card"></div>
         </div>
+        <div id="assignedPagination" class="pagination-controls" style="display:none;"></div>
       </div>
 
       <!-- Export -->
@@ -229,25 +201,45 @@
     <script src="../js/search-filter.js"></script>
     <script>
       requireAuth('admin').then(function (user) {
+        var PAGE_SIZE = 5;
         var container = document.getElementById('submissionList');
         var doctorsContainer = document.getElementById('doctorsList');
         var assignedContainer = document.getElementById('assignedList');
-        var approvalsContainer = document.getElementById('pendingApprovalsList');
         var allSubmissions = [];
 
-        // Priority badge helper
-        function getPriorityBadge(description) {
-          var desc = (description || '').toLowerCase();
-          if (desc.indexOf('urgent') !== -1 || desc.indexOf('severe') !== -1 || desc.indexOf('emergency') !== -1 || desc.indexOf('critical') !== -1) {
-            return '<span class="priority-badge priority-high">High</span>';
-          }
-          if (desc.indexOf('moderate') !== -1 || desc.indexOf('growing') !== -1 || desc.indexOf('pain') !== -1) {
-            return '<span class="priority-badge priority-medium">Medium</span>';
-          }
-          return '<span class="priority-badge priority-low">Normal</span>';
+        // ========== Pagination Helper ==========
+        function renderPagination(paginationEl, totalItems, currentPage, onPageChange) {
+          if (totalItems <= PAGE_SIZE) { paginationEl.style.display = 'none'; return; }
+          paginationEl.style.display = 'flex';
+          var totalPages = Math.ceil(totalItems / PAGE_SIZE);
+          paginationEl.innerHTML = '';
+
+          var prevBtn = document.createElement('button');
+          prevBtn.className = 'btn btn-outline btn-sm';
+          prevBtn.textContent = '← Prev';
+          prevBtn.disabled = currentPage === 1;
+          prevBtn.addEventListener('click', function () { onPageChange(currentPage - 1); });
+          paginationEl.appendChild(prevBtn);
+
+          var info = document.createElement('span');
+          info.className = 'pagination-info';
+          info.textContent = 'Page ' + currentPage + ' of ' + totalPages;
+          paginationEl.appendChild(info);
+
+          var nextBtn = document.createElement('button');
+          nextBtn.className = 'btn btn-outline btn-sm';
+          nextBtn.textContent = 'Next →';
+          nextBtn.disabled = currentPage === totalPages;
+          nextBtn.addEventListener('click', function () { onPageChange(currentPage + 1); });
+          paginationEl.appendChild(nextBtn);
         }
 
-        // Premium Empty State Helper
+        function getPage(items, page) {
+          var start = (page - 1) * PAGE_SIZE;
+          return items.slice(start, start + PAGE_SIZE);
+        }
+
+        // ========== Empty State Helper ==========
         function getEmptyState(title, message, icon) {
           return '<div class="empty-state">' +
             '<div class="empty-state-icon">' + icon + '</div>' +
@@ -256,17 +248,30 @@
             '</div>';
         }
 
+        // Priority badge
+        function getPriorityBadge(description) {
+          var desc = (description || '').toLowerCase();
+          if (desc.indexOf('urgent') !== -1 || desc.indexOf('severe') !== -1 || desc.indexOf('emergency') !== -1) {
+            return '<span class="priority-badge priority-high">High</span>';
+          }
+          if (desc.indexOf('moderate') !== -1 || desc.indexOf('growing') !== -1 || desc.indexOf('pain') !== -1) {
+            return '<span class="priority-badge priority-medium">Medium</span>';
+          }
+          return '<span class="priority-badge priority-low">Normal</span>';
+        }
+
+        // ========== Section 1: Patient Requests ==========
+        var submissionPage = 1;
         function renderSubmissions(submissions) {
           if (submissions.length === 0) {
-            container.innerHTML = getEmptyState(
-              'All Caught Up!',
-              'No pending patient submissions at the moment.',
-              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"></path></svg>'
-            );
+            container.innerHTML = getEmptyState('All Caught Up!', 'No pending patient submissions at the moment.',
+              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"></path></svg>');
+            document.getElementById('submissionPagination').style.display = 'none';
             return;
           }
+          var pageItems = getPage(submissions, submissionPage);
           container.innerHTML = '';
-          submissions.forEach(function (sub) {
+          pageItems.forEach(function (sub) {
             var card = createElement('div', { className: 'card list-row' });
             var dateStr = sub.createdAt ? new Date(sub.createdAt.seconds * 1000).toLocaleDateString() : '';
             var typeLabel = sub.type === 'follow-up' ? ' <span class="badge badge-info">Follow-up</span>' : '';
@@ -281,20 +286,24 @@
               '</div>';
             container.appendChild(card);
           });
+          renderPagination(document.getElementById('submissionPagination'), submissions.length, submissionPage, function (p) {
+            submissionPage = p;
+            renderSubmissions(submissions);
+          });
         }
 
-        // Render doctors with patient count and specialization
+        // ========== Section 2: Doctors Active ==========
+        var doctorPage = 1;
         function renderDoctors(doctors, appointments) {
           if (doctors.length === 0) {
-            doctorsContainer.innerHTML = getEmptyState(
-              'No Oncologists',
-              'There are no oncologists registered in the system yet.',
-              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-3-3.87"></path><path d="M9 21v-2a4 4 0 0 0-3-3.87"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path></svg>'
-            );
+            doctorsContainer.innerHTML = getEmptyState('No Oncologists', 'No oncologists registered yet.',
+              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-3-3.87"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path></svg>');
+            document.getElementById('doctorsPagination').style.display = 'none';
             return;
           }
+          var pageItems = getPage(doctors, doctorPage);
           doctorsContainer.innerHTML = '';
-          doctors.forEach(function (doc) {
+          pageItems.forEach(function (doc) {
             var patientCount = 0;
             (appointments || []).forEach(function (apt) {
               if (apt.doctorId === doc.uid && (apt.status === 'assigned' || apt.status === 'prescribed')) patientCount++;
@@ -304,112 +313,56 @@
             var spec = doc.specialization ? '<span class="badge badge-info">' + escapeHtml(doc.specialization) + '</span>' : '';
             card.innerHTML = '<div class="list-row-info">' +
               '<div class="list-row-avatar doctor-avatar"><span class="status-dot status-online"></span>' + initials + '</div>' +
-              '<div><strong>Dr. ' + escapeHtml(doc.name) + '</strong> ' + spec +
+              '<div><strong>Dr. ' + escapeHtml(doc.name) + '</strong> ' + spec + '</div>' +
               '</div>' +
-              '</div>' +
-              '<div class="list-row-meta">' +
-              '<span>' + patientCount + ' patient' + (patientCount !== 1 ? 's' : '') + '</span>' +
-              '</div>';
+              '<div class="list-row-meta"><span>' + patientCount + ' patient' + (patientCount !== 1 ? 's' : '') + '</span></div>';
             doctorsContainer.appendChild(card);
+          });
+          renderPagination(document.getElementById('doctorsPagination'), doctors.length, doctorPage, function (p) {
+            doctorPage = p;
+            renderDoctors(doctors, appointments);
           });
         }
 
-        // Render assigned patients
+        // ========== Section 3: Patients Assigned ==========
+        var assignedPage = 1;
         function renderAssigned(appointments) {
           var assigned = (appointments || []).filter(function (a) { return a.status === 'assigned' || a.status === 'prescribed'; });
           if (assigned.length === 0) {
-            assignedContainer.innerHTML = getEmptyState(
-              'No Assignments',
-              'No patients have been assigned to doctors yet.',
-              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 11l2 2-4 4"></path></svg>'
-            );
+            assignedContainer.innerHTML = getEmptyState('No Assignments', 'No patients have been assigned to doctors yet.',
+              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 11l2 2-4 4"></path></svg>');
+            document.getElementById('assignedPagination').style.display = 'none';
             return;
           }
+          var pageItems = getPage(assigned, assignedPage);
           assignedContainer.innerHTML = '';
-          assigned.forEach(function (apt) {
+          pageItems.forEach(function (apt) {
             var card = createElement('div', { className: 'card list-row' });
             var statusClass = apt.status === 'prescribed' ? 'status-prescribed' : 'status-assigned';
             card.innerHTML = '<div class="list-row-info">' +
               '<div class="list-row-avatar">' + (apt.patientName || '?').charAt(0).toUpperCase() + '</div>' +
-              '<div><strong>' + escapeHtml(apt.patientName) + '</strong> <span class="status ' + statusClass + '">' + apt.status + '</span>' +
+              '<div><strong>' + escapeHtml(apt.patientName) + '</strong> <span class="status ' + statusClass + '">' + apt.status + '</span></div>' +
               '</div>' +
-              '</div>' +
-              '<div class="list-row-meta">' +
-              '<span class="text-muted">&rarr; Dr. ' + escapeHtml(apt.doctorName) + '</span>' +
-              '</div>';
+              '<div class="list-row-meta"><span class="text-muted">&rarr; Dr. ' + escapeHtml(apt.doctorName) + '</span></div>';
             assignedContainer.appendChild(card);
           });
-        }
-
-        // Render pending approvals
-        function renderApprovals(users) {
-          if (users.length === 0) {
-            approvalsContainer.innerHTML = getEmptyState(
-              'No Pending Approvals',
-              'All registration requests have been processed.',
-              '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M8 12l3 3 5-5"></path></svg>'
-            );
-            return;
-          }
-          approvalsContainer.innerHTML = '';
-          users.forEach(function (u) {
-            var card = createElement('div', { className: 'card list-row' });
-            var initials = (u.name || '?').split(' ').map(function (w) { return w[0]; }).join('').toUpperCase().slice(0, 2);
-            var roleBadge = u.role === 'doctor'
-              ? '<span class="badge badge-info">Doctor</span>'
-              : '<span class="badge badge-info" style="background:linear-gradient(135deg,#8b5cf6,#a78bfa);">Admin</span>';
-            var spec = (u.role === 'doctor' && u.specialization) ? ' <span class="text-muted">' + escapeHtml(u.specialization) + '</span>' : '';
-            var dateStr = u.createdAt ? new Date(u.createdAt.seconds * 1000).toLocaleDateString() : '';
-            card.innerHTML = '<div class="list-row-info">' +
-              '<div class="list-row-avatar" style="background:linear-gradient(135deg,#f59e0b,#d97706);">' + initials + '</div>' +
-              '<div><strong>' + escapeHtml(u.name) + '</strong> ' + roleBadge + spec +
-              '<br><span class="text-muted">' + escapeHtml(u.email) + ' &middot; ' + dateStr + '</span></div>' +
-              '</div>' +
-              '<div class="list-row-actions" style="display:flex;gap:0.4rem;">' +
-              '<button class="btn btn-success btn-sm approve-btn" data-uid="' + u.id + '">&#10003; Approve</button>' +
-              '<button class="btn btn-danger btn-sm reject-btn" data-uid="' + u.id + '">&#10007; Reject</button>' +
-              '</div>';
-            card.querySelector('.approve-btn').addEventListener('click', function () {
-              var uid = this.getAttribute('data-uid');
-              this.classList.add('btn-loading');
-              approveUser(uid).then(function () {
-                showToast('User approved successfully!', 'success');
-              }).catch(function () {
-                showToast('Failed to approve user.', 'error');
-              });
-            });
-            card.querySelector('.reject-btn').addEventListener('click', function () {
-              var uid = this.getAttribute('data-uid');
-              if (!confirm('Are you sure you want to reject this registration?')) return;
-              this.classList.add('btn-loading');
-              rejectUser(uid).then(function () {
-                showToast('Registration rejected.', 'info');
-              }).catch(function () {
-                showToast('Failed to reject user.', 'error');
-              });
-            });
-            approvalsContainer.appendChild(card);
+          renderPagination(document.getElementById('assignedPagination'), assigned.length, assignedPage, function (p) {
+            assignedPage = p;
+            renderAssigned(appointments);
           });
         }
 
-        // Real-time stats
+        // ========== Real-time Stats ==========
         onStatsChange('admin', user.uid, function (stats) {
           if (stats.pendingCount !== undefined) document.getElementById('pendingCount').textContent = stats.pendingCount;
           if (stats.doctorCount !== undefined) document.getElementById('doctorCount').textContent = stats.doctorCount;
         });
 
-        // Total patients count
         db.collection('users').where('role', '==', 'patient').get().then(function (snap) {
           document.getElementById('totalPatientCount').textContent = snap.size;
         });
 
-        // Today's appointments
-        var today = new Date().toISOString().split('T')[0];
-        db.collection('appointments').where('scheduledDate', '==', today).get().then(function (snap) {
-          document.getElementById('todayAppointmentCount').textContent = snap.size;
-        });
-
-        // Load doctors and appointments for the doctors + assigned sections
+        // ========== Load Data ==========
         var allDoctors = [];
         var allAppointments = [];
         var doctorsLoaded = false;
@@ -434,37 +387,32 @@
           refreshSections();
         });
 
-        // Real-time pending submissions
         onSubmissionsChange(function (submissions) {
           allSubmissions = submissions;
           var searchText = document.getElementById('searchInput').value;
+          submissionPage = 1;
           renderSubmissions(filterByText(submissions, searchText, 'patientName'));
         });
 
-        // Real-time pending approvals
-        onPendingUsersChange(function (users) {
-          renderApprovals(users);
-        });
-
-        // Wire search
         document.getElementById('searchInput').addEventListener('input', function () {
+          submissionPage = 1;
           renderSubmissions(filterByText(allSubmissions, this.value, 'patientName'));
         });
 
-        // Export report
+        // Export
         document.getElementById('exportBtn').addEventListener('click', function () {
           var lines = ['TumourCare Admin Report', 'Generated: ' + new Date().toLocaleString(), ''];
-          lines.push('--- Pending Submissions ---');
+          lines.push('--- Patient Requests ---');
           allSubmissions.forEach(function (s) {
             lines.push(s.patientName + ' | ' + s.title + ' | ' + (s.createdAt ? new Date(s.createdAt.seconds * 1000).toLocaleDateString() : ''));
           });
           lines.push('');
-          lines.push('--- Oncologists ---');
+          lines.push('--- Doctors Active ---');
           allDoctors.forEach(function (d) {
             lines.push('Dr. ' + d.name + ' | ' + (d.specialization || 'General Oncology'));
           });
           lines.push('');
-          lines.push('--- Assigned Appointments ---');
+          lines.push('--- Patients Assigned ---');
           allAppointments.filter(function (a) { return a.status === 'assigned' || a.status === 'prescribed'; }).forEach(function (a) {
             lines.push(a.patientName + ' -> Dr. ' + a.doctorName + ' | ' + a.scheduledDate + ' | ' + a.status);
           });
@@ -481,17 +429,11 @@
         var navToggle = document.getElementById('navToggle');
         var navLinks = document.getElementById('navLinks');
         if (navToggle && navLinks) {
-          navToggle.addEventListener('click', function () {
-            navLinks.classList.toggle('open');
-          });
+          navToggle.addEventListener('click', function () { navLinks.classList.toggle('open'); });
         }
       });
     </script>
-    <!-- GSAP Core for PillNav animations -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   </main>
-  <!-- GSAP Core for PillNav animations -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 </body>
 
 </html>
