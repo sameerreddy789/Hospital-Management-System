@@ -8,11 +8,9 @@ service cloud.firestore {
         : 'unknown';
     }
 
-    // Users: read own profile + admin/doctor can read others
-    // Create own profile, update own profile, admin can update any user (for approvals)
+    // Users: read any profile (req for lookups/bootstrap), update own profile, admin updates any
     match /users/{uid} {
-      allow read: if request.auth != null &&
-        (request.auth.uid == uid || getUserRole() == "admin" || getUserRole() == "doctor");
+      allow read: if request.auth != null;
       allow create: if request.auth != null && request.auth.uid == uid;
       allow update: if request.auth != null &&
         (request.auth.uid == uid || getUserRole() == "admin");
