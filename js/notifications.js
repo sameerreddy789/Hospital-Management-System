@@ -29,15 +29,22 @@ function createNotification(userId, message, type) {
 function onNotificationsChange(userId, callback, onError) {
   return db.collection('notifications')
     .where('userId', '==', userId)
-    .orderBy('createdAt', 'desc')
     .onSnapshot(function (snapshot) {
       var results = [];
       snapshot.forEach(function (doc) {
         results.push(Object.assign({ id: doc.id }, doc.data()));
       });
+      // Sort in JS to avoid index requirement
+      results.sort(function (a, b) {
+        var t1 = (a.createdAt && a.createdAt.seconds) ? a.createdAt.seconds : 0;
+        var t2 = (b.createdAt && b.createdAt.seconds) ? b.createdAt.seconds : 0;
+        return t2 - t1;
+      });
       callback(results);
     }, function (err) {
+      console.error("Notifications listener error:", err);
       if (onError) onError(err);
+      else callback([]); // Default to empty if no error handler provided
     });
 }
 
