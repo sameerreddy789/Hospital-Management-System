@@ -1,40 +1,120 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="TumourCare - Specialized tumour and oncology management platform. Book consultations with oncologists, receive treatment plans, digital prescriptions, and manage your cancer care journey online.">
-  <meta name="keywords" content="tumour care, oncology, cancer treatment, tumour management, chemotherapy, radiation therapy, oncologist, patient portal">
+  <meta name="description"
+    content="TumourCare - Specialized tumour and oncology management platform. Book consultations with oncologists, receive treatment plans, digital prescriptions, and manage your cancer care journey online.">
+  <meta name="keywords"
+    content="tumour care, oncology, cancer treatment, tumour management, chemotherapy, radiation therapy, oncologist, patient portal">
   <meta name="author" content="TumourCare">
   <meta property="og:title" content="TumourCare - Expert Tumour Care, Compassionate Support">
-  <meta property="og:description" content="Book oncology consultations, receive personalized treatment plans, digital prescriptions, and manage your cancer care journey — all from one place.">
+  <meta property="og:description"
+    content="Book oncology consultations, receive personalized treatment plans, digital prescriptions, and manage your cancer care journey — all from one place.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://tumourcare.web.app">
   <meta name="theme-color" content="#0f172a">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#127993;</text></svg>">
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#127993;</text></svg>">
   <title>TumourCare - Expert Tumour Care, Compassionate Support</title>
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/pill-nav.css">
 </head>
+
 <body>
-  <nav class="navbar">
-    <div class="nav-brand">&#127993; TumourCare</div>
-    <button class="nav-toggle" aria-label="Toggle navigation">&#9776;</button>
-    <div class="nav-links">
-      <a href="#about">About</a>
-      <a href="#services">Services</a>
-      <a href="#features">Features</a>
-      <a href="#contact">Contact</a>
-      <a href="login.html" class="btn btn-outline">Login</a>
-      <a href="register.html" class="btn btn-primary">Register</a>
+  <!-- Pill Navigation -->
+  <div class="pill-nav-container">
+    <nav class="pill-nav" aria-label="Primary">
+      <a class="pill-logo" href="#" aria-label="Home">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em"
+            font-size="90">&#127993;</text></svg>
+      </a>
+
+      <div class="pill-nav-items desktop-only">
+        <ul class="pill-list" role="menubar">
+          <li role="none">
+            <a role="menuitem" href="#about" class="pill" aria-label="About us">
+              <span class="hover-circle" aria-hidden="true"></span>
+              <span class="label-stack">
+                <span class="pill-label">About</span>
+                <span class="pill-label-hover" aria-hidden="true">About</span>
+              </span>
+            </a>
+          </li>
+          <li role="none">
+            <a role="menuitem" href="#services" class="pill" aria-label="Services">
+              <span class="hover-circle" aria-hidden="true"></span>
+              <span class="label-stack">
+                <span class="pill-label">Services</span>
+                <span class="pill-label-hover" aria-hidden="true">Services</span>
+              </span>
+            </a>
+          </li>
+          <li role="none">
+            <a role="menuitem" href="#features" class="pill" aria-label="Features">
+              <span class="hover-circle" aria-hidden="true"></span>
+              <span class="label-stack">
+                <span class="pill-label">Features</span>
+                <span class="pill-label-hover" aria-hidden="true">Features</span>
+              </span>
+            </a>
+          </li>
+          <li role="none">
+            <a role="menuitem" href="#contact" class="pill" aria-label="Contact">
+              <span class="hover-circle" aria-hidden="true"></span>
+              <span class="label-stack">
+                <span class="pill-label">Contact</span>
+                <span class="pill-label-hover" aria-hidden="true">Contact</span>
+              </span>
+            </a>
+          </li>
+          <li role="none">
+            <a role="menuitem" href="login.html" class="pill pill-btn-outline" aria-label="Login">
+              <span class="hover-circle" aria-hidden="true"></span>
+              <span class="label-stack">
+                <span class="pill-label">Login</span>
+                <span class="pill-label-hover" aria-hidden="true">Login</span>
+              </span>
+            </a>
+          </li>
+          <li role="none">
+            <a role="menuitem" href="register.html" class="pill pill-btn" aria-label="Register">
+              <span class="hover-circle" aria-hidden="true"></span>
+              <span class="label-stack">
+                <span class="pill-label">Register</span>
+                <span class="pill-label-hover" aria-hidden="true">Register</span>
+              </span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <button class="mobile-menu-button mobile-only" aria-label="Toggle menu">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+    </nav>
+
+    <div class="mobile-menu-popover mobile-only">
+      <ul class="mobile-menu-list">
+        <li><a href="#about" class="mobile-menu-link">About</a></li>
+        <li><a href="#services" class="mobile-menu-link">Services</a></li>
+        <li><a href="#features" class="mobile-menu-link">Features</a></li>
+        <li><a href="#contact" class="mobile-menu-link">Contact</a></li>
+        <li><a href="login.html" class="mobile-menu-link">Login</a></li>
+        <li><a href="register.html" class="mobile-menu-link">Register</a></li>
+      </ul>
     </div>
-  </nav>
+  </div>
 
   <!-- Hero -->
   <section class="hero">
     <div class="hero-content">
       <div class="hero-badge">&#10024; Specialized Oncology Platform</div>
       <h1>Expert Tumour Care, Compassionate Support</h1>
-      <p>Book oncology consultations, connect with tumour specialists, receive personalized treatment plans, and manage your cancer care journey — all from one place.</p>
+      <p>Book oncology consultations, connect with tumour specialists, receive personalized treatment plans, and manage
+        your cancer care journey — all from one place.</p>
       <div class="hero-actions">
         <a href="register.html" class="btn btn-primary btn-lg">Get Started Free</a>
         <a href="#services" class="btn btn-ghost btn-lg">Learn More &#8595;</a>
@@ -45,7 +125,10 @@
   <!-- About -->
   <section id="about" class="section">
     <h2 class="reveal">About TumourCare</h2>
-    <p class="reveal">We are a specialized oncology centre dedicated to providing comprehensive tumour care. Our experienced team of oncologists, surgeons, and support staff ensures every patient receives personalized treatment plans and compassionate care — now with the convenience of digital tools that bring cancer care management to your fingertips.</p>
+    <p class="reveal">We are a specialized oncology centre dedicated to providing comprehensive tumour care. Our
+      experienced team of oncologists, surgeons, and support staff ensures every patient receives personalized treatment
+      plans and compassionate care — now with the convenience of digital tools that bring cancer care management to your
+      fingertips.</p>
   </section>
 
   <!-- Services -->
@@ -56,17 +139,20 @@
       <div class="card service-card service-card-blue">
         <div class="service-icon">&#128197;</div>
         <h3>Oncology Consultations</h3>
-        <p>Submit your symptoms and get assigned to the right oncologist. Track your consultation and treatment status in real-time.</p>
+        <p>Submit your symptoms and get assigned to the right oncologist. Track your consultation and treatment status
+          in real-time.</p>
       </div>
       <div class="card service-card service-card-green">
         <div class="service-icon">&#128196;</div>
         <h3>Treatment Plans &amp; Prescriptions</h3>
-        <p>Receive treatment plans and prescriptions digitally. Download as PDF or print them anytime from your patient dashboard.</p>
+        <p>Receive treatment plans and prescriptions digitally. Download as PDF or print them anytime from your patient
+          dashboard.</p>
       </div>
       <div class="card service-card service-card-purple">
         <div class="service-icon">&#128100;</div>
         <h3>Patient Portal</h3>
-        <p>Access your complete treatment history, consultations, prescriptions, and follow-up schedules all in one secure place.</p>
+        <p>Access your complete treatment history, consultations, prescriptions, and follow-up schedules all in one
+          secure place.</p>
       </div>
     </div>
   </section>
@@ -214,10 +300,14 @@
   <button class="back-to-top" id="backToTop" aria-label="Back to top">&#8593;</button>
 
   <footer class="footer">
-    <div style="max-width:1140px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:2rem;text-align:left;padding:0 1.5rem 2rem;">
+    <div
+      style="max-width:1140px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:2rem;text-align:left;padding:0 1.5rem 2rem;">
       <div>
-        <div style="font-size:1.2rem;font-weight:700;background:linear-gradient(135deg,#60a5fa,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.75rem;">&#127993; TumourCare</div>
-        <p style="font-size:0.85rem;line-height:1.6;">Specialized oncology management for patients, doctors, and administrators.</p>
+        <div
+          style="font-size:1.2rem;font-weight:700;background:linear-gradient(135deg,#60a5fa,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.75rem;">
+          &#127993; TumourCare</div>
+        <p style="font-size:0.85rem;line-height:1.6;">Specialized oncology management for patients, doctors, and
+          administrators.</p>
       </div>
       <div>
         <h4 style="color:#e2e8f0;font-size:0.9rem;margin-bottom:0.75rem;">Quick Links</h4>
@@ -239,48 +329,25 @@
   </footer>
 
   <script>
-    // Nav toggle
-    var toggle = document.querySelector('.nav-toggle');
-    var navLinks = document.querySelector('.nav-links');
-    if (toggle) toggle.addEventListener('click', function() { navLinks.classList.toggle('nav-open'); });
-
-    // Smooth scroll
-    document.querySelectorAll('a[href^="#"]').forEach(function(link) {
-      link.addEventListener('click', function(e) {
-        var target = document.querySelector(this.getAttribute('href'));
-        if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
-      });
-    });
-
-    // Navbar solid on scroll
-    var navbar = document.querySelector('.navbar');
-    window.addEventListener('scroll', function() {
-      if (window.scrollY > 50) {
-        navbar.style.background = 'rgba(15, 23, 42, 0.92)';
-      } else {
-        navbar.style.background = 'rgba(15, 23, 42, 0.6)';
-      }
-    });
-
     // Scroll reveal
     var revealEls = document.querySelectorAll('.reveal');
-    var observer = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
         if (entry.isIntersecting) {
           entry.target.classList.add('visible');
           observer.unobserve(entry.target);
         }
       });
     }, { threshold: 0.15 });
-    revealEls.forEach(function(el) { observer.observe(el); });
+    revealEls.forEach(function (el) { observer.observe(el); });
 
     // Back to top button
     var backBtn = document.getElementById('backToTop');
-    window.addEventListener('scroll', function() {
+    window.addEventListener('scroll', function () {
       if (window.scrollY > 400) { backBtn.classList.add('visible'); }
       else { backBtn.classList.remove('visible'); }
     });
-    backBtn.addEventListener('click', function() { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+    backBtn.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: 'smooth' }); });
 
     // Animate stats on scroll
     var animated = false;
@@ -290,7 +357,7 @@
       var rect = el.getBoundingClientRect();
       if (rect.top < window.innerHeight * 0.8) {
         animated = true;
-        document.querySelectorAll('.stat-number').forEach(function(num) {
+        document.querySelectorAll('.stat-number').forEach(function (num) {
           var text = num.textContent;
           var match = text.match(/(\d+)/);
           if (!match) return;
@@ -298,7 +365,7 @@
           var suffix = text.replace(match[0], '');
           var current = 0;
           var step = Math.ceil(target / 40);
-          var timer = setInterval(function() {
+          var timer = setInterval(function () {
             current += step;
             if (current >= target) { current = target; clearInterval(timer); }
             num.textContent = current + suffix;
@@ -309,5 +376,9 @@
     window.addEventListener('scroll', animateStats);
     animateStats();
   </script>
+  <!-- GSAP Core for PillNav animations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="js/pill-nav.js"></script>
 </body>
+
 </html>

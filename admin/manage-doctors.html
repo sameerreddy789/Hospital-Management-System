@@ -1,23 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#127993;</text></svg>">
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#127993;</text></svg>">
   <title>Manage Doctors - TumourCare</title>
   <link rel="stylesheet" href="../css/style.css">
-</head>
+  <link rel="stylesheet" href="../css/pill-nav.css">
+
 <body class="dashboard-body">
-  <nav class="navbar">
-    <div class="nav-brand">&#127993; TumourCare</div>
-    <button class="nav-toggle" aria-label="Toggle navigation">&#9776;</button>
-    <div class="nav-links">
-      <a href="dashboard.html">Dashboard</a>
-      <a href="manage-doctors.html" class="active">Manage Doctors</a>
-      <a href="notifications.html">Notifications</a>
-      <a href="#" id="logoutBtn">Logout</a>
+  <!-- Pill Navigation -->
+  <div class="pill-nav-container">
+    <nav class="pill-nav" aria-label="Primary">
+      <a class="pill-logo" href="dashboard.html" aria-label="Home">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em"
+            font-size="90">&#127993;</text></svg>
+      </a>
+
+      <div class="pill-nav-items desktop-only">
+        <ul class="pill-list" role="menubar">
+          <li role="none">
+            <a role="menuitem" href="dashboard.html" class="pill" aria-label="Dashboard">
+              <span class="hover-circle" aria-hidden="true"></span>
+              <span class="label-stack">
+                <span class="pill-label">Dashboard</span>
+                <span class="pill-label-hover" aria-hidden="true">Dashboard</span>
+              </span>
+            </a>
+          </li>
+          <li role="none">
+            <a role="menuitem" href="manage-doctors.html" class="pill is-active" aria-label="Manage Doctors">
+              <span class="hover-circle" aria-hidden="true"></span>
+              <span class="label-stack">
+                <span class="pill-label">Manage Doctors</span>
+                <span class="pill-label-hover" aria-hidden="true">Manage Doctors</span>
+              </span>
+            </a>
+          </li>
+          <li role="none">
+            <a role="menuitem" href="notifications.html" class="pill" aria-label="Notifications">
+              <span class="hover-circle" aria-hidden="true"></span>
+              <span class="label-stack">
+                <span class="pill-label">Notifications</span>
+                <span class="pill-label-hover" aria-hidden="true">Notifications</span>
+              </span>
+            </a>
+          </li>
+          <li role="none">
+            <a role="menuitem" href="#" id="logoutBtn" class="pill pill-btn-outline" aria-label="Logout">
+              <span class="hover-circle" aria-hidden="true"></span>
+              <span class="label-stack">
+                <span class="pill-label">Logout</span>
+                <span class="pill-label-hover" aria-hidden="true">Logout</span>
+              </span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <button class="mobile-menu-button mobile-only" aria-label="Toggle menu">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+    </nav>
+
+    <div class="mobile-menu-popover mobile-only">
+      <ul class="mobile-menu-list">
+        <li><a href="dashboard.html" class="mobile-menu-link">Dashboard</a></li>
+        <li><a href="manage-doctors.html" class="mobile-menu-link is-active">Manage Doctors</a></li>
+        <li><a href="notifications.html" class="mobile-menu-link">Notifications</a></li>
+        <li><a href="#" id="logoutBtnMobile" class="mobile-menu-link">Logout</a></li>
+      </ul>
     </div>
-  </nav>
+  </div>
 
   <div class="container">
     <div class="breadcrumb"><a href="dashboard.html">Dashboard</a> <span>›</span> Manage Doctors</div>
@@ -72,7 +129,7 @@
   <script src="../js/firestore.js"></script>
   <script src="../js/search-filter.js"></script>
   <script>
-    requireAuth('admin').then(function(user) {
+    requireAuth('admin').then(function (user) {
       var listEl = document.getElementById('doctorList');
       var addMsg = document.getElementById('addMessage');
       var addBtn = document.getElementById('addBtn');
@@ -84,9 +141,9 @@
           return;
         }
         listEl.innerHTML = '';
-        doctors.forEach(function(doc) {
+        doctors.forEach(function (doc) {
           var card = createElement('div', { className: 'card' });
-          var initials = (doc.name || '?').split(' ').map(function(w) { return w[0]; }).join('').toUpperCase().slice(0, 2);
+          var initials = (doc.name || '?').split(' ').map(function (w) { return w[0]; }).join('').toUpperCase().slice(0, 2);
           var joinDate = doc.createdAt ? new Date(doc.createdAt.seconds * 1000).toLocaleDateString() : 'N/A';
           card.innerHTML = '<div style="display:flex;align-items:center;gap:1rem;margin-bottom:0.75rem;">' +
             '<div class="testimonial-avatar" style="flex-shrink:0;">' + initials + '</div>' +
@@ -100,20 +157,20 @@
       }
 
       function loadDoctors() {
-        getDoctorList().then(function(doctors) {
+        getDoctorList().then(function (doctors) {
           allDoctors = doctors;
           renderDoctors(doctors);
         });
       }
       loadDoctors();
 
-      document.getElementById('searchInput').addEventListener('input', function() {
+      document.getElementById('searchInput').addEventListener('input', function () {
         renderDoctors(filterByText(allDoctors, this.value, 'name'));
       });
 
       // Password toggle
-      document.querySelectorAll('.password-toggle').forEach(function(btn) {
-        btn.addEventListener('click', function() {
+      document.querySelectorAll('.password-toggle').forEach(function (btn) {
+        btn.addEventListener('click', function () {
           var input = this.previousElementSibling;
           var isPassword = input.type === 'password';
           input.type = isPassword ? 'text' : 'password';
@@ -121,7 +178,7 @@
         });
       });
 
-      document.getElementById('addDoctorForm').addEventListener('submit', function(e) {
+      document.getElementById('addDoctorForm').addEventListener('submit', function (e) {
         e.preventDefault();
         clearFieldErrors(this);
         addMsg.style.display = 'none';
@@ -150,7 +207,7 @@
 
         // Create doctor via Firebase Auth then add Firestore profile
         firebase.auth().createUserWithEmailAndPassword(email, password)
-          .then(function(cred) {
+          .then(function (cred) {
             return db.collection('users').doc(cred.user.uid).set({
               name: name,
               email: email,
@@ -159,23 +216,26 @@
               createdAt: firebase.firestore.FieldValue.serverTimestamp()
             });
           })
-          .then(function() {
+          .then(function () {
             addBtn.classList.remove('btn-loading');
             showToast('Doctor added successfully!', 'success');
             document.getElementById('addDoctorForm').reset();
             loadDoctors();
           })
-          .catch(function(err) {
+          .catch(function (err) {
             addBtn.classList.remove('btn-loading');
             showMessage(addMsg, err.message || 'Failed to add doctor.', 'error');
           });
       });
 
-      document.getElementById('logoutBtn').addEventListener('click', function(e) { e.preventDefault(); logoutUser(); });
-      var toggle = document.querySelector('.nav-toggle');
-      var navLinks = document.querySelector('.nav-links');
-      if (toggle) toggle.addEventListener('click', function() { navLinks.classList.toggle('nav-open'); });
+      document.getElementById('logoutBtn').addEventListener('click', function (e) { e.preventDefault(); logoutUser(); });
+      var logoutBtnMobile = document.getElementById('logoutBtnMobile');
+      if (logoutBtnMobile) logoutBtnMobile.addEventListener('click', function (e) { e.preventDefault(); logoutUser(); });
     });
   </script>
+  <!-- GSAP Core for PillNav animations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="../js/pill-nav.js"></script>
 </body>
+
 </html>
