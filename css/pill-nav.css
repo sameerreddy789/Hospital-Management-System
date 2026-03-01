@@ -22,7 +22,8 @@
 }
 
 .pill-nav {
-    --nav-h: 50px;
+    --nav-h: 60px;
+    /* Increased length by 20% */
     --logo: 36px;
     --pill-pad-x: 18px;
     --pill-gap: 3px;
