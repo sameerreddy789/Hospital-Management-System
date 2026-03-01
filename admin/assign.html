@@ -1,142 +1,234 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#127993;</text></svg>">
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#127993;</text></svg>">
   <title>Assign Patient - TumourCare</title>
   <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/admin-layout.css">
 </head>
+
 <body class="dashboard-body">
-  <nav class="navbar">
-    <div class="nav-brand">&#127993; TumourCare</div>
-    <button class="nav-toggle" aria-label="Toggle navigation">&#9776;</button>
-    <div class="nav-links">
-      <a href="dashboard.html">Dashboard</a>
-      <a href="manage-doctors.html">Manage Doctors</a>
-      <a href="notifications.html">Notifications</a>
-      <a href="#" id="logoutBtn">Logout</a>
+  <!-- Top Navbar -->
+  <nav class="dashboard-topnav">
+    <div class="topnav-inner">
+      <a href="dashboard.html" class="topnav-brand">
+        <img src="../logo.png" alt="TumourCare Logo">
+        <span>TumourCare</span>
+      </a>
+
+      <button class="topnav-toggle" id="navToggle" aria-label="Toggle navigation">&#9776;</button>
+
+      <div class="topnav-links" id="navLinks">
+        <a href="dashboard.html" class="active">
+          <svg viewBox="0 0 24 24">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+          Dashboard
+        </a>
+        <a href="manage-doctors.html">
+          <svg viewBox="0 0 24 24">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+          Manage Doctors
+        </a>
+        <a href="notifications.html">
+          <svg viewBox="0 0 24 24">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+          Notifications <span id="notifBadge" class="nav-badge" style="display:none;">0</span>
+        </a>
+      </div>
+
+      <a href="#" id="logoutBtn" class="topnav-logout" title="Logout">
+        <svg viewBox="0 0 24 24">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+          <polyline points="16 17 21 12 16 7"></polyline>
+          <line x1="21" y1="12" x2="9" y2="12"></line>
+        </svg>
+        <span>Logout</span>
+      </a>
     </div>
   </nav>
 
-  <div class="container">
-    <div class="breadcrumb"><a href="dashboard.html">Dashboard</a> <span>›</span> Assign Patient</div>
-    <h1>Assign Patient to Doctor</h1>
-    <div class="card">
-    <div id="message" class="message" style="display:none;"></div>
-    <form id="assignForm" novalidate>
-      <div class="form-group">
-        <label for="doctor">Select Doctor</label>
-        <select id="doctor" required>
-          <option value="">-- Select a Doctor --</option>
-        </select>
+  <main class="main-content">
+    <header class="page-header">
+      <div>
+        <h1>Assign Specialist</h1>
+        <div class="breadcrumb">Schedule a consultation for the patient</div>
       </div>
-      <div class="form-group">
-        <label for="date">Appointment Date</label>
-        <input type="date" id="date" required>
+    </header>
+
+    <div class="page-body">
+      <div class="breadcrumb"><a href="dashboard.html">Dashboard</a> <span>›</span> Assign Patient</div>
+      <h1>Assign Patient to Doctor</h1>
+      <div class="card">
+        <div id="message" class="message" style="display:none;"></div>
+        <form id="assignForm" novalidate>
+          <div class="form-group">
+            <label for="doctor">Select Doctor</label>
+            <select id="doctor" required>
+              <option value="">-- Select a Doctor --</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="date">Appointment Date</label>
+            <input type="date" id="date" required>
+          </div>
+          <div class="form-group">
+            <label for="time">Appointment Time</label>
+            <input type="time" id="time" required>
+          </div>
+          <div id="conflictWarning" class="message message-error" style="display:none;">
+            This doctor already has an appointment at the selected date and time.
+          </div>
+          <div class="card-actions">
+            <button type="submit" class="btn btn-primary">Assign</button>
+            <a href="dashboard.html" class="btn btn-outline">Cancel</a>
+          </div>
+        </form>
       </div>
-      <div class="form-group">
-        <label for="time">Appointment Time</label>
-        <input type="time" id="time" required>
-      </div>
-      <div id="conflictWarning" class="message message-error" style="display:none;">
-        This doctor already has an appointment at the selected date and time.
-      </div>
-      <div class="card-actions">
-        <button type="submit" class="btn btn-primary">Assign</button>
-        <a href="dashboard.html" class="btn btn-outline">Cancel</a>
-      </div>
-    </form>
     </div>
-  </div>
 
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-  <script src="../js/firebase-config.js"></script>
-  <script src="../js/utils.js"></script>
-  <script src="../js/validation.js"></script>
-  <script src="../js/auth.js"></script>
-  <script src="../js/auth-guard.js"></script>
-  <script src="../js/firestore.js"></script>
-  <script src="../js/notifications.js"></script>
-  <script>
-    requireAuth('admin').then(function(user) {
-      var params = new URLSearchParams(window.location.search);
-      var submissionId = params.get('id');
-      var patientId = params.get('patientId');
-      var messageEl = document.getElementById('message');
-      var conflictEl = document.getElementById('conflictWarning');
-      var doctorSelect = document.getElementById('doctor');
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/validation.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/auth-guard.js"></script>
+    <script src="../js/firestore.js"></script>
+    <script src="../js/notifications.js"></script>
+    <script>
+      requireAuth('admin').then(function (user) {
+        var params = new URLSearchParams(window.location.search);
+        var submissionId = params.get('id');
+        var patientId = params.get('patientId');
+        var messageEl = document.getElementById('message');
+        var conflictEl = document.getElementById('conflictWarning');
+        var doctorSelect = document.getElementById('doctor');
 
-      if (!submissionId || !patientId) {
-        showMessage(messageEl, 'Invalid request. Please go back to dashboard.', 'error');
-        return;
-      }
-
-      // Load doctors
-      getDoctorList().then(function(doctors) {
-        doctors.forEach(function(doc) {
-          var opt = document.createElement('option');
-          opt.value = doc.uid;
-          opt.textContent = doc.name;
-          doctorSelect.appendChild(opt);
-        });
-      });
-
-      // Check conflict on date/time change
-      function checkConflict() {
-        var doctorId = doctorSelect.value;
-        var date = document.getElementById('date').value;
-        var time = document.getElementById('time').value;
-        if (!doctorId || !date || !time) { conflictEl.style.display = 'none'; return; }
-        checkDoctorConflict(doctorId, date, time).then(function(hasConflict) {
-          conflictEl.style.display = hasConflict ? 'block' : 'none';
-        });
-      }
-
-      doctorSelect.addEventListener('change', checkConflict);
-      document.getElementById('date').addEventListener('change', checkConflict);
-      document.getElementById('time').addEventListener('change', checkConflict);
-
-      document.getElementById('assignForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        var doctorId = doctorSelect.value;
-        var date = document.getElementById('date').value;
-        var time = document.getElementById('time').value;
-
-        if (!doctorId || !date || !time) {
-          showMessage(messageEl, 'Please fill in all fields.', 'error');
+        if (!submissionId || !patientId) {
+          showMessage(messageEl, 'Invalid request. Please go back to dashboard.', 'error');
           return;
         }
 
-        checkDoctorConflict(doctorId, date, time).then(function(hasConflict) {
-          if (hasConflict) {
-            showMessage(messageEl, 'Cannot assign: doctor has a conflict at this time.', 'error');
+        // Load doctors
+        getDoctorList().then(function (doctors) {
+          doctors.forEach(function (doc) {
+            var opt = document.createElement('option');
+            opt.value = doc.uid;
+            opt.textContent = doc.name;
+            doctorSelect.appendChild(opt);
+          });
+        });
+
+        // Check conflict on date/time change
+        function checkConflict() {
+          var doctorId = doctorSelect.value;
+          var date = document.getElementById('date').value;
+          var time = document.getElementById('time').value;
+          if (!doctorId || !date || !time) { conflictEl.style.display = 'none'; return; }
+          checkDoctorConflict(doctorId, date, time).then(function (hasConflict) {
+            conflictEl.style.display = hasConflict ? 'block' : 'none';
+          });
+        }
+
+        doctorSelect.addEventListener('change', checkConflict);
+        document.getElementById('date').addEventListener('change', checkConflict);
+        document.getElementById('time').addEventListener('change', checkConflict);
+
+        // Success Modal Helper
+        function showSuccessModal(title, message) {
+          var modal = document.createElement('div');
+          modal.className = 'modal';
+          modal.style.display = 'flex';
+          modal.innerHTML =
+            '<div class="modal-content success-animation" style="text-align:center; max-width:400px; padding: 3rem 2rem;">' +
+            '<div class="success-icon-wrapper">' +
+            '<svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">' +
+            '<circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>' +
+            '<path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>' +
+            '</svg>' +
+            '</div>' +
+            '<h2 style="margin: 1.5rem 0 0.5rem; color: #0f172a;">' + title + '</h2>' +
+            '<p style="color: #64748b; margin-bottom: 2rem;">' + message + '</p>' +
+            '<div class="progress-bar-container"><div class="progress-bar-fill"></div></div>' +
+            '<p style="font-size: 0.8rem; color: #94a3b8; margin-top: 1rem;">Redirecting to dashboard...</p>' +
+            '</div>';
+          document.body.appendChild(modal);
+
+          // Animate redirect
+          setTimeout(function () {
+            window.location.href = 'dashboard.html';
+          }, 3000);
+        }
+
+        document.getElementById('assignForm').addEventListener('submit', function (e) {
+          e.preventDefault();
+          var submitBtn = this.querySelector('button[type="submit"]');
+          var doctorId = doctorSelect.value;
+          var date = document.getElementById('date').value;
+          var time = document.getElementById('time').value;
+
+          if (!doctorId || !date || !time) {
+            showMessage(messageEl, 'Please fill in all fields.', 'error');
             return;
           }
-          return createAppointment(patientId, doctorId, submissionId, date, time)
-            .then(function() {
-              return updateSubmissionStatus(submissionId, 'assigned');
-            })
-            .then(function() {
-              // Notify patient and doctor
-              var doctorName = doctorSelect.options[doctorSelect.selectedIndex].text;
-              createNotification(patientId, 'You have been assigned to Dr. ' + doctorName + ' on ' + date + ' at ' + time, 'assignment');
-              createNotification(doctorId, 'New patient assigned to you on ' + date + ' at ' + time, 'assignment');
-              showMessage(messageEl, 'Patient assigned successfully!', 'success');
-              setTimeout(function() { window.location.href = 'dashboard.html'; }, 1500);
-            });
-        }).catch(function(err) {
-          showMessage(messageEl, err.message || 'Assignment failed.', 'error');
-        });
-      });
 
-      document.getElementById('logoutBtn').addEventListener('click', function(e) { e.preventDefault(); logoutUser(); });
-      var toggle = document.querySelector('.nav-toggle');
-      var navLinks = document.querySelector('.nav-links');
-      if (toggle) toggle.addEventListener('click', function() { navLinks.classList.toggle('nav-open'); });
-    });
-  </script>
+          submitBtn.classList.add('btn-loading');
+          submitBtn.disabled = true;
+
+          checkDoctorConflict(doctorId, date, time).then(function (hasConflict) {
+            if (hasConflict) {
+              submitBtn.classList.remove('btn-loading');
+              submitBtn.disabled = false;
+              showMessage(messageEl, 'Cannot assign: doctor has a conflict at this time.', 'error');
+              return;
+            }
+            return createAppointment(patientId, doctorId, submissionId, date, time)
+              .then(function () {
+                return updateSubmissionStatus(submissionId, 'assigned');
+              })
+              .then(function () {
+                // Notify patient and doctor
+                var doctorName = doctorSelect.options[doctorSelect.selectedIndex].text;
+                createNotification(patientId, 'You have been assigned to Dr. ' + doctorName + ' on ' + date + ' at ' + time, 'assignment');
+                createNotification(doctorId, 'New patient assigned to you on ' + date + ' at ' + time, 'assignment');
+
+                showSuccessModal('Assigned Successfully!', 'Patient has been scheduled for a consultation with Dr. ' + doctorName + '.');
+              });
+          }).catch(function (err) {
+            submitBtn.classList.remove('btn-loading');
+            submitBtn.disabled = false;
+            showMessage(messageEl, err.message || 'Assignment failed.', 'error');
+          });
+        });
+
+        document.getElementById('logoutBtn').addEventListener('click', function (e) { e.preventDefault(); logoutUser(); });
+
+        // Mobile Nav Toggle
+        var navToggle = document.getElementById('navToggle');
+        var navLinks = document.getElementById('navLinks');
+        if (navToggle && navLinks) {
+          navToggle.addEventListener('click', function () {
+            navLinks.classList.toggle('open');
+          });
+        }
+      });
+    </script>
+  </main>
+  <!-- GSAP Core for PillNav animations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 </body>
+
 </html>
