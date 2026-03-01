@@ -4,89 +4,511 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon"
-    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#127993;</text></svg>">
+  <link rel="icon" href="logo.png">
   <title>Register - TumourCare</title>
-  <link rel="stylesheet" href="css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <style>
+    /* ============================================================
+       Registration Page — Matches Login Premium Light Design
+       ============================================================ */
+    .register-page {
+      min-height: 100vh;
+      background: linear-gradient(160deg, #f0f4ff 0%, #e8eeff 50%, #f5f0ff 100%);
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 2rem;
+      position: relative;
+      overflow-y: auto;
+      font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    .register-page::before {
+      content: '';
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.06) 0%, transparent 70%);
+      top: -150px;
+      right: -100px;
+      border-radius: 50%;
+    }
+
+    .register-page::after {
+      content: '';
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(139, 92, 246, 0.05) 0%, transparent 70%);
+      bottom: -100px;
+      left: -80px;
+      border-radius: 50%;
+    }
+
+    .register-container {
+      max-width: 700px;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Brand */
+    .register-brand {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 2.5rem;
+    }
+
+    .register-brand img {
+      max-height: 48px;
+      border-radius: 100px;
+    }
+
+    .register-brand span {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #1e293b;
+      letter-spacing: 0.02em;
+    }
+
+    /* Headings */
+    .register-container h1 {
+      color: #1e293b;
+      font-size: 2rem;
+      font-weight: 800;
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .register-container>div>p,
+    #roleSelection>p {
+      color: #64748b;
+      text-align: center;
+      font-size: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    /* Role Cards Grid */
+    .role-cards {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .role-card {
+      background: #ffffff;
+      border: 1.5px solid rgba(226, 232, 240, 0.8);
+      border-radius: 20px;
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.35s cubic-bezier(0.165, 0.84, 0.44, 1);
+      position: relative;
+      overflow: hidden;
+      font-family: inherit;
+      color: inherit;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+    }
+
+    .role-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+    }
+
+    .role-card.role-blue:hover {
+      border-color: rgba(59, 130, 246, 0.5);
+    }
+
+    .role-card.role-green:hover {
+      border-color: rgba(16, 185, 129, 0.5);
+    }
+
+    .role-card.role-purple:hover {
+      border-color: rgba(139, 92, 246, 0.5);
+    }
+
+    /* Role Icon */
+    .role-card-icon {
+      width: 68px;
+      height: 68px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      font-size: 1.8rem;
+      transition: all 0.3s ease;
+    }
+
+    .role-icon-blue {
+      background: rgba(59, 130, 246, 0.12);
+      color: #3b82f6;
+    }
+
+    .role-icon-green {
+      background: rgba(16, 185, 129, 0.12);
+      color: #10b981;
+    }
+
+    .role-icon-purple {
+      background: rgba(139, 92, 246, 0.12);
+      color: #8b5cf6;
+    }
+
+    .role-card:hover .role-icon-blue {
+      background: #3b82f6;
+      color: #fff;
+      box-shadow: 0 8px 20px rgba(59, 130, 246, 0.35);
+    }
+
+    .role-card:hover .role-icon-green {
+      background: #10b981;
+      color: #fff;
+      box-shadow: 0 8px 20px rgba(16, 185, 129, 0.35);
+    }
+
+    .role-card:hover .role-icon-purple {
+      background: #8b5cf6;
+      color: #fff;
+      box-shadow: 0 8px 20px rgba(139, 92, 246, 0.35);
+    }
+
+    .role-card h3 {
+      color: #1e293b;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .role-card p {
+      color: #64748b;
+      font-size: 0.85rem;
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    .role-card-badge {
+      display: inline-block;
+      margin-top: 0.75rem;
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      background: rgba(245, 158, 11, 0.12);
+      color: #d97706;
+    }
+
+    /* Auth Links */
+    .auth-links {
+      text-align: center;
+      margin-top: 1.5rem;
+    }
+
+    .auth-links a {
+      color: #3b82f6;
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .auth-links a:hover {
+      color: #2563eb;
+      text-decoration: underline;
+    }
+
+    /* ===== Step 2: Form Card ===== */
+    .register-form-card {
+      background: #ffffff;
+      border: 1px solid rgba(226, 232, 240, 0.8);
+      border-radius: 20px;
+      padding: 2.5rem 2rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    .register-form-card h1 {
+      margin-bottom: 0.25rem;
+    }
+
+    .register-form-card #roleSubtext {
+      color: #64748b;
+      text-align: center;
+      font-size: 0.95rem;
+      margin-bottom: 2rem;
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Back link */
+    .back-link {
+      background: none;
+      border: none;
+      color: #3b82f6;
+      cursor: pointer;
+      font-size: 0.9rem;
+      padding: 0 0 2px 0;
+      margin-bottom: 1.5rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.2s;
+      font-family: inherit;
+      position: relative;
+    }
+
+    .back-link::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 1.5px;
+      background: #8b5cf6;
+      transition: width 0.3s ease;
+    }
+
+    .back-link:hover::after {
+      width: 100%;
+    }
+
+    /* Form elements */
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-group label {
+      display: block;
+      color: #334155;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 0.85rem 1rem;
+      background: #f8fafc;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 12px;
+      color: #1e293b;
+      font-size: 0.95rem;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      outline: none;
+      font-family: inherit;
+      box-sizing: border-box;
+    }
+
+    .form-group input::placeholder {
+      color: #94a3b8;
+    }
+
+    .form-group input:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    }
+
+    .password-wrapper {
+      position: relative;
+    }
+
+    .password-wrapper input {
+      padding-right: 3rem;
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #64748b;
+      cursor: pointer;
+      font-size: 1.1rem;
+      padding: 0;
+      transition: color 0.2s;
+    }
+
+    .password-toggle:hover {
+      color: #94a3b8;
+    }
+
+    /* Submit button */
+    .register-form-card .btn-primary {
+      width: 100%;
+      padding: 0.9rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 12px;
+      margin-top: 0.5rem;
+      cursor: pointer;
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      color: #fff;
+      border: none;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+
+    .register-form-card .btn-primary:hover {
+      opacity: 0.92;
+      transform: translateY(-1px);
+    }
+
+    .register-form-card .btn-loading {
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    .register-form-card .auth-links {
+      margin-top: 1.5rem;
+    }
+
+    .register-form-card .auth-links a {
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Message */
+    .message {
+      padding: 0.85rem 1rem;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .message-info {
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.25);
+      color: #92400e;
+    }
+
+    .message-success {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      color: #065f46;
+    }
+
+    .message-error {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.25);
+      color: #991b1b;
+    }
+
+    /* Responsive */
+    @media (max-width: 576px) {
+      .role-cards {
+        grid-template-columns: 1fr;
+      }
+
+      .register-container {
+        max-width: 100%;
+      }
+
+      .register-form-card {
+        padding: 2rem 1.5rem;
+      }
+    }
+  </style>
 </head>
 
-<body class="auth-page">
-  <div class="auth-container">
-    <div class="auth-brand">&#127993; TumourCare</div>
+<body class="register-page">
+  <div class="register-container">
+    <!-- Brand -->
+    <div class="register-brand">
+      <img src="logo.png" alt="TumourCare Logo">
+      <span>TumourCare</span>
+    </div>
 
     <!-- Step 1: Role Selection -->
     <div id="roleSelection">
       <h1>Create Account</h1>
-      <div class="role-cards grid-3">
-        <button class="role-card" data-role="patient" type="button">
-          <div class="role-card-icon role-icon-blue">&#128100;</div>
+      <p>Select your role to get started</p>
+      <div class="role-cards">
+        <button class="role-card role-blue" data-role="patient" type="button">
+          <div class="role-card-icon role-icon-blue">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+          </div>
           <h3>Patient</h3>
           <p>Request consultations &amp; view health records</p>
         </button>
-        <button class="role-card" data-role="doctor" type="button">
-          <div class="role-card-icon role-icon-green">&#129657;</div>
+        <button class="role-card role-green" data-role="doctor" type="button">
+          <div class="role-card-icon role-icon-green">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+          </div>
           <h3>Doctor</h3>
           <p>Manage patients &amp; provide care</p>
-          <span class="role-card-badge role-card-badge-info">Requires Approval</span>
+          <span class="role-card-badge">Requires Approval</span>
         </button>
-        <button class="role-card" data-role="admin" type="button">
-          <div class="role-card-icon" style="background: #f1f5f9; color: #475569;">&#128187;</div>
-          <h3>Administrator</h3>
-          <p>System management &amp; care coordination</p>
-          <span class="role-card-badge role-card-badge-info">Requires Approval</span>
-        </button>
-      </div>
-    </div>
-    <div class="auth-links">
-      <a href="login.html">Already have an account? Sign In</a>
-    </div>
-  </div>
 
-  <!-- Step 2: Registration Form -->
-  <div id="registerStep" style="display:none;">
-    <button type="button" class="back-link" id="backToRoles">&larr; Back to role selection</button>
-    <h1>Register as <span id="roleLabel" class="gradient-text"></span></h1>
-    <p id="roleSubtext"></p>
-    <div id="approvalNotice" class="message message-info" style="display:none;">
-      &#128274; Your account will require admin approval before you can sign in.
+      </div>
+      <div class="auth-links">
+        <a href="login.html">Already have an account? Sign In</a>
+      </div>
     </div>
-    <div id="message" class="message" style="display:none;"></div>
-    <form id="registerForm" novalidate>
-      <div class="form-group">
-        <label for="name">Full Name</label>
-        <input type="text" id="name" name="name" placeholder="John Doe" autocomplete="name" required>
-      </div>
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email" required>
-      </div>
-      <div class="form-group" id="specializationGroup" style="display:none;">
-        <label for="specialization">Specialization</label>
-        <input type="text" id="specialization" name="specialization"
-          placeholder="e.g. Surgical Oncology, Radiation Oncology">
-      </div>
-      <div class="form-group">
-        <label for="password">Password</label>
-        <div class="password-wrapper">
-          <input type="password" id="password" name="password" placeholder="Min 6 characters"
-            autocomplete="new-password" required>
-          <button type="button" class="password-toggle" aria-label="Toggle password visibility">&#128065;</button>
+
+    <!-- Step 2: Registration Form -->
+    <div id="registerStep" style="display:none;">
+      <div class="register-form-card">
+        <button type="button" class="back-link" id="backToRoles">&larr; Back to role selection</button>
+        <h1>Register as <span id="roleLabel" class="gradient-text"></span></h1>
+        <p id="roleSubtext"></p>
+        <div id="approvalNotice" class="message message-info" style="display:none;">
+          &#128274; Your account will require admin approval before you can sign in.
+        </div>
+        <div id="message" class="message" style="display:none;"></div>
+        <form id="registerForm" novalidate>
+          <div class="form-group">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" name="name" placeholder="John Doe" autocomplete="name" required>
+          </div>
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email" required>
+          </div>
+          <div class="form-group" id="specializationGroup" style="display:none;">
+            <label for="specialization">Specialization</label>
+            <input type="text" id="specialization" name="specialization"
+              placeholder="e.g. Surgical Oncology, Radiation Oncology">
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <div class="password-wrapper">
+              <input type="password" id="password" name="password" placeholder="Min 6 characters"
+                autocomplete="new-password" required>
+              <button type="button" class="password-toggle" aria-label="Toggle password visibility">&#128065;</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="confirmPassword">Confirm Password</label>
+            <div class="password-wrapper">
+              <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Repeat password"
+                autocomplete="new-password" required>
+              <button type="button" class="password-toggle" aria-label="Toggle password visibility">&#128065;</button>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary" id="submitBtn">Create Account</button>
+        </form>
+        <div class="auth-links">
+          <a href="login.html">Already have an account? Sign In</a>
         </div>
       </div>
-      <div class="form-group">
-        <label for="confirmPassword">Confirm Password</label>
-        <div class="password-wrapper">
-          <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Repeat password"
-            autocomplete="new-password" required>
-          <button type="button" class="password-toggle" aria-label="Toggle password visibility">&#128065;</button>
-        </div>
-      </div>
-      <button type="submit" class="btn btn-primary" id="submitBtn">Create Account</button>
-    </form>
-    <div class="auth-links">
-      <a href="login.html">Already have an account? Sign In</a>
     </div>
-  </div>
   </div>
 
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
