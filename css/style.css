@@ -261,33 +261,35 @@ a:hover {
 .auth-page {
   min-height: 100vh;
   display: flex;
-  align-items: center;
-  justify-content: center;
   background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 40%, #0f172a 100%);
   position: relative;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 2rem 1.5rem;
 }
 
 .auth-page::before {
   content: '';
-  position: absolute;
+  position: fixed;
   width: 500px;
   height: 500px;
   background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%);
   top: -100px;
   right: -100px;
   border-radius: 50%;
+  z-index: 0;
 }
 
 .auth-page::after {
   content: '';
-  position: absolute;
+  position: fixed;
   width: 400px;
   height: 400px;
   background: radial-gradient(circle, rgba(139, 92, 246, 0.12) 0%, transparent 70%);
   bottom: -80px;
   left: -80px;
   border-radius: 50%;
+  z-index: 0;
 }
 
 .auth-container {
@@ -306,7 +308,7 @@ a:hover {
 }
 
 .auth-page .auth-container {
-  margin: 0;
+  margin: auto;
 }
 
 .auth-container h1 {
@@ -2452,6 +2454,10 @@ body {
   margin: 2rem 0;
 }
 
+.role-cards.grid-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
 .role-card {
   background: rgba(255, 255, 255, 0.06);
   border: 1.5px solid rgba(255, 255, 255, 0.1);
@@ -2559,6 +2565,10 @@ body {
   .role-cards {
     grid-template-columns: 1fr;
     gap: 0.6rem;
+  }
+
+  .role-cards.grid-2 {
+    grid-template-columns: 1fr;
   }
 
   .role-card {

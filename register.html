@@ -1,21 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#127993;</text></svg>">
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#127993;</text></svg>">
   <title>Register - TumourCare</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body class="auth-page">
-  <div class="auth-container auth-container-wide">
+  <div class="auth-container">
     <div class="auth-brand">&#127993; TumourCare</div>
 
     <!-- Step 1: Role Selection -->
     <div id="roleSelection">
       <h1>Create Account</h1>
       <p>Select your role to get started</p>
-      <div class="role-cards">
+      <div class="role-cards grid-2">
         <button class="role-card" data-role="patient" type="button">
           <div class="role-card-icon role-icon-blue">&#128100;</div>
           <h3>Patient</h3>
@@ -26,12 +29,6 @@
           <h3>Doctor</h3>
           <p>Manage patients &amp; prescribe</p>
           <span class="role-card-badge role-card-badge-info">Requires Approval</span>
-        </button>
-        <button class="role-card role-card-disabled" data-role="admin" type="button" disabled>
-          <div class="role-card-icon role-icon-purple">&#128736;</div>
-          <h3>Admin</h3>
-          <p>Pre-provisioned account</p>
-          <span class="role-card-badge">Contact Admin</span>
         </button>
       </div>
       <div class="auth-links">
@@ -59,19 +56,22 @@
         </div>
         <div class="form-group" id="specializationGroup" style="display:none;">
           <label for="specialization">Specialization</label>
-          <input type="text" id="specialization" name="specialization" placeholder="e.g. Surgical Oncology, Radiation Oncology">
+          <input type="text" id="specialization" name="specialization"
+            placeholder="e.g. Surgical Oncology, Radiation Oncology">
         </div>
         <div class="form-group">
           <label for="password">Password</label>
           <div class="password-wrapper">
-            <input type="password" id="password" name="password" placeholder="Min 6 characters" autocomplete="new-password" required>
+            <input type="password" id="password" name="password" placeholder="Min 6 characters"
+              autocomplete="new-password" required>
             <button type="button" class="password-toggle" aria-label="Toggle password visibility">&#128065;</button>
           </div>
         </div>
         <div class="form-group">
           <label for="confirmPassword">Confirm Password</label>
           <div class="password-wrapper">
-            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Repeat password" autocomplete="new-password" required>
+            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Repeat password"
+              autocomplete="new-password" required>
             <button type="button" class="password-toggle" aria-label="Toggle password visibility">&#128065;</button>
           </div>
         </div>
@@ -103,16 +103,16 @@
 
     var roleInfo = {
       patient: { label: 'Patient', sub: 'Fill in your details to create an account' },
-      doctor: { label: 'Doctor', sub: 'Register and wait for admin approval to get started' },
-      admin: { label: 'Admin', sub: 'Register and wait for existing admin approval' }
+      doctor: { label: 'Doctor', sub: 'Register and wait for admin approval to get started' }
     };
 
     // Role card click
-    document.querySelectorAll('.role-card').forEach(function(card) {
-      card.addEventListener('click', function() {
+    document.querySelectorAll('.role-card').forEach(function (card) {
+      card.addEventListener('click', function () {
         selectedRole = this.getAttribute('data-role');
         roleLabel.textContent = roleInfo[selectedRole].label;
         roleSubtext.textContent = roleInfo[selectedRole].sub;
+        submitBtn.textContent = selectedRole === 'doctor' ? 'Send Approval Request' : 'Create Account';
         approvalNotice.style.display = (selectedRole !== 'patient') ? 'block' : 'none';
         specGroup.style.display = (selectedRole === 'doctor') ? 'block' : 'none';
         roleSelection.style.display = 'none';
@@ -122,7 +122,7 @@
     });
 
     // Back button
-    document.getElementById('backToRoles').addEventListener('click', function() {
+    document.getElementById('backToRoles').addEventListener('click', function () {
       registerStep.style.display = 'none';
       roleSelection.style.display = 'block';
       messageEl.style.display = 'none';
@@ -130,8 +130,8 @@
     });
 
     // Password toggles
-    document.querySelectorAll('.password-toggle').forEach(function(btn) {
-      btn.addEventListener('click', function() {
+    document.querySelectorAll('.password-toggle').forEach(function (btn) {
+      btn.addEventListener('click', function () {
         var input = this.previousElementSibling;
         var isPassword = input.type === 'password';
         input.type = isPassword ? 'text' : 'password';
@@ -140,7 +140,7 @@
     });
 
     // Register submit
-    form.addEventListener('submit', function(e) {
+    form.addEventListener('submit', function (e) {
       e.preventDefault();
       clearFieldErrors(form);
       messageEl.style.display = 'none';
@@ -174,7 +174,7 @@
 
       submitBtn.classList.add('btn-loading');
       registerUser(name, email, password, selectedRole, specialization)
-        .then(function() {
+        .then(function () {
           submitBtn.classList.remove('btn-loading');
           if (selectedRole === 'patient') {
             messageEl.textContent = 'Registration successful! Redirecting to login...';
@@ -184,9 +184,9 @@
             messageEl.className = 'message message-success';
           }
           messageEl.style.display = 'block';
-          setTimeout(function() { window.location.href = 'login.html'; }, 3000);
+          setTimeout(function () { window.location.href = 'login.html'; }, 3000);
         })
-        .catch(function(err) {
+        .catch(function (err) {
           submitBtn.classList.remove('btn-loading');
           messageEl.textContent = err.message || 'Registration failed. Please try again.';
           messageEl.className = 'message message-error';
@@ -195,4 +195,5 @@
     });
   </script>
 </body>
+
 </html>
