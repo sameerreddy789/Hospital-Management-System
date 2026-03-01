@@ -17,70 +17,76 @@
     <!-- Step 1: Role Selection -->
     <div id="roleSelection">
       <h1>Create Account</h1>
-      <p>Select your role to get started</p>
-      <div class="role-cards grid-2">
+      <div class="role-cards grid-3">
         <button class="role-card" data-role="patient" type="button">
           <div class="role-card-icon role-icon-blue">&#128100;</div>
           <h3>Patient</h3>
-          <p>Submit problems &amp; view prescriptions</p>
+          <p>Request consultations &amp; view health records</p>
         </button>
         <button class="role-card" data-role="doctor" type="button">
           <div class="role-card-icon role-icon-green">&#129657;</div>
           <h3>Doctor</h3>
-          <p>Manage patients &amp; prescribe</p>
+          <p>Manage patients &amp; provide care</p>
+          <span class="role-card-badge role-card-badge-info">Requires Approval</span>
+        </button>
+        <button class="role-card" data-role="admin" type="button">
+          <div class="role-card-icon" style="background: #f1f5f9; color: #475569;">&#128187;</div>
+          <h3>Administrator</h3>
+          <p>System management &amp; care coordination</p>
           <span class="role-card-badge role-card-badge-info">Requires Approval</span>
         </button>
       </div>
-      <div class="auth-links">
-        <a href="login.html">Already have an account? Sign In</a>
-      </div>
     </div>
+    <div class="auth-links">
+      <a href="login.html">Already have an account? Sign In</a>
+    </div>
+  </div>
 
-    <!-- Step 2: Registration Form -->
-    <div id="registerStep" style="display:none;">
-      <button type="button" class="back-link" id="backToRoles">&larr; Back to role selection</button>
-      <h1>Register as <span id="roleLabel" class="gradient-text"></span></h1>
-      <p id="roleSubtext"></p>
-      <div id="approvalNotice" class="message message-info" style="display:none;">
-        &#128274; Your account will require admin approval before you can sign in.
-      </div>
-      <div id="message" class="message" style="display:none;"></div>
-      <form id="registerForm" novalidate>
-        <div class="form-group">
-          <label for="name">Full Name</label>
-          <input type="text" id="name" name="name" placeholder="John Doe" autocomplete="name" required>
-        </div>
-        <div class="form-group">
-          <label for="email">Email</label>
-          <input type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email" required>
-        </div>
-        <div class="form-group" id="specializationGroup" style="display:none;">
-          <label for="specialization">Specialization</label>
-          <input type="text" id="specialization" name="specialization"
-            placeholder="e.g. Surgical Oncology, Radiation Oncology">
-        </div>
-        <div class="form-group">
-          <label for="password">Password</label>
-          <div class="password-wrapper">
-            <input type="password" id="password" name="password" placeholder="Min 6 characters"
-              autocomplete="new-password" required>
-            <button type="button" class="password-toggle" aria-label="Toggle password visibility">&#128065;</button>
-          </div>
-        </div>
-        <div class="form-group">
-          <label for="confirmPassword">Confirm Password</label>
-          <div class="password-wrapper">
-            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Repeat password"
-              autocomplete="new-password" required>
-            <button type="button" class="password-toggle" aria-label="Toggle password visibility">&#128065;</button>
-          </div>
-        </div>
-        <button type="submit" class="btn btn-primary" id="submitBtn">Create Account</button>
-      </form>
-      <div class="auth-links">
-        <a href="login.html">Already have an account? Sign In</a>
-      </div>
+  <!-- Step 2: Registration Form -->
+  <div id="registerStep" style="display:none;">
+    <button type="button" class="back-link" id="backToRoles">&larr; Back to role selection</button>
+    <h1>Register as <span id="roleLabel" class="gradient-text"></span></h1>
+    <p id="roleSubtext"></p>
+    <div id="approvalNotice" class="message message-info" style="display:none;">
+      &#128274; Your account will require admin approval before you can sign in.
     </div>
+    <div id="message" class="message" style="display:none;"></div>
+    <form id="registerForm" novalidate>
+      <div class="form-group">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" name="name" placeholder="John Doe" autocomplete="name" required>
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email" required>
+      </div>
+      <div class="form-group" id="specializationGroup" style="display:none;">
+        <label for="specialization">Specialization</label>
+        <input type="text" id="specialization" name="specialization"
+          placeholder="e.g. Surgical Oncology, Radiation Oncology">
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="password-wrapper">
+          <input type="password" id="password" name="password" placeholder="Min 6 characters"
+            autocomplete="new-password" required>
+          <button type="button" class="password-toggle" aria-label="Toggle password visibility">&#128065;</button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="confirmPassword">Confirm Password</label>
+        <div class="password-wrapper">
+          <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Repeat password"
+            autocomplete="new-password" required>
+          <button type="button" class="password-toggle" aria-label="Toggle password visibility">&#128065;</button>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary" id="submitBtn">Create Account</button>
+    </form>
+    <div class="auth-links">
+      <a href="login.html">Already have an account? Sign In</a>
+    </div>
+  </div>
   </div>
 
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -103,7 +109,8 @@
 
     var roleInfo = {
       patient: { label: 'Patient', sub: 'Fill in your details to create an account' },
-      doctor: { label: 'Doctor', sub: 'Register and wait for admin approval to get started' }
+      doctor: { label: 'Doctor', sub: 'Register as an oncology specialist' },
+      admin: { label: 'Administrator', sub: 'Register to manage hospital operations' }
     };
 
     // Role card click
@@ -174,10 +181,10 @@
 
       submitBtn.classList.add('btn-loading');
       registerUser(name, email, password, selectedRole, specialization)
-        .then(function () {
+        .then(function (status) {
           submitBtn.classList.remove('btn-loading');
-          if (selectedRole === 'patient') {
-            messageEl.textContent = 'Registration successful! Redirecting to login...';
+          if (status === 'active') {
+            messageEl.textContent = 'Registration successful! Your account is active. Redirecting to login...';
             messageEl.className = 'message message-success';
           } else {
             messageEl.textContent = 'Registration submitted! Your account is pending admin approval. You will be notified once approved.';
