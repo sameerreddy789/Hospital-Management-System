@@ -1,65 +1,466 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#127993;</text></svg>">
+  <link rel="icon" href="logo.png">
   <title>Login - TumourCare</title>
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* ============================================================
+       Login Page — Premium Dark Design
+       ============================================================ */
+    .login-page {
+      min-height: 100vh;
+      background: linear-gradient(160deg, #f0f4ff 0%, #e8eeff 50%, #f5f0ff 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .login-page::before {
+      content: '';
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.06) 0%, transparent 70%);
+      top: -150px;
+      right: -100px;
+      border-radius: 50%;
+    }
+
+    .login-page::after {
+      content: '';
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(139, 92, 246, 0.05) 0%, transparent 70%);
+      bottom: -100px;
+      left: -80px;
+      border-radius: 50%;
+    }
+
+    .login-container {
+      max-width: 680px;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Brand */
+    .login-brand {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 2.5rem;
+    }
+
+    .login-brand img {
+      max-height: 48px;
+      border-radius: 100px;
+    }
+
+    .login-brand span {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #1e293b;
+      letter-spacing: 0.02em;
+    }
+
+    /* Headings */
+    .login-container h1 {
+      color: #1e293b;
+      font-size: 2rem;
+      font-weight: 800;
+      text-align: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .login-container>div>p,
+    #roleSelection>p {
+      color: #64748b;
+      text-align: center;
+      font-size: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    /* Role Cards Grid */
+    .role-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .role-card {
+      background: #ffffff;
+      border: 1.5px solid rgba(226, 232, 240, 0.8);
+      border-radius: 20px;
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.35s cubic-bezier(0.165, 0.84, 0.44, 1);
+      position: relative;
+      overflow: hidden;
+      font-family: inherit;
+      color: inherit;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+    }
+
+    .role-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+    }
+
+    .role-card:hover.role-blue {
+      border-color: rgba(59, 130, 246, 0.5);
+    }
+
+    .role-card:hover.role-green {
+      border-color: rgba(16, 185, 129, 0.5);
+    }
+
+    .role-card:hover.role-purple {
+      border-color: rgba(139, 92, 246, 0.5);
+    }
+
+    /* Role Icon */
+    .role-card-icon {
+      width: 68px;
+      height: 68px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .role-card-icon svg {
+      width: 34px;
+      height: 34px;
+    }
+
+    .role-icon-blue {
+      background: rgba(59, 130, 246, 0.12);
+      color: #3b82f6;
+    }
+
+    .role-icon-green {
+      background: rgba(16, 185, 129, 0.12);
+      color: #10b981;
+    }
+
+    .role-icon-purple {
+      background: rgba(139, 92, 246, 0.12);
+      color: #8b5cf6;
+    }
+
+    /* Icon hover fills */
+    .role-card:hover .role-icon-blue {
+      background: #3b82f6;
+      color: #fff;
+      box-shadow: 0 8px 20px rgba(59, 130, 246, 0.35);
+    }
+
+    .role-card:hover .role-icon-green {
+      background: #10b981;
+      color: #fff;
+      box-shadow: 0 8px 20px rgba(16, 185, 129, 0.35);
+    }
+
+    .role-card:hover .role-icon-purple {
+      background: #8b5cf6;
+      color: #fff;
+      box-shadow: 0 8px 20px rgba(139, 92, 246, 0.35);
+    }
+
+    .role-card h3 {
+      color: #1e293b;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .role-card p {
+      color: #64748b;
+      font-size: 0.85rem;
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    /* Auth Links */
+    .auth-links {
+      text-align: center;
+      margin-top: 0.5rem;
+    }
+
+    .auth-links a {
+      color: #3b82f6;
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .auth-links a:hover {
+      color: #2563eb;
+      text-decoration: underline;
+    }
+
+    /* Back link */
+    .back-link {
+      background: none;
+      border: none;
+      color: #3b82f6;
+      cursor: pointer;
+      font-size: 0.9rem;
+      padding: 0 0 2px 0;
+      margin-bottom: 1.5rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.2s;
+      font-family: inherit;
+      position: relative;
+    }
+
+    .back-link::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 1.5px;
+      background: #f59e0b;
+      transition: width 0.3s ease;
+    }
+
+    .back-link:hover::after {
+      width: 100%;
+    }
+
+    /* Login Form Card */
+    .login-form-card {
+      background: #ffffff;
+      border: 1px solid rgba(226, 232, 240, 0.8);
+      border-radius: 20px;
+      padding: 2.5rem 2rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    .login-form-card h1 {
+      margin-bottom: 0.25rem;
+    }
+
+    #roleSubtext {
+      color: #64748b;
+      text-align: center;
+      font-size: 0.95rem;
+      margin-bottom: 2rem;
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Form elements */
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    .form-group label {
+      display: block;
+      color: #334155;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 0.85rem 1rem;
+      background: #f8fafc;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 12px;
+      color: #1e293b;
+      font-size: 0.95rem;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      outline: none;
+      font-family: inherit;
+      box-sizing: border-box;
+    }
+
+    .form-group input::placeholder {
+      color: #94a3b8;
+    }
+
+    .form-group input:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    }
+
+    .password-wrapper {
+      position: relative;
+    }
+
+    .password-wrapper input {
+      padding-right: 3rem;
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #64748b;
+      cursor: pointer;
+      font-size: 1.1rem;
+      padding: 0;
+      transition: color 0.2s;
+    }
+
+    .password-toggle:hover {
+      color: #94a3b8;
+    }
+
+    /* Submit button */
+    .login-form-card .btn-primary {
+      width: 100%;
+      padding: 0.9rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 12px;
+      margin-top: 0.5rem;
+      cursor: pointer;
+    }
+
+    .login-form-card .auth-links {
+      margin-top: 1.5rem;
+    }
+
+    .login-form-card .auth-links a {
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Message */
+    .message {
+      padding: 0.85rem 1rem;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .message-error {
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.25);
+      color: #fca5a5;
+    }
+
+    /* Responsive */
+    @media (max-width: 576px) {
+      .role-cards {
+        grid-template-columns: 1fr;
+      }
+
+      .login-container {
+        max-width: 100%;
+      }
+
+      .login-form-card {
+        padding: 2rem 1.5rem;
+      }
+    }
+  </style>
 </head>
-<body class="auth-page">
-  <div class="auth-container auth-container-wide">
-    <div class="auth-brand">&#127993; TumourCare</div>
+
+<body class="login-page">
+  <div class="login-container">
+    <!-- Brand -->
+    <div class="login-brand">
+      <img src="logo.png" alt="TumourCare Logo">
+      <span>TumourCare</span>
+    </div>
 
     <!-- Step 1: Role Selection -->
     <div id="roleSelection">
       <h1>Welcome Back</h1>
-      <p>Select your role to sign in</p>
+      <p>Select your role to continue</p>
       <div class="role-cards">
-        <button class="role-card" data-role="patient" type="button">
-          <div class="role-card-icon role-icon-blue">&#128100;</div>
+        <button class="role-card role-blue" data-role="patient" type="button">
+          <div class="role-card-icon role-icon-blue">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+          </div>
           <h3>Patient</h3>
           <p>View appointments, prescriptions &amp; reports</p>
         </button>
-        <button class="role-card" data-role="doctor" type="button">
-          <div class="role-card-icon role-icon-green">&#129657;</div>
+        <button class="role-card role-green" data-role="doctor" type="button">
+          <div class="role-card-icon role-icon-green">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5" />
+            </svg>
+          </div>
           <h3>Doctor</h3>
           <p>Manage patients, prescribe &amp; review history</p>
         </button>
-        <button class="role-card" data-role="admin" type="button">
-          <div class="role-card-icon role-icon-purple">&#128736;</div>
+        <button class="role-card role-purple" data-role="admin" type="button">
+          <div class="role-card-icon role-icon-purple">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+          </div>
           <h3>Admin</h3>
           <p>Assign doctors, manage system &amp; reports</p>
         </button>
       </div>
       <div class="auth-links">
-        <a href="register.html">&#128101; New patient? Register here</a>
+        <a href="register.html">New patient? Register here &rarr;</a>
       </div>
     </div>
 
     <!-- Step 2: Login Form (hidden initially) -->
     <div id="loginStep" style="display:none;">
-      <button type="button" class="back-link" id="backToRoles">&larr; Back to role selection</button>
-      <h1>Sign In as <span id="roleLabel" class="gradient-text"></span></h1>
-      <p id="roleSubtext"></p>
-      <div id="message" class="message" style="display:none;"></div>
-      <form id="loginForm" novalidate>
-        <div class="form-group">
-          <label for="email">Email</label>
-          <input type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email" required>
-        </div>
-        <div class="form-group">
-          <label for="password">Password</label>
-          <div class="password-wrapper">
-            <input type="password" id="password" name="password" placeholder="Enter your password" autocomplete="current-password" required>
-            <button type="button" class="password-toggle" aria-label="Toggle password visibility">&#128065;</button>
+      <div class="login-form-card">
+        <button type="button" class="back-link" id="backToRoles">&larr; Change Role</button>
+        <h1>Sign In as <span id="roleLabel" class="gradient-text"></span></h1>
+        <p id="roleSubtext"></p>
+        <div id="message" class="message" style="display:none;"></div>
+        <form id="loginForm" novalidate>
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email" required>
           </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <div class="password-wrapper">
+              <input type="password" id="password" name="password" placeholder="Enter your password"
+                autocomplete="current-password" required>
+              <button type="button" class="password-toggle" aria-label="Toggle password visibility">&#128065;</button>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary" id="submitBtn">Sign In</button>
+        </form>
+        <div class="auth-links">
+          <a href="reset-password.html">Forgot Password?</a>
+          <a href="register.html">Don't have an account? Register</a>
         </div>
-        <button type="submit" class="btn btn-primary" id="submitBtn">Sign In</button>
-      </form>
-      <div class="auth-links">
-        <a href="reset-password.html">Forgot Password?</a>
-        <a href="register.html">Don't have an account? Register</a>
       </div>
     </div>
   </div>
@@ -86,20 +487,35 @@
       admin: { label: 'Admin', sub: 'Manage assignments, doctors and system reports' }
     };
 
+    // Helper: select a role and show login form
+    function selectRole(role) {
+      selectedRole = role;
+      roleLabel.textContent = roleInfo[selectedRole].label;
+      roleSubtext.textContent = roleInfo[selectedRole].sub;
+      roleSelection.style.display = 'none';
+      loginStep.style.display = 'block';
+    }
+
+    // Auto-select role from URL param (e.g. login.html?role=patient)
+    var urlParams = new URLSearchParams(window.location.search);
+    var urlRole = urlParams.get('role');
+    if (urlRole && roleInfo[urlRole]) {
+      selectRole(urlRole);
+    }
+
     // Role card click
-    document.querySelectorAll('.role-card').forEach(function(card) {
-      card.addEventListener('click', function() {
-        selectedRole = this.getAttribute('data-role');
-        roleLabel.textContent = roleInfo[selectedRole].label;
-        roleSubtext.textContent = roleInfo[selectedRole].sub;
-        roleSelection.style.display = 'none';
-        loginStep.style.display = 'block';
+    document.querySelectorAll('.role-card').forEach(function (card) {
+      card.addEventListener('click', function () {
+        var role = this.getAttribute('data-role');
+        // Update URL so back button returns to this form
+        history.replaceState(null, '', 'login.html?role=' + role);
+        selectRole(role);
         document.getElementById('email').focus();
       });
     });
 
     // Back button
-    document.getElementById('backToRoles').addEventListener('click', function() {
+    document.getElementById('backToRoles').addEventListener('click', function () {
       loginStep.style.display = 'none';
       roleSelection.style.display = 'block';
       messageEl.style.display = 'none';
@@ -107,8 +523,8 @@
     });
 
     // Password toggle
-    document.querySelectorAll('.password-toggle').forEach(function(btn) {
-      btn.addEventListener('click', function() {
+    document.querySelectorAll('.password-toggle').forEach(function (btn) {
+      btn.addEventListener('click', function () {
         var input = this.previousElementSibling;
         var isPassword = input.type === 'password';
         input.type = isPassword ? 'text' : 'password';
@@ -117,7 +533,7 @@
     });
 
     // Login submit
-    form.addEventListener('submit', function(e) {
+    form.addEventListener('submit', function (e) {
       e.preventDefault();
       clearFieldErrors(form);
       messageEl.style.display = 'none';
@@ -140,7 +556,7 @@
 
       submitBtn.classList.add('btn-loading');
       loginUser(email, password)
-        .then(function(user) {
+        .then(function (user) {
           // Verify role matches selection
           if (user.role !== selectedRole) {
             submitBtn.classList.remove('btn-loading');
@@ -157,7 +573,7 @@
           };
           window.location.href = dashboards[user.role] || '/';
         })
-        .catch(function(err) {
+        .catch(function (err) {
           submitBtn.classList.remove('btn-loading');
           messageEl.textContent = err.message || 'Login failed. Please check your credentials.';
           messageEl.className = 'message message-error';
@@ -166,4 +582,5 @@
     });
   </script>
 </body>
+
 </html>
