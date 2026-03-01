@@ -50,7 +50,7 @@
     /* Remove border radius and box shadow so it sits flush at the top like a regular navbar */
     border-radius: 0;
     box-shadow: none;
-    background: rgba(10, 15, 30, 0.98);
+    background: #0f172a;
     /* Ensure solid background like older navbar */
 }
 
@@ -69,29 +69,23 @@
     display: flex;
     align-items: center;
     height: var(--nav-h);
-    background: var(--base);
+    background: transparent;
     border-radius: 9999px;
 }
 
 .pill-logo {
-    width: var(--nav-h);
     height: var(--nav-h);
-    border-radius: 50%;
-    background: var(--base);
-    padding: 8px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
     text-decoration: none;
-    font-size: 1.5rem;
 }
 
 .pill-logo img,
 .pill-logo svg {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    max-height: 100%;
+    width: auto;
+    object-fit: contain;
     display: block;
 }
 
@@ -130,17 +124,20 @@
     cursor: pointer;
     position: relative;
     overflow: hidden;
-    transition: color 0.3s;
+    transition: all 0.3s ease;
 }
 
 .pill:hover {
     text-decoration: none;
-    color: inherit;
+    color: #10b981;
+    background: rgba(16, 185, 129, 0.12);
+    /* Soft emerald green fade */
 }
 
 .pill.is-active {
-    color: var(--pill-text);
-    background: var(--pill-bg);
+    color: #059669;
+    background: rgba(16, 185, 129, 0.2);
+    /* Stronger emerald green for active */
     font-weight: 600;
 }
 
