@@ -4,90 +4,83 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon"
-    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#127993;</text></svg>">
+  <link rel="icon" href="../logo.png">
   <title>Notifications - TumourCare</title>
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/patient-layout.css">
 </head>
 
 <body class="dashboard-body">
-  <!-- Mobile Overlay -->
-  <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-  <!-- Mobile Toggle -->
-  <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle navigation">
-    &#9776;
-  </button>
+  <!-- Top Navbar -->
+  <nav class="dashboard-topnav">
+    <div class="topnav-inner">
+      <a href="dashboard.html" class="topnav-brand">
+        <img src="../logo.png" alt="TumourCare Logo">
+        <span>TumourCare</span>
+      </a>
 
-  <!-- Sidebar -->
-  <aside class="patient-sidebar" id="patientSidebar">
-    <div class="sidebar-brand">
-      <h2><span>&#127993;</span> TumourCare</h2>
-    </div>
+      <button class="topnav-toggle" id="navToggle" aria-label="Toggle navigation">&#9776;</button>
 
-    <nav class="sidebar-nav">
-      <a href="dashboard.html">
-        <svg viewBox="0 0 24 24">
-          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-          <polyline points="9 22 9 12 15 12 15 22"></polyline>
-        </svg>
-        Dashboard
-      </a>
-      <a href="submit-problem.html">
-        <svg viewBox="0 0 24 24">
-          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-        </svg>
-        Submit Problem
-      </a>
-      <a href="appointments.html">
-        <svg viewBox="0 0 24 24">
-          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-          <line x1="16" y1="2" x2="16" y2="6"></line>
-          <line x1="8" y1="2" x2="8" y2="6"></line>
-          <line x1="3" y1="10" x2="21" y2="10"></line>
-        </svg>
-        Appointments
-      </a>
-      <a href="prescriptions.html">
-        <svg viewBox="0 0 24 24">
-          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-          <polyline points="14 2 14 8 20 8"></polyline>
-          <line x1="16" y1="13" x2="8" y2="13"></line>
-          <line x1="16" y1="17" x2="8" y2="17"></line>
-          <polyline points="10 9 9 9 8 9"></polyline>
-        </svg>
-        Prescriptions
-      </a>
-      <a href="profile.html">
-        <svg viewBox="0 0 24 24">
-          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-          <circle cx="12" cy="7" r="4"></circle>
-        </svg>
-        Profile
-      </a>
-      <a href="notifications.html" class="active">
-        <svg viewBox="0 0 24 24">
-          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-          <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-        </svg>
-        Notifications <span id="notifBadge" class="nav-badge" style="display:none;">0</span>
-      </a>
-    </nav>
+      <div class="topnav-links" id="navLinks">
+        <a href="dashboard.html">
+          <svg viewBox="0 0 24 24">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+          Dashboard
+        </a>
+        <a href="submit-problem.html">
+          <svg viewBox="0 0 24 24">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+          </svg>
+          Request Consultation
+        </a>
+        <a href="appointments.html">
+          <svg viewBox="0 0 24 24">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          Appointments
+        </a>
+        <a href="prescriptions.html">
+          <svg viewBox="0 0 24 24">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+          </svg>
+          Prescriptions
+        </a>
+        <a href="profile.html">
+          <svg viewBox="0 0 24 24">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+          Profile
+        </a>
+        <a href="notifications.html" class="active">
+          <svg viewBox="0 0 24 24">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+          Notifications <span id="notifBadge" class="nav-badge" style="display:none;">0</span>
+        </a>
+      </div>
 
-    <div class="sidebar-footer">
-      <a href="#" id="logoutBtnSidebar">
+      <a href="#" id="logoutBtnSidebar" class="topnav-logout" title="Logout">
         <svg viewBox="0 0 24 24">
           <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
           <polyline points="16 17 21 12 16 7"></polyline>
           <line x1="21" y1="12" x2="9" y2="12"></line>
         </svg>
-        Logout
+        <span>Logout</span>
       </a>
     </div>
-  </aside>
-
+  </nav>
   <!-- Main Content Area -->
   <main class="main-content">
     <header class="page-header">
@@ -102,7 +95,7 @@
       <div id="notifList" class="list-container">
         <div class="loading-container">
           <div class="loading-spinner"></div>
-          <span class="loading-text">Loading notifications...</span>
+          <span class="loading-text" style="color: #64748b; font-weight: 500;">Checking for notifications...</span>
         </div>
       </div>
     </div>
@@ -118,8 +111,8 @@
   <script>
     requireAuth('patient').then(function (user) {
       var emptyHtml = '<div class="empty-state">' +
-        '<div class="empty-state-icon">&#128276;</div>' +
-        '<p style="font-size:1.05rem;color:#1e293b;font-weight:600;margin-bottom:0.25rem;">No Notifications</p>' +
+        '<div class="empty-state-icon"><svg viewBox="0 0 24 24" width="64" height="64" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="color: #cbd5e1;"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg></div>' +
+        '<h3>No Notifications</h3>' +
         '<p>You\'re all caught up! Notifications about your appointments, prescriptions, and updates will appear here.</p>' +
         '</div>';
 
@@ -130,7 +123,27 @@
         notifs.forEach(function (n) {
           var card = createElement('div', { className: 'card' + (n.read ? '' : ' card-unread') });
           var dateStr = n.createdAt ? new Date(n.createdAt.seconds * 1000).toLocaleString() : '';
-          card.innerHTML = '<p>' + escapeHtml(n.message) + '</p><p class="text-muted">' + dateStr + '</p>';
+
+          var iconHtml = '';
+          var iconClass = 'notif-update';
+          var iconSvg = '<svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>';
+
+          if (n.type === 'request') {
+            iconClass = 'notif-request';
+            iconSvg = '<svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>';
+          } else if (n.type === 'cancellation') {
+            iconClass = 'notif-cancellation';
+            iconSvg = '<svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>';
+          }
+
+          card.innerHTML = '<div class="notification-item">' +
+            '<div class="notification-icon ' + iconClass + '">' + iconSvg + '</div>' +
+            '<div>' +
+            '<p style="margin-bottom: 0.25rem; font-weight: 500; color: #0f172a;">' + escapeHtml(n.message) + '</p>' +
+            '<p class="text-muted" style="font-size: 0.8rem;">' + dateStr + '</p>' +
+            '</div>' +
+            '</div>';
+
           if (!n.read) {
             card.addEventListener('click', function () { markAsRead(n.id); card.classList.remove('card-unread'); });
           }
@@ -140,17 +153,11 @@
         document.getElementById('notifList').innerHTML = emptyHtml;
       });
       document.getElementById('logoutBtnSidebar').addEventListener('click', function (e) { e.preventDefault(); confirmLogout(); });
-      var toggle = document.getElementById('sidebarToggle');
-      var sidebar = document.getElementById('patientSidebar');
-      var overlay = document.getElementById('sidebarOverlay');
-      if (toggle && sidebar && overlay) {
-        toggle.addEventListener('click', function () {
-          sidebar.classList.add('open');
-          overlay.classList.add('active');
-        });
-        overlay.addEventListener('click', function () {
-          sidebar.classList.remove('open');
-          overlay.classList.remove('active');
+      var navToggle = document.getElementById('navToggle');
+      var navLinks = document.getElementById('navLinks');
+      if (navToggle && navLinks) {
+        navToggle.addEventListener('click', function () {
+          navLinks.classList.toggle('open');
         });
       }
     });
