@@ -413,7 +413,7 @@
                 d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
             </svg>
           </div>
-          <div class="stat-number" id="statPatients">500+</div>
+          <div class="stat-number" data-countup-to="500" data-countup-suffix="+">0</div>
           <div class="stat-label">Patients Served</div>
         </div>
         <div class="premium-stat">
@@ -423,7 +423,7 @@
                 d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <div class="stat-number">50+</div>
+          <div class="stat-number" data-countup-to="50" data-countup-suffix="+">0</div>
           <div class="stat-label">Expert Oncologists</div>
         </div>
         <div class="premium-stat">
@@ -433,7 +433,7 @@
                 d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <div class="stat-number">24/7</div>
+          <div class="stat-number" data-countup-to="24" data-countup-suffix="/7">0</div>
           <div class="stat-label">Online Access</div>
         </div>
         <div class="premium-stat">
@@ -443,7 +443,7 @@
                 d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <div class="stat-number">98%</div>
+          <div class="stat-number" data-countup-to="98" data-countup-suffix="%">0</div>
           <div class="stat-label">Satisfaction Rate</div>
         </div>
       </div>
@@ -582,54 +582,16 @@
 
 
 
-  <script>
-    // Scroll reveal
-    var revealEls = document.querySelectorAll('.reveal');
-    var observer = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.15 });
-    revealEls.forEach(function (el) { observer.observe(el); });
-
-    // Back to top button
-    var backBtn = document.getElementById('backToTop');
-    window.addEventListener('scroll', function () {
-      if (window.scrollY > 400) { backBtn.classList.add('visible'); }
-      else { backBtn.classList.remove('visible'); }
-    });
-    backBtn.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: 'smooth' }); });
-
-    // Animate stats on scroll
-    var animated = false;
-    function animateStats() {
-      var el = document.getElementById('stats');
-      if (!el || animated) return;
-      var rect = el.getBoundingClientRect();
-      if (rect.top < window.innerHeight * 0.8) {
-        animated = true;
-        document.querySelectorAll('.stat-number').forEach(function (num) {
-          var text = num.textContent;
-          var match = text.match(/(\d+)/);
-          if (!match) return;
-          var target = parseInt(match[0]);
-          var suffix = text.replace(match[0], '');
-          var current = 0;
-          var step = Math.ceil(target / 40);
-          var timer = setInterval(function () {
-            current += step;
-            if (current >= target) { current = target; clearInterval(timer); }
-            num.textContent = current + suffix;
-          }, 30);
-        });
-      }
-    }
-    window.addEventListener('scroll', animateStats);
-    animateStats();
+  window.addEventListener('scroll', function () {
+  if (window.scrollY > 400) { backBtn.classList.add('visible'); }
+  else { backBtn.classList.remove('visible'); }
+  });
+  backBtn.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: 'smooth' }); });
   </script>
+  <!-- GSAP Core for PillNav animations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="js/pill-nav.js"></script>
+  <script src="js/count-up.js"></script>
   <!-- GSAP Core for PillNav animations -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script src="js/pill-nav.js"></script>
