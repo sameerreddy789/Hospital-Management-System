@@ -350,13 +350,21 @@ function getPatientHistory(patientId) {
 function onSubmissionsChange(callback) {
   return db.collection('problemSubmissions')
     .where('status', '==', 'pending')
-    .orderBy('createdAt', 'desc')
     .onSnapshot(function (snapshot) {
       var results = [];
       snapshot.forEach(function (doc) {
         results.push(Object.assign({ id: doc.id }, doc.data()));
       });
+      // Sort in JS to avoid index requirement
+      results.sort(function (a, b) {
+        var t1 = (a.createdAt && a.createdAt.seconds) ? a.createdAt.seconds : 0;
+        var t2 = (b.createdAt && b.createdAt.seconds) ? b.createdAt.seconds : 0;
+        return t2 - t1;
+      });
       callback(results);
+    }, function (err) {
+      console.error("Submissions listener error:", err);
+      callback([]);
     });
 }
 
@@ -370,18 +378,28 @@ function onSubmissionsChange(callback) {
 function onAppointmentsChange(userId, role, callback) {
   var query;
   if (role === 'admin') {
-    query = db.collection('appointments').orderBy('scheduledDate', 'desc');
+    query = db.collection('appointments');
   } else if (role === 'doctor') {
-    query = db.collection('appointments').where('doctorId', '==', userId).orderBy('scheduledDate', 'desc');
+    query = db.collection('appointments').where('doctorId', '==', userId);
   } else {
-    query = db.collection('appointments').where('patientId', '==', userId).orderBy('scheduledDate', 'desc');
+    query = db.collection('appointments').where('patientId', '==', userId);
   }
   return query.onSnapshot(function (snapshot) {
     var results = [];
     snapshot.forEach(function (doc) {
       results.push(Object.assign({ id: doc.id }, doc.data()));
     });
+    // Sort in JS
+    results.sort(function (a, b) {
+      var d1 = a.scheduledDate || '';
+      var d2 = b.scheduledDate || '';
+      if (d1 !== d2) return d2.localeCompare(d1);
+      return (b.scheduledTime || '').localeCompare(a.scheduledTime || '');
+    });
     callback(results);
+  }, function (err) {
+    console.error("Appointments listener error:", err);
+    callback([]);
   });
 }
 
@@ -498,13 +516,21 @@ function rejectUser(uid) {
 function onPendingUsersChange(callback) {
   return db.collection('users')
     .where('status', '==', 'pending')
-    .orderBy('createdAt', 'desc')
     .onSnapshot(function (snapshot) {
       var results = [];
       snapshot.forEach(function (doc) {
         results.push(Object.assign({ id: doc.id }, doc.data()));
       });
+      // Sort in JS
+      results.sort(function (a, b) {
+        var t1 = (a.createdAt && a.createdAt.seconds) ? a.createdAt.seconds : 0;
+        var t2 = (b.createdAt && b.createdAt.seconds) ? b.createdAt.seconds : 0;
+        return t2 - t1;
+      });
       callback(results);
+    }, function (err) {
+      console.error("Pending users listener error:", err);
+      callback([]);
     });
 }
 
