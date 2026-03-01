@@ -619,3 +619,30 @@
         opacity: 1;
     }
 }
+
+/* ============================================================
+   Pagination Controls
+   ============================================================ */
+.pagination-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+    padding: 0.75rem 0;
+}
+
+.pagination-controls .btn {
+    min-width: 90px;
+}
+
+.pagination-controls .btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.pagination-info {
+    font-size: 0.85rem;
+    color: #64748b;
+    font-weight: 500;
+}
