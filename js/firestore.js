@@ -414,9 +414,22 @@ function onStatsChange(role, userId, callback) {
   var unsubscribers = [];
 
   if (role === 'admin') {
+    var pendingSubmissions = 0;
+    var pendingUsers = 0;
+
     unsubscribers.push(
       db.collection('problemSubmissions').where('status', '==', 'pending')
-        .onSnapshot(function (snap) { callback({ pendingCount: snap.size }); })
+        .onSnapshot(function (snap) {
+          pendingSubmissions = snap.size;
+          callback({ pendingCount: pendingSubmissions + pendingUsers });
+        })
+    );
+    unsubscribers.push(
+      db.collection('users').where('status', '==', 'pending')
+        .onSnapshot(function (snap) {
+          pendingUsers = snap.size;
+          callback({ pendingCount: pendingSubmissions + pendingUsers });
+        })
     );
     unsubscribers.push(
       db.collection('appointments').where('status', '==', 'assigned')

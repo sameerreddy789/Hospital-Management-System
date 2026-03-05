@@ -120,6 +120,24 @@
         </div>
       </div>
 
+      <!-- Section 0: Doctor Registration Requests -->
+      <div id="doctorApprovalSection" class="dashboard-section" style="display:none;">
+        <div class="section-header">
+          <h2>
+            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"
+              style="vertical-align:middle;margin-right:8px;">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <polyline points="16 11 18 13 22 9"></polyline>
+            </svg>
+            Doctor Registration Requests
+          </h2>
+        </div>
+        <div id="pendingDoctorsList" class="list-container">
+          <div class="skeleton skeleton-card"></div>
+        </div>
+      </div>
+
       <!-- Section 1: Patient Requests -->
       <div class="dashboard-section">
         <div class="section-header">
@@ -351,6 +369,64 @@
             renderAssigned(appointments);
           });
         }
+
+        // ========== Section 0: Doctor Registration Requests ==========
+        var pendingDoctorsContainer = document.getElementById('pendingDoctorsList');
+        var doctorApprovalSection = document.getElementById('doctorApprovalSection');
+
+        function renderPendingDoctors(users) {
+          var doctors = users.filter(function (u) { return u.role === 'doctor'; });
+          if (doctors.length === 0) {
+            doctorApprovalSection.style.display = 'none';
+            return;
+          }
+          doctorApprovalSection.style.display = 'block';
+          pendingDoctorsContainer.innerHTML = '';
+          doctors.forEach(function (u) {
+            var card = createElement('div', { className: 'card list-row' });
+            var initials = (u.name || '?').split(' ').map(function (w) { return w[0]; }).join('').toUpperCase().slice(0, 2);
+            var spec = u.specialization ? ' <span class="text-muted">' + escapeHtml(u.specialization) + '</span>' : '';
+            var dateStr = u.createdAt ? new Date(u.createdAt.seconds * 1000).toLocaleDateString() : '';
+            card.innerHTML = '<div class="list-row-info">' +
+              '<div class="list-row-avatar" style="background:linear-gradient(135deg,#f59e0b,#d97706);">' + initials + '</div>' +
+              '<div><strong>' + escapeHtml(u.name) + '</strong> <span class="badge badge-info">Doctor</span>' + spec +
+              '<br><span class="text-muted">' + escapeHtml(u.email) + ' &middot; ' + dateStr + '</span></div>' +
+              '</div>' +
+              '<div class="list-row-actions" style="display:flex;gap:0.4rem;">' +
+              '<button class="btn btn-success btn-sm approve-btn" data-uid="' + u.id + '">&#10003; Approve</button>' +
+              '<button class="btn btn-danger btn-sm reject-btn" data-uid="' + u.id + '">&#10007; Reject</button>' +
+              '</div>';
+
+            card.querySelector('.approve-btn').addEventListener('click', function () {
+              var btn = this;
+              btn.classList.add('btn-loading');
+              approveUser(u.id).then(function () {
+                showToast('Doctor approved successfully!', 'success');
+                // The onSnapshot will refresh the list
+              }).catch(function (err) {
+                btn.classList.remove('btn-loading');
+                showToast('Failed to approve: ' + err.message, 'error');
+              });
+            });
+
+            card.querySelector('.reject-btn').addEventListener('click', function () {
+              if (!confirm('Are you sure you want to reject Dr. ' + u.name + '?')) return;
+              var btn = this;
+              btn.classList.add('btn-loading');
+              rejectUser(u.id).then(function () {
+                showToast('Registration rejected.', 'info');
+              }).catch(function (err) {
+                btn.classList.remove('btn-loading');
+                showToast('Failed to reject: ' + err.message, 'error');
+              });
+            });
+            pendingDoctorsContainer.appendChild(card);
+          });
+        }
+
+        onPendingUsersChange(function (users) {
+          renderPendingDoctors(users);
+        });
 
         // ========== Real-time Stats ==========
         onStatsChange('admin', user.uid, function (stats) {
