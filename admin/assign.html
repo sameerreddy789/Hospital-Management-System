@@ -106,138 +106,126 @@
         </form>
       </div>
     </div>
+  </main>
 
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-    <script src="../js/firebase-config.js"></script>
-    <script src="../js/utils.js"></script>
-    <script src="../js/validation.js"></script>
-    <script src="../js/auth.js"></script>
-    <script src="../js/auth-guard.js"></script>
-    <script src="../js/firestore.js"></script>
-    <script src="../js/notifications.js"></script>
-    <script>
-      requireAuth('admin').then(function (user) {
-        var params = new URLSearchParams(window.location.search);
-        var submissionId = params.get('id');
-        var patientId = params.get('patientId');
-        var messageEl = document.getElementById('message');
-        var conflictEl = document.getElementById('conflictWarning');
-        var doctorSelect = document.getElementById('doctor');
 
-        if (!submissionId || !patientId) {
-          showMessage(messageEl, 'Invalid request. Please go back to dashboard.', 'error');
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="../js/firebase-config.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/validation.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/auth-guard.js"></script>
+  <script src="../js/firestore.js"></script>
+  <script src="../js/notifications.js"></script>
+  <script>
+    requireAuth('admin').then(function (user) {
+      var params = new URLSearchParams(window.location.search);
+      var submissionId = params.get('id');
+      var patientId = params.get('patientId');
+      var messageEl = document.getElementById('message');
+      var conflictEl = document.getElementById('conflictWarning');
+      var doctorSelect = document.getElementById('doctor');
+
+      if (!submissionId || !patientId) {
+        showMessage(messageEl, 'Invalid request. Please go back to dashboard.', 'error');
+        return;
+      }
+
+      // Load doctors
+      getDoctorList().then(function (doctors) {
+        doctors.forEach(function (doc) {
+          var opt = document.createElement('option');
+          opt.value = doc.id;
+          opt.textContent = doc.name;
+          doctorSelect.appendChild(opt);
+        });
+      });
+
+      // Check conflict on date/time change
+      function checkConflict() {
+        var doctorId = doctorSelect.value;
+        var date = document.getElementById('date').value;
+        var time = document.getElementById('time').value;
+        if (!doctorId || !date || !time) { conflictEl.style.display = 'none'; return; }
+        checkDoctorConflict(doctorId, date, time).then(function (hasConflict) {
+          conflictEl.style.display = hasConflict ? 'block' : 'none';
+        });
+      }
+
+      doctorSelect.addEventListener('change', checkConflict);
+      document.getElementById('date').addEventListener('change', checkConflict);
+      document.getElementById('time').addEventListener('change', checkConflict);
+
+      // Success Modal Helper
+      function showSuccessModal(title, message) {
+        var modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.style.display = 'flex';
+        modal.innerHTML =
+          '<div class="modal-content success-animation" style="text-align:center; max-width:400px; padding: 3rem 2rem;">' +
+          '<div class="success-icon-wrapper">' +
+          '<svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">' +
+          '<circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>' +
+          '<path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>' +
+          '</svg>' +
+          '</div>' +
+          '<h2 style="margin: 1.5rem 0 0.5rem; color: #0f172a;">' + title + '</h2>' +
+          '<p style="color: #64748b; margin-bottom: 2rem;">' + message + '</p>' +
+          '<div class="progress-bar-container"><div class="progress-bar-fill"></div></div>' +
+          '<p style="font-size: 0.8rem; color: #94a3b8; margin-top: 1rem;">Redirecting to dashboard...</p>' +
+          '</div>';
+        document.body.appendChild(modal);
+        setTimeout(function () { window.location.href = 'dashboard.html'; }, 3000);
+      }
+
+      document.getElementById('assignForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        var submitBtn = this.querySelector('button[type="submit"]');
+        var doctorId = doctorSelect.value;
+        var date = document.getElementById('date').value;
+        var time = document.getElementById('time').value;
+
+        if (!doctorId || !date || !time) {
+          showMessage(messageEl, 'Please fill in all fields.', 'error');
           return;
         }
 
-        // Load doctors
-        getDoctorList().then(function (doctors) {
-          doctors.forEach(function (doc) {
-            var opt = document.createElement('option');
-            opt.value = doc.uid;
-            opt.textContent = doc.name;
-            doctorSelect.appendChild(opt);
-          });
-        });
+        submitBtn.classList.add('btn-loading');
+        submitBtn.disabled = true;
 
-        // Check conflict on date/time change
-        function checkConflict() {
-          var doctorId = doctorSelect.value;
-          var date = document.getElementById('date').value;
-          var time = document.getElementById('time').value;
-          if (!doctorId || !date || !time) { conflictEl.style.display = 'none'; return; }
-          checkDoctorConflict(doctorId, date, time).then(function (hasConflict) {
-            conflictEl.style.display = hasConflict ? 'block' : 'none';
-          });
-        }
-
-        doctorSelect.addEventListener('change', checkConflict);
-        document.getElementById('date').addEventListener('change', checkConflict);
-        document.getElementById('time').addEventListener('change', checkConflict);
-
-        // Success Modal Helper
-        function showSuccessModal(title, message) {
-          var modal = document.createElement('div');
-          modal.className = 'modal';
-          modal.style.display = 'flex';
-          modal.innerHTML =
-            '<div class="modal-content success-animation" style="text-align:center; max-width:400px; padding: 3rem 2rem;">' +
-            '<div class="success-icon-wrapper">' +
-            '<svg class="checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">' +
-            '<circle class="checkmark__circle" cx="26" cy="26" r="25" fill="none"/>' +
-            '<path class="checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>' +
-            '</svg>' +
-            '</div>' +
-            '<h2 style="margin: 1.5rem 0 0.5rem; color: #0f172a;">' + title + '</h2>' +
-            '<p style="color: #64748b; margin-bottom: 2rem;">' + message + '</p>' +
-            '<div class="progress-bar-container"><div class="progress-bar-fill"></div></div>' +
-            '<p style="font-size: 0.8rem; color: #94a3b8; margin-top: 1rem;">Redirecting to dashboard...</p>' +
-            '</div>';
-          document.body.appendChild(modal);
-
-          // Animate redirect
-          setTimeout(function () {
-            window.location.href = 'dashboard.html';
-          }, 3000);
-        }
-
-        document.getElementById('assignForm').addEventListener('submit', function (e) {
-          e.preventDefault();
-          var submitBtn = this.querySelector('button[type="submit"]');
-          var doctorId = doctorSelect.value;
-          var date = document.getElementById('date').value;
-          var time = document.getElementById('time').value;
-
-          if (!doctorId || !date || !time) {
-            showMessage(messageEl, 'Please fill in all fields.', 'error');
-            return;
-          }
-
-          submitBtn.classList.add('btn-loading');
-          submitBtn.disabled = true;
-
-          checkDoctorConflict(doctorId, date, time).then(function (hasConflict) {
-            if (hasConflict) {
-              submitBtn.classList.remove('btn-loading');
-              submitBtn.disabled = false;
-              showMessage(messageEl, 'Cannot assign: doctor has a conflict at this time.', 'error');
-              return;
-            }
-            return createAppointment(patientId, doctorId, submissionId, date, time)
-              .then(function () {
-                return updateSubmissionStatus(submissionId, 'assigned');
-              })
-              .then(function () {
-                // Notify patient and doctor
-                var doctorName = doctorSelect.options[doctorSelect.selectedIndex].text;
-                createNotification(patientId, 'You have been assigned to Dr. ' + doctorName + ' on ' + date + ' at ' + time, 'assignment');
-                createNotification(doctorId, 'New patient assigned to you on ' + date + ' at ' + time, 'assignment');
-
-                showSuccessModal('Assigned Successfully!', 'Patient has been scheduled for a consultation with Dr. ' + doctorName + '.');
-              });
-          }).catch(function (err) {
+        checkDoctorConflict(doctorId, date, time).then(function (hasConflict) {
+          if (hasConflict) {
             submitBtn.classList.remove('btn-loading');
             submitBtn.disabled = false;
-            showMessage(messageEl, err.message || 'Assignment failed.', 'error');
-          });
+            showMessage(messageEl, 'Cannot assign: doctor has a conflict at this time.', 'error');
+            return;
+          }
+          return createAppointment(patientId, doctorId, submissionId, date, time)
+            .then(function () { return updateSubmissionStatus(submissionId, 'assigned'); })
+            .then(function () {
+              var doctorName = doctorSelect.options[doctorSelect.selectedIndex].text;
+              createNotification(patientId, 'You have been assigned to Dr. ' + doctorName + ' on ' + date + ' at ' + time, 'assignment');
+              createNotification(doctorId, 'New patient assigned to you on ' + date + ' at ' + time, 'assignment');
+              showSuccessModal('Assigned Successfully!', 'Patient has been scheduled for a consultation with Dr. ' + doctorName + '.');
+            });
+        }).catch(function (err) {
+          submitBtn.classList.remove('btn-loading');
+          submitBtn.disabled = false;
+          showMessage(messageEl, err.message || 'Assignment failed.', 'error');
         });
-
-        document.getElementById('logoutBtn').addEventListener('click', function (e) { e.preventDefault(); logoutUser(); });
-
-        // Mobile Nav Toggle
-        var navToggle = document.getElementById('navToggle');
-        var navLinks = document.getElementById('navLinks');
-        if (navToggle && navLinks) {
-          navToggle.addEventListener('click', function () {
-            navLinks.classList.toggle('open');
-          });
-        }
       });
-    </script>
-  </main>
-  <!-- GSAP Core for PillNav animations -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+
+      document.getElementById('logoutBtn').addEventListener('click', function (e) { e.preventDefault(); confirmLogout(); });
+
+      var navToggle = document.getElementById('navToggle');
+      var navLinks = document.getElementById('navLinks');
+      if (navToggle && navLinks) {
+        navToggle.addEventListener('click', function () { navLinks.classList.toggle('open'); });
+      }
+    });
+  </script>
 </body>
 
 </html>
