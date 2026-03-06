@@ -162,6 +162,45 @@
             </div>
           </div>
 
+          <!-- ── Neurology Scans Upload ───────────────────────── -->
+          <div class="form-group" style="margin-top:1.25rem;">
+            <label>Neurology Scans &amp; Reports <span
+                style="font-weight:400;color:#94a3b8;font-size:0.85rem;">(Optional)</span></label>
+            <p style="font-size:0.82rem;color:#64748b;margin:0.25rem 0 0.75rem;">Upload MRI, CT scans, X-rays, or
+              medical reports relevant to your condition. Accepted formats: JPG, PNG, DICOM, PDF (max 10 MB each).</p>
+
+            <div id="scanDropZone" style="
+              border: 2px dashed #bfdbfe;
+              border-radius: 14px;
+              background: #f0f7ff;
+              padding: 2rem 1.5rem;
+              text-align: center;
+              cursor: pointer;
+              transition: border-color 0.2s, background 0.2s;
+              position: relative;
+            " onclick="document.getElementById('scanFileInput').click()"
+              ondragover="event.preventDefault();this.style.borderColor='#3b82f6';this.style.background='#dbeafe';"
+              ondragleave="this.style.borderColor='#bfdbfe';this.style.background='#f0f7ff';"
+              ondrop="event.preventDefault();this.style.borderColor='#bfdbfe';this.style.background='#f0f7ff';handleScanFiles(event.dataTransfer.files);">
+
+              <div style="pointer-events:none;">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#93c5fd" stroke-width="1.5"
+                  stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:0.75rem;">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="17 8 12 3 7 8" />
+                  <line x1="12" y1="3" x2="12" y2="15" />
+                </svg>
+                <p style="font-weight:600;color:#3b82f6;margin:0 0 0.25rem;">Click to upload or drag &amp; drop</p>
+                <p style="font-size:0.8rem;color:#94a3b8;margin:0;">MRI · CT · X-Ray · PDF reports</p>
+              </div>
+              <input type="file" id="scanFileInput" multiple accept="image/*,.pdf,.dcm" style="display:none;"
+                onchange="handleScanFiles(this.files)">
+            </div>
+
+            <!-- File preview chips -->
+            <div id="scanFileList" style="display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.75rem;"></div>
+          </div>
+
           <div class="form-group" style="margin-top:1.25rem;">
             <label class="checkbox-option">
               <input type="checkbox" id="consent" required>
@@ -187,91 +226,177 @@
   <script src="../js/firestore.js"></script>
   <script src="../js/notifications.js"></script>
   <script>
+    var selectedScanFiles = [];
+
+    function handleScanFiles(files) {
+      var list = document.getElementById('scanFileList');
+      var maxSize = 10 * 1024 * 1024; // 10 MB
+
+      Array.from(files).forEach(function (file) {
+        // Reject duplicates
+        if (selectedScanFiles.find(function (f) { return f.name === file.name && f.size === file.size; })) return;
+
+        if (file.size > maxSize) {
+          var errChip = document.createElement('div');
+          errChip.style.cssText = 'display:flex;align-items:center;gap:0.4rem;padding:0.35rem 0.75rem;background:#fee2e2;border:1px solid #fecaca;border-radius:20px;font-size:0.78rem;color:#b91c1c;';
+          errChip.innerHTML = '⚠️ ' + file.name + ' exceeds 10 MB';
+          list.appendChild(errChip);
+          return;
+        }
+
+        selectedScanFiles.push(file);
+        var isPdf = file.type === 'application/pdf' || file.name.endsWith('.pdf');
+        var sizeMb = (file.size / (1024 * 1024)).toFixed(1);
+        var icon = isPdf ? '📄' : '🔬';
+
+        var chip = document.createElement('div');
+        chip.style.cssText = 'display:flex;align-items:center;gap:0.4rem;padding:0.35rem 0.75rem;background:#f0f7ff;border:1px solid #bfdbfe;border-radius:20px;font-size:0.78rem;color:#1e40af;max-width:220px;';
+        chip.innerHTML =
+          '<span>' + icon + '</span>' +
+          '<span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;" title="' + file.name + '">' + file.name + '</span>' +
+          '<span style="color:#94a3b8;white-space:nowrap;">' + sizeMb + ' MB</span>' +
+          '<button type="button" style="background:none;border:none;cursor:pointer;color:#94a3b8;font-size:1rem;padding:0;line-height:1;" title="Remove">×</button>';
+
+        chip.querySelector('button').addEventListener('click', function () {
+          selectedScanFiles = selectedScanFiles.filter(function (f) { return f !== file; });
+          chip.remove();
+        });
+
+        list.appendChild(chip);
+      });
+
+      // Reset input so same file can be re-added if removed
+      document.getElementById('scanFileInput').value = '';
+    }
+  </script>
+  <script>
     requireAuth('patient').then(function (user) {
       var form = document.getElementById('problemForm');
       var messageEl = document.getElementById('message');
 
-      form.addEventListener('submit', function (e) {
-        e.preventDefault();
-        clearFieldErrors(form);
-        messageEl.style.display = 'none';
-
-        var primaryConcern = document.getElementById('primaryConcern').value;
-        var bodyArea = document.getElementById('bodyArea').value;
-        var description = document.getElementById('description').value;
-        var painLevel = document.querySelector('input[name="painLevel"]:checked').value;
-        var urgency = document.querySelector('input[name="urgency"]:checked').value;
-        var consent = document.getElementById('consent').checked;
-
-        // Validation
-        var hasError = false;
-        if (!primaryConcern) {
-          showFieldError(document.getElementById('primaryConcern'), 'Please select the primary reason for your consultation.');
-          hasError = true;
+      // ── Profile completeness gate ────────────────────────────
+      function showProfileGate(missing) {
+        form.style.display = 'none';
+        var card = form.closest('.card');
+        if (card) {
+          card.innerHTML =
+            '<div style="text-align:center;padding:2.5rem 1.5rem;">' +
+            '<div style="width:72px;height:72px;border-radius:20px;background:rgba(245,158,11,0.1);color:#f59e0b;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;">' +
+            '<svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">' +
+            '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>' +
+            '</svg></div>' +
+            '<h2 style="color:#0f172a;font-weight:700;margin-bottom:0.6rem;">Complete Your Profile First</h2>' +
+            '<p style="color:#64748b;font-size:0.95rem;line-height:1.6;margin-bottom:0.75rem;">' +
+            'To request a consultation, we need some essential details about you so our specialists can review your case properly.' +
+            '</p>' +
+            '<p style="color:#94a3b8;font-size:0.82rem;margin-bottom:2rem;">Missing: <strong style="color:#b45309;">' + missing.join(', ') + '</strong></p>' +
+            '<a href="profile.html" class="btn btn-primary" style="min-width:180px;">Go to My Profile →</a>' +
+            '</div>';
         }
-        if (!bodyArea) {
-          showFieldError(document.getElementById('bodyArea'), 'Please select the affected body area.');
-          hasError = true;
-        }
-        if (!description.trim()) {
-          showFieldError(document.getElementById('description'), 'Please describe your symptoms.');
-          hasError = true;
-        }
-        if (!consent) {
-          showMessage(messageEl, 'Please confirm your consent before submitting.', 'error');
-          hasError = true;
-        }
-        if (hasError) {
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-          return;
+      }
+
+      getUserProfile(user.uid).then(function (profile) {
+        var missing = [];
+        if (!profile || !profile.name) missing.push('Full Name');
+        if (!profile || !profile.phone) missing.push('Phone Number');
+        if (!profile || !profile.gender) missing.push('Gender');
+        if (!profile || !profile.dob) missing.push('Date of Birth');
+        if (!profile || !profile.address) missing.push('Address');
+
+        if (missing.length > 0) {
+          showProfileGate(missing);
+          return; // stop — don't wire up form
         }
 
-        // Auto-generate title for backward compatibility
-        var title = primaryConcern + ' — ' + bodyArea;
+        // ── Profile is complete — wire up the form ─────────────
+        form.addEventListener('submit', function (e) {
+          e.preventDefault();
+          clearFieldErrors(form);
+          messageEl.style.display = 'none';
 
-        var submitBtn = document.getElementById('submitBtn');
-        submitBtn.classList.add('btn-loading');
-        submitBtn.disabled = true;
+          var primaryConcern = document.getElementById('primaryConcern').value;
+          var bodyArea = document.getElementById('bodyArea').value;
+          var description = document.getElementById('description').value;
+          var painLevel = document.querySelector('input[name="painLevel"]:checked').value;
+          var urgency = document.querySelector('input[name="urgency"]:checked').value;
+          var consent = document.getElementById('consent').checked;
 
-        createProblemSubmission(user.uid, title, description, 'initial', null, {
-          primaryConcern: primaryConcern,
-          bodyArea: bodyArea,
-          painLevel: painLevel,
-          urgency: urgency
-        })
-          .then(function () {
-            db.collection('users').where('role', '==', 'admin').get().then(function (snap) {
-              snap.forEach(function (doc) {
-                createNotification(doc.id, 'New consultation request: ' + title + ' [' + urgency + ']', 'request');
+          // Validation
+          var hasError = false;
+          if (!primaryConcern) {
+            showFieldError(document.getElementById('primaryConcern'), 'Please select the primary reason for your consultation.');
+            hasError = true;
+          }
+          if (!bodyArea) {
+            showFieldError(document.getElementById('bodyArea'), 'Please select the affected body area.');
+            hasError = true;
+          }
+          if (!description.trim()) {
+            showFieldError(document.getElementById('description'), 'Please describe your symptoms.');
+            hasError = true;
+          }
+          if (!consent) {
+            showMessage(messageEl, 'Please confirm your consent before submitting.', 'error');
+            hasError = true;
+          }
+          if (hasError) {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            return;
+          }
+
+          // Auto-generate title for backward compatibility
+          var title = primaryConcern + ' — ' + bodyArea;
+
+          var submitBtn = document.getElementById('submitBtn');
+          submitBtn.classList.add('btn-loading');
+          submitBtn.disabled = true;
+
+          createProblemSubmission(user.uid, title, description, 'initial', null, {
+            primaryConcern: primaryConcern,
+            bodyArea: bodyArea,
+            painLevel: painLevel,
+            urgency: urgency
+          })
+            .then(function () {
+              return db.collection('users').where('role', '==', 'admin').get().then(function (snap) {
+                snap.forEach(function (doc) {
+                  createNotification(doc.id, 'New consultation request: ' + title + ' [' + urgency + ']', 'request');
+                });
+              }).catch(function (err) {
+                console.error('Failed to notify admin:', err);
               });
+            })
+            .then(function () {
+              form.reset();
+              var successModal = document.getElementById('successModal');
+              if (!successModal) {
+                successModal = document.createElement('div');
+                successModal.id = 'successModal';
+                successModal.className = 'modal';
+                successModal.innerHTML =
+                  '<div class="modal-content" style="text-align:center;max-width:440px;border-radius:24px;padding:2.5rem;">' +
+                  '<div style="width:72px;height:72px;border-radius:20px;background:rgba(16,185,129,0.1);color:#10b981;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;"><svg viewBox="0 0 24 24" width="36" height="36" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>' +
+                  '<h2 style="margin-bottom:0.75rem;color:#0f172a;font-weight:700;">Request Received</h2>' +
+                  '<p style="color:#64748b;margin-bottom:2rem;line-height:1.6;font-size:0.95rem;">Your request for a medical consultation has been received. Our oncology team will review your symptoms and schedule an appointment with the appropriate specialist shortly.</p>' +
+                  '<a href="dashboard.html" class="btn btn-primary" style="width:100%;">Return to Dashboard</a>' +
+                  '</div>';
+                document.body.appendChild(successModal);
+              }
+              successModal.style.display = 'flex';
+            })
+            .catch(function (err) {
+              showMessage(messageEl, err.message || 'Failed to submit. Please try again.', 'error');
+            })
+            .finally(function () {
+              submitBtn.classList.remove('btn-loading');
+              submitBtn.disabled = false;
             });
-            form.reset();
+        }); // end form submit
 
-            // Show success popup
-            var successModal = document.getElementById('successModal');
-            if (!successModal) {
-              successModal = document.createElement('div');
-              successModal.id = 'successModal';
-              successModal.className = 'modal';
-              successModal.innerHTML =
-                '<div class="modal-content" style="text-align:center;max-width:440px;border-radius:24px;padding:2.5rem;">' +
-                '<div style="width:72px;height:72px;border-radius:20px;background:rgba(16,185,129,0.1);color:#10b981;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;"><svg viewBox="0 0 24 24" width="36" height="36" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>' +
-                '<h2 style="margin-bottom:0.75rem;color:#0f172a;font-weight:700;">Request Received</h2>' +
-                '<p style="color:#64748b;margin-bottom:2rem;line-height:1.6;font-size:0.95rem;">Your request for a medical consultation has been received. Our oncology team will review your symptoms and schedule an appointment with the appropriate specialist shortly.</p>' +
-                '<a href="dashboard.html" class="btn btn-primary" style="width:100%;">Return to Dashboard</a>' +
-                '</div>';
-              document.body.appendChild(successModal);
-            }
-            successModal.style.display = 'flex';
-          })
-          .catch(function (err) {
-            showMessage(messageEl, err.message || 'Failed to submit. Please try again.', 'error');
-          })
-          .finally(function () {
-            submitBtn.classList.remove('btn-loading');
-            submitBtn.disabled = false;
-          });
-      });
+      }).catch(function () {
+        // If profile fetch fails, also gate — treat as incomplete
+        showProfileGate(['profile information (could not load)']);
+      }); // end getUserProfile
 
       document.getElementById('logoutBtnSidebar').addEventListener('click', function (e) { e.preventDefault(); confirmLogout(); });
       var navToggle = document.getElementById('navToggle');
@@ -281,7 +406,7 @@
           navLinks.classList.toggle('open');
         });
       }
-    });
+    }); // end requireAuth
   </script>
 </body>
 
