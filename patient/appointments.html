@@ -8,6 +8,525 @@
   <title>My Appointments - TumourCare</title>
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/patient-layout.css">
+  <style>
+    /* ── Tab Bar ────────────────────────────────────────────── */
+    .apt-tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1.75rem;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 0.35rem;
+    }
+
+    .apt-tab {
+      flex: 1;
+      padding: 0.7rem 1rem;
+      border: none;
+      background: transparent;
+      border-radius: 10px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #64748b;
+      cursor: pointer;
+      transition: all 0.22s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+    }
+
+    .apt-tab:hover {
+      background: #f1f5f9;
+      color: #334155;
+    }
+
+    .apt-tab.active {
+      background: #3b82f6;
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+    }
+
+    .apt-tab .tab-count {
+      background: rgba(255, 255, 255, 0.25);
+      border-radius: 20px;
+      padding: 0.05rem 0.45rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .apt-tab:not(.active) .tab-count {
+      background: #e2e8f0;
+      color: #475569;
+    }
+
+    /* Tab helper text */
+    .apt-tab-meta {
+      font-size: 0.82rem;
+      color: #94a3b8;
+      margin-bottom: 1.25rem;
+      margin-top: -0.75rem;
+      padding-left: 0.25rem;
+    }
+
+    /* ── Appointment Card ───────────────────────────────────── */
+    .apt-card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 18px;
+      overflow: hidden;
+      margin-bottom: 1rem;
+      transition: all 0.2s ease;
+      animation: fadeSlideIn 0.3s ease both;
+    }
+
+    @keyframes fadeSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .apt-card:hover {
+      border-color: #93c5fd;
+      box-shadow: 0 8px 24px rgba(59, 130, 246, 0.08);
+      transform: translateY(-2px);
+    }
+
+    /* Coloured top strip based on status */
+    .apt-card-strip {
+      height: 5px;
+      width: 100%;
+    }
+
+    .apt-card-strip.strip-assigned {
+      background: linear-gradient(90deg, #3b82f6, #6366f1);
+    }
+
+    .apt-card-strip.strip-prescribed {
+      background: linear-gradient(90deg, #f59e0b, #f97316);
+    }
+
+    .apt-card-strip.strip-completed {
+      background: linear-gradient(90deg, #10b981, #059669);
+    }
+
+    .apt-card-strip.strip-cancelled {
+      background: linear-gradient(90deg, #ef4444, #dc2626);
+    }
+
+    .apt-card-strip.strip-pending {
+      background: linear-gradient(90deg, #94a3b8, #64748b);
+      animation: shimmer 2s ease-in-out infinite;
+      background-size: 200% 100%;
+    }
+
+    @keyframes shimmer {
+      0% {
+        background-position: 200% 0;
+      }
+
+      100% {
+        background-position: -200% 0;
+      }
+    }
+
+    .apt-card-body {
+      padding: 1.35rem 1.5rem;
+    }
+
+    /* ── Date Chip ──────────────────────────────────────────── */
+    .apt-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .apt-title-block {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .apt-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #0f172a;
+      margin: 0 0 0.3rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .apt-doctor {
+      font-size: 0.88rem;
+      color: #475569;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .apt-doctor svg {
+      width: 14px;
+      height: 14px;
+      stroke: #94a3b8;
+      flex-shrink: 0;
+    }
+
+    .apt-date-chip {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #f0f7ff;
+      border: 1.5px solid #bfdbfe;
+      border-radius: 12px;
+      min-width: 72px;
+      padding: 0.5rem 0.75rem;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .apt-date-chip .chip-day {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #1d4ed8;
+      line-height: 1;
+    }
+
+    .apt-date-chip .chip-mon {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #3b82f6;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-top: 2px;
+    }
+
+    .apt-date-chip .chip-time {
+      font-size: 0.7rem;
+      color: #64748b;
+      font-weight: 600;
+      margin-top: 4px;
+      padding-top: 4px;
+      border-top: 1px solid #bfdbfe;
+      width: 100%;
+      text-align: center;
+    }
+
+    /* Completed/Cancelled date chip */
+    .apt-date-chip.chip-done {
+      background: #f0fdf4;
+      border-color: #bbf7d0;
+    }
+
+    .apt-date-chip.chip-done .chip-day,
+    .apt-date-chip.chip-done .chip-mon {
+      color: #059669;
+    }
+
+    .apt-date-chip.chip-done .chip-time {
+      border-color: #bbf7d0;
+    }
+
+    .apt-date-chip.chip-cancelled {
+      background: #fef2f2;
+      border-color: #fecaca;
+    }
+
+    .apt-date-chip.chip-cancelled .chip-day,
+    .apt-date-chip.chip-cancelled .chip-mon {
+      color: #dc2626;
+    }
+
+    .apt-date-chip.chip-cancelled .chip-time {
+      border-color: #fecaca;
+    }
+
+    /* ── Description ────────────────────────────────────────── */
+    .apt-desc {
+      font-size: 0.88rem;
+      color: #64748b;
+      line-height: 1.55;
+      margin: 0.75rem 0;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* ── Badges row ─────────────────────────────────────────── */
+    .apt-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin: 0.6rem 0;
+    }
+
+    .apt-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .badge-pain-none {
+      background: #f1f5f9;
+      color: #475569;
+    }
+
+    .badge-pain-mild {
+      background: #fef9c3;
+      color: #a16207;
+    }
+
+    .badge-pain-moderate {
+      background: #fed7aa;
+      color: #c2410c;
+    }
+
+    .badge-pain-severe {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+
+    .badge-urgency-routine {
+      background: #f0fdf4;
+      color: #15803d;
+    }
+
+    .badge-urgency-soon {
+      background: #eff6ff;
+      color: #1e40af;
+    }
+
+    .badge-urgency-urgent {
+      background: #fff7ed;
+      color: #c2410c;
+    }
+
+    .badge-urgency-emergency {
+      background: #fef2f2;
+      color: #991b1b;
+    }
+
+    .badge-status {
+      background: #f1f5f9;
+      color: #334155;
+    }
+
+    /* ── Countdown Box ──────────────────────────────────────── */
+    .countdown-box {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.85rem;
+      border-radius: 10px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      margin: 0.75rem 0 0;
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.06), rgba(99, 102, 241, 0.06));
+      border: 1px solid rgba(59, 130, 246, 0.15);
+      border-left: 3px solid #3b82f6;
+      color: #1d4ed8;
+    }
+
+    .countdown-box.cd-soon {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.08), rgba(239, 68, 68, 0.06));
+      border-color: rgba(245, 158, 11, 0.25);
+      border-left-color: #f59e0b;
+      color: #b45309;
+    }
+
+    .countdown-box.cd-past {
+      background: #f8fafc;
+      border-color: #e2e8f0;
+      border-left-color: #94a3b8;
+      color: #64748b;
+    }
+
+    /* ── Action Buttons ─────────────────────────────────────── */
+    .apt-card-actions {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid #f1f5f9;
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-sm {
+      padding: 0.45rem 1rem;
+      font-size: 0.83rem;
+    }
+
+
+    /* ── Pending ─────────────────────────────────────────────── */
+    .pending-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.28rem 0.75rem;
+      background: #fef3c7;
+      border: 1px solid #fde68a;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #92400e;
+    }
+
+    .pending-pulse {
+      width: 7px;
+      height: 7px;
+      background: #f59e0b;
+      border-radius: 50%;
+      animation: pulse 1.4s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: 0.4;
+        transform: scale(0.7);
+      }
+    }
+
+    /* ── Completed outcome pill ─────────────────────────────── */
+    .outcome-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .outcome-completed {
+      background: #dcfce7;
+      color: #15803d;
+    }
+
+    .outcome-cancelled {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+
+    /* ── Modal styling ──────────────────────────────────────── */
+    #cancelModal .modal-content,
+    #cantMakeItModal .modal-content {
+      text-align: center;
+      max-width: 420px;
+    }
+
+    .modal-icon-wrap {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1rem;
+    }
+
+    .modal-icon-wrap.danger {
+      background: rgba(239, 68, 68, 0.1);
+    }
+
+    .modal-icon-wrap.warning {
+      background: rgba(245, 158, 11, 0.1);
+    }
+
+    .modal-icon-wrap svg {
+      width: 28px;
+      height: 28px;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .modal-icon-wrap.danger svg {
+      stroke: #ef4444;
+    }
+
+    .modal-icon-wrap.warning svg {
+      stroke: #f59e0b;
+    }
+
+    .modal-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 0.5rem;
+    }
+
+    .modal-body-text {
+      font-size: 0.9rem;
+      color: #64748b;
+      line-height: 1.55;
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-footer {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+    }
+
+    .modal-footer .btn {
+      min-width: 130px;
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .apt-tabs {
+        gap: 0.25rem;
+      }
+
+      .apt-tab {
+        font-size: 0.78rem;
+        padding: 0.6rem 0.5rem;
+      }
+
+      .apt-header {
+        flex-direction: column-reverse;
+        align-items: stretch;
+      }
+
+      .apt-date-chip {
+        flex-direction: row;
+        gap: 0.75rem;
+        min-width: auto;
+        border-radius: 10px;
+      }
+
+      .apt-date-chip .chip-time {
+        border-top: none;
+        border-left: 1px solid;
+        margin: 0;
+        padding: 0 0 0 0.5rem;
+      }
+    }
+  </style>
 </head>
 
 <body class="dashboard-body">
@@ -19,9 +538,7 @@
         <img src="../logo.png" alt="TumourCare Logo">
         <span>TumourCare</span>
       </a>
-
       <button class="topnav-toggle" id="navToggle" aria-label="Toggle navigation">&#9776;</button>
-
       <div class="topnav-links" id="navLinks">
         <a href="dashboard.html">
           <svg viewBox="0 0 24 24">
@@ -70,7 +587,6 @@
           Notifications <span id="notifBadge" class="nav-badge" style="display:none;">0</span>
         </a>
       </div>
-
       <a href="#" id="logoutBtnSidebar" class="topnav-logout" title="Logout">
         <svg viewBox="0 0 24 24">
           <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
@@ -81,43 +597,99 @@
       </a>
     </div>
   </nav>
-  <!-- Main Content Area -->
+
   <main class="main-content">
     <header class="page-header">
       <div>
-        <h1 id="pageTitle">My Appointments</h1>
-        <div class="breadcrumb" id="pageBreadcrumb"><a href="dashboard.html">Dashboard</a> <span>›</span> Appointments
-        </div>
+        <h1>My Appointments</h1>
+        <div class="breadcrumb"><a href="dashboard.html">Dashboard</a> <span>›</span> Appointments</div>
       </div>
     </header>
 
     <div class="page-body">
       <div id="message" class="message" style="display:none;"></div>
-      <div id="appointmentList" class="list-container">
+
+      <!-- Tab Bar -->
+      <div class="apt-tabs" role="tablist">
+        <button class="apt-tab active" id="tab-upcoming" role="tab" aria-selected="true"
+          onclick="switchTab('upcoming')">
+          📅 Upcoming <span class="tab-count" id="count-upcoming">0</span>
+        </button>
+        <button class="apt-tab" id="tab-pending" role="tab" aria-selected="false" onclick="switchTab('pending')">
+          ⏳ Pending <span class="tab-count" id="count-pending">0</span>
+        </button>
+        <button class="apt-tab" id="tab-history" role="tab" aria-selected="false" onclick="switchTab('history')">
+          📋 History <span class="tab-count" id="count-history">0</span>
+        </button>
+      </div>
+
+      <!-- Tab Panels -->
+      <p class="apt-tab-meta" id="tabMeta">Your active upcoming appointments with assigned doctors.</p>
+      <div id="panel-upcoming">
         <div class="loading-container">
           <div class="loading-spinner"></div>
-          <span class="loading-text" style="color: #64748b; font-weight: 500;">Retrieving your appointments...</span>
+          <span class="loading-text" style="color:#64748b;font-weight:500;">Loading your appointments…</span>
         </div>
       </div>
+      <div id="panel-pending" style="display:none;"></div>
+      <div id="panel-history" style="display:none;"></div>
     </div>
   </main>
 
-  <!-- Follow-up Modal -->
+  <!-- ════ CANCEL MODAL ════ -->
+  <div id="cancelModal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <div class="modal-icon-wrap danger">
+        <svg viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="15" y1="9" x2="9" y2="15"></line>
+          <line x1="9" y1="9" x2="15" y2="15"></line>
+        </svg>
+      </div>
+      <p class="modal-title">Cancel Appointment?</p>
+      <p class="modal-body-text" id="cancelDetail">Are you sure you want to cancel this appointment?</p>
+      <div class="modal-footer">
+        <button class="btn btn-outline" id="cancelNo">Keep It</button>
+        <button class="btn btn-danger" id="cancelYes">Yes, Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ CAN'T MAKE IT MODAL ════ -->
+  <div id="cantMakeItModal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <div class="modal-icon-wrap warning">
+        <svg viewBox="0 0 24 24">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+          <line x1="12" y1="9" x2="12" y2="13"></line>
+          <line x1="12" y1="17" x2="12.01" y2="17"></line>
+        </svg>
+      </div>
+      <p class="modal-title">Can't Make It?</p>
+      <p class="modal-body-text" id="cmiDetail">The admin will be notified and may reassign your slot.</p>
+      <div class="modal-footer">
+        <button class="btn btn-outline" id="cmiNo">Go Back</button>
+        <button class="btn btn-warning" id="cmiYes">Notify Admin</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ FOLLOW-UP MODAL ════ -->
   <div id="followUpModal" class="modal" style="display:none;">
     <div class="modal-content">
       <h2>Request Follow-Up</h2>
       <form id="followUpForm" novalidate>
         <div class="form-group">
           <label for="fuTitle">Problem Title</label>
-          <input type="text" id="fuTitle" required>
+          <input type="text" id="fuTitle" required placeholder="Briefly describe the issue">
         </div>
         <div class="form-group">
           <label for="fuDescription">Description</label>
-          <textarea id="fuDescription" rows="4" required></textarea>
+          <textarea id="fuDescription" rows="4" required placeholder="Provide more context…"></textarea>
         </div>
         <input type="hidden" id="fuAppointmentId">
-        <button type="submit" class="btn btn-primary">Submit Follow-Up</button>
-        <button type="button" class="btn btn-outline" id="closeModal">Cancel</button>
+        <button type="submit" class="btn btn-primary" style="width:100%;margin-bottom:0.5rem;">Submit Follow-Up</button>
+        <button type="button" class="btn btn-outline" id="closeFollowUp" style="width:100%;">Cancel</button>
       </form>
     </div>
   </div>
@@ -133,109 +705,499 @@
   <script src="../js/firestore.js"></script>
   <script src="../js/notifications.js"></script>
   <script>
-    requireAuth('patient').then(function (user) {
-      var container = document.getElementById('appointmentList');
-      var messageEl = document.getElementById('message');
-      var modal = document.getElementById('followUpModal');
+    // ═══════════════════════════════════════════════════════
+    //  Helpers
+    // ═══════════════════════════════════════════════════════
+    var cdIntervals = [];
 
-      function loadAppointments() {
-        getAppointmentsByPatient(user.uid).then(function (appointments) {
-          if (appointments.length === 0) {
-            container.innerHTML = '<div class="empty-state">' +
-              '<div class="empty-state-icon"><svg viewBox="0 0 24 24" width="64" height="64" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="color: #cbd5e1;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></div>' +
-              '<h3>No Appointments Yet</h3>' +
-              '<p>Please request a medical consultation. Our care team will review your request and schedule an appointment with the appropriate specialist.</p>' +
-              '<a href="submit-problem.html" class="btn btn-primary">Request Consultation</a>' +
-              '</div>';
-            return;
-          }
-          container.innerHTML = '';
-          var today = new Date().toISOString().split('T')[0];
-          appointments.forEach(function (apt) {
-            var card = createElement('div', { className: 'card' });
-            var actions = '';
-            if (apt.status === 'assigned' && apt.scheduledDate >= today) {
-              actions += '<button class="btn btn-danger cancel-btn" data-id="' + apt.id + '">Cancel Appointment</button> ';
-            }
-            if (apt.status === 'prescribed') {
-              actions += '<button class="btn btn-outline followup-btn" data-id="' + apt.id + '">Request Follow-Up</button>';
-            }
-            card.innerHTML = '<h3>' + escapeHtml(apt.problemTitle || 'Appointment') + '</h3>' +
-              '<p>Doctor: ' + escapeHtml(apt.doctorName) + '</p>' +
-              '<p>Date: ' + formatDate(apt.scheduledDate) + ' at ' + formatTime(apt.scheduledTime) + '</p>' +
-              '<p>Status: <span class="status status-' + apt.status + '">' + apt.status + '</span></p>' +
-              '<div class="card-actions">' + actions + '</div>';
-            container.appendChild(card);
-          });
+    function clearCountdowns() {
+      cdIntervals.forEach(clearInterval);
+      cdIntervals = [];
+    }
 
-          // Cancel buttons
-          container.querySelectorAll('.cancel-btn').forEach(function (btn) {
-            btn.addEventListener('click', function () {
-              if (!confirm('Are you sure you want to cancel this appointment?')) return;
-              updateAppointmentStatus(btn.dataset.id, 'cancelled').then(function () {
-                // Notify doctor and admin about cancellation
-                var aptCard = btn.closest('.card');
-                db.collection('appointments').doc(btn.dataset.id).get().then(function (doc) {
-                  if (doc.exists) {
-                    var data = doc.data();
-                    createNotification(data.doctorId, 'Appointment cancelled by patient on ' + data.scheduledDate, 'cancellation');
-                    db.collection('users').where('role', '==', 'admin').get().then(function (snap) {
-                      snap.forEach(function (d) { createNotification(d.id, 'Appointment cancelled by patient', 'cancellation'); });
-                    });
-                  }
-                });
-                showToast('Appointment cancelled.', 'success');
-                loadAppointments();
-              }).catch(function (err) { showMessage(messageEl, err.message, 'error'); });
-            });
-          });
+    function msUntil(date, time) {
+      return new Date(date + 'T' + (time || '00:00') + ':00').getTime() - Date.now();
+    }
 
-          // Follow-up buttons
-          container.querySelectorAll('.followup-btn').forEach(function (btn) {
-            btn.addEventListener('click', function () {
-              document.getElementById('fuAppointmentId').value = btn.dataset.id;
-              modal.style.display = 'flex';
-            });
-          });
-        }).catch(function () {
-          container.innerHTML = '<div class="empty-state">' +
-            '<div class="empty-state-icon"><svg viewBox="0 0 24 24" width="64" height="64" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="color: #cbd5e1;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></div>' +
-            '<h3>No Appointments Yet</h3>' +
-            '<p>Please request a medical consultation. Our care team will review your request and schedule an appointment with the appropriate specialist.</p>' +
-            '<a href="submit-problem.html" class="btn btn-primary">Request Consultation</a>' +
-            '</div>';
-        });
+    function fmtCountdown(ms) {
+      if (ms <= 0) return null;
+      var s = Math.floor(ms / 1000);
+      var d = Math.floor(s / 86400), h = Math.floor((s % 86400) / 3600),
+        m = Math.floor((s % 3600) / 60), sc = s % 60;
+      if (d >= 7) return d + 'd ' + h + 'h remaining';
+      if (d >= 1) return d + 'd ' + h + 'h ' + m + 'm remaining';
+      if (h >= 1) return h + 'h ' + m + 'm ' + sc + 's remaining';
+      return m + 'm ' + sc + 's remaining';
+    }
+
+    function startCountdown(el, date, time) {
+      function tick() {
+        var ms = msUntil(date, time);
+        if (ms <= 0) {
+          el.textContent = 'Appointment time has passed';
+          el.parentElement.classList.add('cd-past');
+          el.parentElement.classList.remove('cd-soon');
+          return;
+        }
+        el.textContent = fmtCountdown(ms);
+        if (ms < 86400000) el.parentElement.classList.add('cd-soon');
+        else el.parentElement.classList.remove('cd-soon');
       }
+      tick();
+      cdIntervals.push(setInterval(tick, 1000));
+    }
 
-      loadAppointments();
+    // Date chip builder from YYYY-MM-DD + HH:MM
+    function makeDateChip(dateStr, timeStr, chipClass) {
+      if (!dateStr) return '<div class="apt-date-chip ' + chipClass + '"><span class="chip-day">-</span><span class="chip-mon">-</span></div>';
+      var d = new Date(dateStr + 'T00:00:00');
+      var mon = d.toLocaleString('en-IN', { month: 'short' }).toUpperCase();
+      var yr = d.getFullYear();
+      var day = d.getDate();
+      var timeLabel = timeStr ? formatTime(timeStr) : '';
+      return '<div class="apt-date-chip ' + chipClass + '">' +
+        '<span class="chip-day">' + day + '</span>' +
+        '<span class="chip-mon">' + mon + ' ' + yr + '</span>' +
+        (timeLabel ? '<span class="chip-time">' + timeLabel + '</span>' : '') +
+        '</div>';
+    }
+
+    // Pain / urgency badge classes
+    function painClass(p) {
+      return 'badge-pain-' + (p || 'none').toLowerCase().replace(/\s+/g, '-');
+    }
+
+    function urgencyClass(u) {
+      return 'badge-urgency-' + (u || 'routine').toLowerCase().replace(/\s+/g, '-');
+    }
+
+    // Tab switching
+    var currentTab = 'upcoming';
+    var tabMetas = {
+      upcoming: 'Your active appointments — confirmed with a doctor and awaiting your visit.',
+      pending: 'Consultation requests you have submitted that are still awaiting a doctor assignment.',
+      history: 'Past visits and cancelled appointments for your records.'
+    };
+
+    function switchTab(name) {
+      currentTab = name;
+      ['upcoming', 'pending', 'history'].forEach(function (t) {
+        document.getElementById('tab-' + t).classList.toggle('active', t === name);
+        document.getElementById('panel-' + t).style.display = t === name ? '' : 'none';
+      });
+      var meta = document.getElementById('tabMeta');
+      if (meta) meta.textContent = tabMetas[name] || '';
+    }
+
+    // ═══════════════════════════════════════════════════════
+    //  Modal state
+    // ═══════════════════════════════════════════════════════
+    var pendingCancelId = null, pendingCancelData = null;
+    var pendingCmiId = null, pendingCmiData = null;
+
+    document.getElementById('cancelNo').addEventListener('click', function () {
+      document.getElementById('cancelModal').style.display = 'none';
+      pendingCancelId = pendingCancelData = null;
+    });
+
+    document.getElementById('cancelYes').addEventListener('click', function () {
+      if (!pendingCancelId) return;
+      var id = pendingCancelId, data = pendingCancelData;
+      document.getElementById('cancelModal').style.display = 'none';
+      pendingCancelId = pendingCancelData = null;
+
+      updateAppointmentStatus(id, 'cancelled').then(function () {
+        if (data && data.doctorId) {
+          createNotification(data.doctorId,
+            'Appointment cancelled: ' + (data.patientName || 'A patient') +
+            ' cancelled their appointment with you on ' + formatDate(data.scheduledDate) + '.',
+            'cancellation');
+        }
+        db.collection('users').where('role', '==', 'admin').get().then(function (snap) {
+          snap.forEach(function (d) {
+            createNotification(d.id,
+              'Appointment cancelled: ' + (data && data.patientName ? data.patientName : 'A patient') +
+              ' has cancelled their appointment with ' + (data && data.doctorName ? 'Dr. ' + data.doctorName : 'their doctor') +
+              ' scheduled on ' + formatDate(data && data.scheduledDate ? data.scheduledDate : '') + '.',
+              'cancellation');
+          });
+        });
+        showToast('Appointment cancelled.', 'success');
+        loadAll();
+      }).catch(function (err) {
+        showMessage(document.getElementById('message'), err.message, 'error');
+      });
+    });
+
+    document.getElementById('cmiNo').addEventListener('click', function () {
+      document.getElementById('cantMakeItModal').style.display = 'none';
+      pendingCmiId = pendingCmiData = null;
+    });
+
+    document.getElementById('cmiYes').addEventListener('click', function () {
+      if (!pendingCmiId) return;
+      var id = pendingCmiId, data = pendingCmiData;
+      document.getElementById('cantMakeItModal').style.display = 'none';
+      pendingCmiId = pendingCmiData = null;
+
+      db.collection('appointments').doc(id).update({ cantMakeIt: true }).then(function () {
+        db.collection('users').where('role', '==', 'admin').get().then(function (snap) {
+          snap.forEach(function (d) {
+            createNotification(d.id,
+              '⚠️ Attendance alert: ' + (data && data.patientName ? data.patientName : 'A patient') +
+              ' cannot attend their appointment with ' +
+              (data && data.doctorName ? 'Dr. ' + data.doctorName : 'their doctor') +
+              ' on ' + formatDate(data && data.scheduledDate ? data.scheduledDate : '') +
+              '. Please consider reassigning this slot.',
+              'cancellation');
+          });
+        });
+        showToast("Admin notified. We'll reach out soon.", 'success');
+        loadAll();
+      });
+    });
+
+    document.getElementById('closeFollowUp').addEventListener('click', function () {
+      document.getElementById('followUpModal').style.display = 'none';
+    });
+
+    // ═══════════════════════════════════════════════════════
+    //  Main load
+    // ═══════════════════════════════════════════════════════
+    requireAuth('patient').then(function (user) {
+      var msgEl = document.getElementById('message');
 
       // Follow-up form
       document.getElementById('followUpForm').addEventListener('submit', function (e) {
         e.preventDefault();
-        var title = document.getElementById('fuTitle').value;
-        var desc = document.getElementById('fuDescription').value;
+        var title = document.getElementById('fuTitle').value.trim();
+        var desc = document.getElementById('fuDescription').value.trim();
         var aptId = document.getElementById('fuAppointmentId').value;
-        if (!title.trim() || !desc.trim()) { alert('Please fill in all fields.'); return; }
+        if (!title || !desc) { alert('Please fill in all fields.'); return; }
         createProblemSubmission(user.uid, title, desc, 'follow-up', aptId).then(function () {
-          modal.style.display = 'none';
+          document.getElementById('followUpModal').style.display = 'none';
           document.getElementById('followUpForm').reset();
-          // Notify admin about follow-up
           db.collection('users').where('role', '==', 'admin').get().then(function (snap) {
             snap.forEach(function (d) { createNotification(d.id, 'Follow-up request: ' + title, 'request'); });
           });
-          showToast('Follow-up request submitted!', 'success');
-        }).catch(function (err) { showMessage(messageEl, err.message, 'error'); });
+          showToast('Follow-up submitted!', 'success');
+        }).catch(function (err) { showMessage(msgEl, err.message, 'error'); });
       });
 
-      document.getElementById('closeModal').addEventListener('click', function () { modal.style.display = 'none'; });
       document.getElementById('logoutBtnSidebar').addEventListener('click', function (e) { e.preventDefault(); confirmLogout(); });
       var navToggle = document.getElementById('navToggle');
       var navLinks = document.getElementById('navLinks');
       if (navToggle && navLinks) {
-        navToggle.addEventListener('click', function () {
-          navLinks.classList.toggle('open');
+        navToggle.addEventListener('click', function () { navLinks.classList.toggle('open'); });
+      }
+
+      // ─── Fetch & render all data ───────────────────────────
+      function loadAll() {
+        clearCountdowns();
+        Promise.all([
+          getAppointmentsByPatient(user.uid),
+          getSubmissionsByPatient(user.uid)
+        ]).then(function (results) {
+          var apts = results[0]; // all appointments
+          var subs = results[1]; // problemSubmissions
+
+          var now = Date.now();
+          var todayDate = new Date();
+          var today = todayDate.getFullYear() + '-' +
+            String(todayDate.getMonth() + 1).padStart(2, '0') + '-' +
+            String(todayDate.getDate()).padStart(2, '0');
+
+          // Helper: has appointment datetime passed?
+          function isPast(apt) {
+            if (!apt.scheduledDate) return false;
+            var dt = new Date(apt.scheduledDate + 'T' + (apt.scheduledTime || '23:59') + ':00');
+            return dt.getTime() < now;
+          }
+
+          // Upcoming = assigned/prescribed AND the appointment time hasn't passed yet
+          var upcoming = apts.filter(function (a) {
+            return (a.status === 'assigned' || a.status === 'prescribed') && !isPast(a);
+          });
+
+          // History = completed / cancelled OR past-dated assigned/prescribed (overdue)
+          var history = apts.filter(function (a) {
+            if (a.status === 'completed' || a.status === 'cancelled') return true;
+            if ((a.status === 'assigned' || a.status === 'prescribed') && isPast(a)) {
+              a._overdue = true; // flag for rendering
+              return true;
+            }
+            return false;
+          });
+
+          // Pending = submissions still awaiting assignment (not linked to an appointment yet)
+          var pending = subs.filter(function (s) { return s.status === 'pending'; });
+
+          // Update tab counts
+          document.getElementById('count-upcoming').textContent = upcoming.length;
+          document.getElementById('count-pending').textContent = pending.length;
+          document.getElementById('count-history').textContent = history.length;
+
+          // ── Upcoming tab ──────────────────────────────────
+          renderUpcoming(upcoming, today);
+
+          // ── Pending tab ───────────────────────────────────
+          renderPending(pending);
+
+          // ── History tab ───────────────────────────────────
+          renderHistory(history);
+
+        }).catch(function (err) {
+          document.getElementById('panel-upcoming').innerHTML = errorState();
+          document.getElementById('panel-pending').innerHTML = errorState();
+          document.getElementById('panel-history').innerHTML = errorState();
+          showMessage(msgEl, 'Failed to load appointments. Please refresh.', 'error');
         });
       }
+
+      // ─── Render: Upcoming ──────────────────────────────────
+      function renderUpcoming(list, today) {
+        var panel = document.getElementById('panel-upcoming');
+        if (list.length === 0) {
+          panel.innerHTML = '<div class="empty-state">' +
+            '<div class="empty-state-icon">📅</div>' +
+            '<h3>No Upcoming Appointments</h3>' +
+            '<p>When a doctor is assigned to your consultation, it will appear here with the date and time of your visit.</p>' +
+            '<a href="submit-problem.html" class="btn btn-primary">Request Consultation</a>' +
+            '</div>';
+          return;
+        }
+        panel.innerHTML = '';
+        list.forEach(function (apt, i) {
+          var card = document.createElement('div');
+          card.className = 'apt-card';
+          card.style.animationDelay = (i * 0.05) + 's';
+
+          var isAssigned = apt.status === 'assigned';
+          var isPrescribed = apt.status === 'prescribed';
+          var isUpcoming = apt.scheduledDate >= today;
+          var stripClass = isAssigned ? 'strip-assigned' : 'strip-prescribed';
+          var chipClass = '';
+          var dateChip = makeDateChip(apt.scheduledDate, apt.scheduledTime, chipClass);
+          var cdId = 'cd-' + apt.id;
+
+          // Badges (pain + urgency from apt doc if present, else blank)
+          var badgesHtml = '';
+          if (apt.painLevel) {
+            badgesHtml += '<span class="apt-badge ' + painClass(apt.painLevel) + '">🩺 ' + apt.painLevel + ' pain</span>';
+          }
+          if (apt.urgency) {
+            badgesHtml += '<span class="apt-badge ' + urgencyClass(apt.urgency) + '">⚡ ' + apt.urgency + '</span>';
+          }
+
+          // Status badge
+          var statusLabel = isAssigned ? 'Assigned' : 'Prescription Issued';
+          var statusColor = isAssigned ? '#dcfce7;color:#166534' : '#dbeafe;color:#1e40af';
+          badgesHtml += '<span class="apt-badge" style="background:' + statusColor + '">' + statusLabel + '</span>';
+
+          if (apt.cantMakeIt) {
+            badgesHtml += '<span class="apt-badge" style="background:#fef3c7;color:#92400e;">⚠️ Admin Notified</span>';
+          }
+
+          // No patient-facing cancel/action buttons — admin handles changes
+          var actionsHtml = '';
+          if (isPrescribed) {
+            actionsHtml += '<a href="prescriptions.html" class="btn btn-outline btn-sm">View Prescription →</a>';
+            actionsHtml += '<button class="btn btn-outline btn-sm followup-btn" data-id="' + apt.id + '">Request Follow-Up</button>';
+          }
+
+          // Countdown line (only for upcoming + assigned)
+          var cdHtml = '';
+          if (isAssigned && apt.scheduledDate) {
+            cdHtml = '<div class="countdown-box" id="' + cdId + '">⏰ <span class="cd-text">…</span></div>';
+          }
+
+          card.innerHTML =
+            '<div class="apt-card-strip ' + stripClass + '"></div>' +
+            '<div class="apt-card-body">' +
+            '<div class="apt-header">' +
+            '<div class="apt-title-block">' +
+            '<p class="apt-title">' + escapeHtml(apt.problemTitle || 'Appointment') + '</p>' +
+            '<div class="apt-doctor">' +
+            '<svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>' +
+            'Dr. ' + escapeHtml(apt.doctorName || '—') +
+            '</div>' +
+            '</div>' +
+            dateChip +
+            '</div>' +
+            (apt.problemDescription ? '<p class="apt-desc">' + escapeHtml(apt.problemDescription) + '</p>' : '') +
+            '<div class="apt-badges">' + badgesHtml + '</div>' +
+            cdHtml +
+            (actionsHtml ? '<div class="apt-card-actions">' + actionsHtml + '</div>' : '') +
+            '</div>';
+
+          panel.appendChild(card);
+
+          // Start countdown after DOM insert
+          if (isAssigned && apt.scheduledDate) {
+            var cdBox = card.querySelector('#' + cdId);
+            var cdText = cdBox && cdBox.querySelector('.cd-text');
+            if (cdText) startCountdown(cdText, apt.scheduledDate, apt.scheduledTime);
+          }
+        });
+
+        // Wire up buttons
+        panel.querySelectorAll('.cancel-btn').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            var id = btn.dataset.id;
+            db.collection('appointments').doc(id).get().then(function (doc) {
+              var d = doc.exists ? doc.data() : {};
+              pendingCancelId = id;
+              pendingCancelData = { patientName: d.patientName || '', doctorName: d.doctorName || '', doctorId: d.doctorId || '', scheduledDate: d.scheduledDate || '' };
+              document.getElementById('cancelDetail').textContent =
+                'Are you sure you want to cancel your appointment with ' +
+                (d.doctorName ? 'Dr. ' + d.doctorName : 'your doctor') +
+                (d.scheduledDate ? ' on ' + formatDate(d.scheduledDate) : '') + '? This cannot be undone.';
+              document.getElementById('cancelModal').style.display = 'flex';
+            });
+          });
+        });
+
+        panel.querySelectorAll('.cmi-btn').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            var id = btn.dataset.id;
+            db.collection('appointments').doc(id).get().then(function (doc) {
+              var d = doc.exists ? doc.data() : {};
+              pendingCmiId = id;
+              pendingCmiData = { patientName: d.patientName || '', doctorName: d.doctorName || '', doctorId: d.doctorId || '', scheduledDate: d.scheduledDate || '' };
+              document.getElementById('cmiDetail').textContent =
+                'You are about to notify the admin that you cannot attend your appointment with ' +
+                (d.doctorName ? 'Dr. ' + d.doctorName : 'your doctor') +
+                (d.scheduledDate ? ' on ' + formatDate(d.scheduledDate) : '') +
+                '. They will be prompted to reassign the slot.';
+              document.getElementById('cantMakeItModal').style.display = 'flex';
+            });
+          });
+        });
+
+        panel.querySelectorAll('.followup-btn').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            document.getElementById('fuAppointmentId').value = btn.dataset.id;
+            document.getElementById('followUpModal').style.display = 'flex';
+          });
+        });
+      }
+
+      // ─── Render: Pending ───────────────────────────────────
+      function renderPending(list) {
+        var panel = document.getElementById('panel-pending');
+        if (list.length === 0) {
+          panel.innerHTML = '<div class="empty-state">' +
+            '<div class="empty-state-icon">⏳</div>' +
+            '<h3>No Pending Requests</h3>' +
+            '<p>All your consultation requests have been reviewed. Submit a new one if you need further care.</p>' +
+            '<a href="submit-problem.html" class="btn btn-primary">Request Consultation</a>' +
+            '</div>';
+          return;
+        }
+        panel.innerHTML = '';
+        list.forEach(function (sub, i) {
+          var card = document.createElement('div');
+          card.className = 'apt-card';
+          card.style.animationDelay = (i * 0.05) + 's';
+
+          // Format submitted date
+          var submittedAt = '';
+          if (sub.createdAt && sub.createdAt.seconds) {
+            submittedAt = new Date(sub.createdAt.seconds * 1000).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+          }
+
+          var badgesHtml = '';
+          if (sub.painLevel) badgesHtml += '<span class="apt-badge ' + painClass(sub.painLevel) + '">🩺 ' + sub.painLevel + ' pain</span>';
+          if (sub.urgency) badgesHtml += '<span class="apt-badge ' + urgencyClass(sub.urgency) + '">⚡ ' + sub.urgency + '</span>';
+          if (sub.primaryConcern) badgesHtml += '<span class="apt-badge badge-status">🔍 ' + escapeHtml(sub.primaryConcern) + '</span>';
+          if (sub.bodyArea) badgesHtml += '<span class="apt-badge badge-status">📍 ' + escapeHtml(sub.bodyArea) + '</span>';
+
+          card.innerHTML =
+            '<div class="apt-card-strip strip-pending"></div>' +
+            '<div class="apt-card-body">' +
+            '<div class="apt-header">' +
+            '<div class="apt-title-block">' +
+            '<p class="apt-title">' + escapeHtml(sub.title || 'Consultation Request') + '</p>' +
+            '<div class="apt-doctor" style="color:#94a3b8;">Submitted ' + (submittedAt || 'recently') + '</div>' +
+            '</div>' +
+            '<span class="pending-chip"><span class="pending-pulse"></span>Awaiting Assignment</span>' +
+            '</div>' +
+            (sub.description ? '<p class="apt-desc">' + escapeHtml(sub.description) + '</p>' : '') +
+            (badgesHtml ? '<div class="apt-badges">' + badgesHtml + '</div>' : '') +
+            '<p style="font-size:0.82rem;color:#94a3b8;margin-top:0.75rem;">Our care team reviews every request and will notify you once a doctor is assigned.</p>' +
+            '</div>';
+
+          panel.appendChild(card);
+        });
+      }
+
+      // ─── Render: History ───────────────────────────────────
+      function renderHistory(list) {
+        var panel = document.getElementById('panel-history');
+        if (list.length === 0) {
+          panel.innerHTML = '<div class="empty-state">' +
+            '<div class="empty-state-icon">📋</div>' +
+            '<h3>No Appointment History</h3>' +
+            '<p>Completed and cancelled appointments will appear here for your reference.</p>' +
+            '</div>';
+          return;
+        }
+        panel.innerHTML = '';
+        list.forEach(function (apt, i) {
+          var card = document.createElement('div');
+          card.className = 'apt-card';
+          card.style.animationDelay = (i * 0.05) + 's';
+
+          var isCompleted = apt.status === 'completed';
+          var stripClass = isCompleted ? 'strip-completed' : 'strip-cancelled';
+          var chipClass = isCompleted ? 'chip-done' : 'chip-cancelled';
+          var dateChip = makeDateChip(apt.scheduledDate, apt.scheduledTime, chipClass);
+
+          var outcomePill = isCompleted
+            ? '<span class="outcome-pill outcome-completed">✔ Completed</span>'
+            : '<span class="outcome-pill outcome-cancelled">✖ Cancelled</span>';
+
+          var actionsHtml = '';
+          if (isCompleted) {
+            actionsHtml = '<a href="prescriptions.html" class="btn btn-outline btn-sm">View Prescription →</a>' +
+              '<button class="btn btn-outline btn-sm followup-btn" data-id="' + apt.id + '">Request Follow-Up</button>';
+          }
+
+          card.innerHTML =
+            '<div class="apt-card-strip ' + stripClass + '"></div>' +
+            '<div class="apt-card-body">' +
+            '<div class="apt-header">' +
+            '<div class="apt-title-block">' +
+            '<p class="apt-title">' + escapeHtml(apt.problemTitle || 'Appointment') + '</p>' +
+            '<div class="apt-doctor">' +
+            '<svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>' +
+            'Dr. ' + escapeHtml(apt.doctorName || '—') +
+            '</div>' +
+            '</div>' +
+            dateChip +
+            '</div>' +
+            (apt.problemDescription ? '<p class="apt-desc">' + escapeHtml(apt.problemDescription) + '</p>' : '') +
+            '<div class="apt-badges">' + outcomePill + '</div>' +
+            (actionsHtml ? '<div class="apt-card-actions">' + actionsHtml + '</div>' : '') +
+            '</div>';
+
+          panel.appendChild(card);
+        });
+
+        // Wire follow-up buttons in history
+        panel.querySelectorAll('.followup-btn').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            document.getElementById('fuAppointmentId').value = btn.dataset.id;
+            document.getElementById('followUpModal').style.display = 'flex';
+          });
+        });
+      }
+
+      function errorState() {
+        return '<div class="empty-state"><div class="empty-state-icon">⚠️</div><h3>Something went wrong</h3><p>Unable to load data. Please refresh the page.</p></div>';
+      }
+
+      loadAll();
     });
   </script>
 </body>
