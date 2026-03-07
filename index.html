@@ -5,115 +5,99 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description"
-    content="TumourCare - Specialized tumour and oncology management platform. Book consultations with oncologists, receive treatment plans, digital prescriptions, and manage your cancer care journey online.">
+    content="NeuroCare - Specialized brain health and neurology management platform. Book consultations with neurologists, receive treatment plans, digital prescriptions, and manage your neurological care journey online.">
   <meta name="keywords"
-    content="tumour care, oncology, cancer treatment, tumour management, chemotherapy, radiation therapy, oncologist, patient portal">
-  <meta name="author" content="TumourCare">
-  <meta property="og:title" content="TumourCare - Expert Tumour Care, Compassionate Support">
+    content="brain care, neurology, neurological treatment, brain health management, neurologist, patient portal">
+  <meta name="author" content="NeuroCare">
+  <meta property="og:title" content="NeuroCare - Expert Brain Care, Compassionate Support">
   <meta property="og:description"
-    content="Book oncology consultations, receive personalized treatment plans, digital prescriptions, and manage your cancer care journey â€” all from one place.">
+    content="Book neurology consultations, receive personalized treatment plans, digital prescriptions, and manage your neurological care journey â€” all from one place.">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://tumourcare.web.app">
-  <!DOCTYPE html>
-  <html lang="en">
-
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description"
-      content="TumourCare - Specialized tumour and oncology management platform. Book consultations with oncologists, receive treatment plans, digital prescriptions, and manage your cancer care journey online.">
-    <meta name="keywords"
-      content="tumour care, oncology, cancer treatment, tumour management, chemotherapy, radiation therapy, oncologist, patient portal">
-    <meta name="author" content="TumourCare">
-    <meta property="og:title" content="TumourCare - Expert Tumour Care, Compassionate Support">
-    <meta property="og:description"
-      content="Book oncology consultations, receive personalized treatment plans, digital prescriptions, and manage your cancer care journey â€” all from one place.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://tumourcare.web.app">
-    <meta name="theme-color" content="#0f172a">
-    <link rel="icon" href="logo.png">
-    <title>TumourCare - Expert Tumour Care, Compassionate Support</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/patient-layout.css">
-    <style>
-      /* â”€â”€ Section Snap â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+  <meta property="og:url" content="https://neurocare.web.app">
+  <meta name="theme-color" content="#0f172a">
+  <link rel="icon" href="logo.png">
+  <title>NeuroCare - Expert Brain Care, Compassionate Support</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/patient-layout.css">
+  <style>
+    /* â”€â”€ Section Snap â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 
-      /* -- Card full background image (dark overlay + white text) -- */
-      .premium-service-card.card-bg,
-      .advantage-card.card-bg,
-      .hiw-card.card-bg {
-        background-size: cover;
-        background-position: center;
-        min-height: 300px;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-end;
-        position: relative;
-        overflow: hidden;
-        border: none;
-        padding: 1.5rem;
-      }
+    /* -- Card full background image (dark overlay + white text) -- */
+    .premium-service-card.card-bg,
+    .advantage-card.card-bg,
+    .hiw-card.card-bg {
+      background-size: cover;
+      background-position: center;
+      min-height: 300px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      position: relative;
+      overflow: hidden;
+      border: none;
+      padding: 1.5rem;
+    }
 
-      .premium-service-card.card-bg::before,
-      .advantage-card.card-bg::before,
-      .hiw-card.card-bg::before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(to bottom, rgba(10, 20, 40, 0.5) 0%, rgba(10, 20, 40, 0.85) 60%, rgba(10, 20, 40, 0.95) 100%);
-        z-index: 0;
-      }
+    .premium-service-card.card-bg::before,
+    .advantage-card.card-bg::before,
+    .hiw-card.card-bg::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(10, 20, 40, 0.5) 0%, rgba(10, 20, 40, 0.85) 60%, rgba(10, 20, 40, 0.95) 100%);
+      z-index: 0;
+    }
 
-      .premium-service-card.card-bg>*,
-      .advantage-card.card-bg>*,
-      .hiw-card.card-bg>* {
-        position: relative;
-        z-index: 1;
-      }
+    .premium-service-card.card-bg>*,
+    .advantage-card.card-bg>*,
+    .hiw-card.card-bg>* {
+      position: relative;
+      z-index: 1;
+    }
 
-      .premium-service-card.card-bg h3,
-      .premium-service-card.card-bg p,
-      .advantage-card.card-bg h4,
-      .advantage-card.card-bg p,
-      .hiw-card.card-bg h4,
-      .hiw-card.card-bg p {
-        color: #fff !important;
-        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
-      }
+    .premium-service-card.card-bg h3,
+    .premium-service-card.card-bg p,
+    .advantage-card.card-bg h4,
+    .advantage-card.card-bg p,
+    .hiw-card.card-bg h4,
+    .hiw-card.card-bg p {
+      color: #fff !important;
+      text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+    }
 
-      .premium-service-card.card-bg .premium-icon-box {
-        background: rgba(255, 255, 255, 0.15) !important;
-        backdrop-filter: blur(8px);
-      }
+    .premium-service-card.card-bg .premium-icon-box {
+      background: rgba(255, 255, 255, 0.15) !important;
+      backdrop-filter: blur(8px);
+    }
 
-      .premium-service-card.card-bg .premium-icon-box svg,
-      .advantage-card.card-bg .advantage-icon svg,
-      .hiw-card.card-bg .hiw-icon-wrap svg {
-        stroke: #fff;
-      }
+    .premium-service-card.card-bg .premium-icon-box svg,
+    .advantage-card.card-bg .advantage-icon svg,
+    .hiw-card.card-bg .hiw-icon-wrap svg {
+      stroke: #fff;
+    }
 
-      .advantage-card.card-bg .advantage-icon {
-        background: rgba(255, 255, 255, 0.15) !important;
-      }
+    .advantage-card.card-bg .advantage-icon {
+      background: rgba(255, 255, 255, 0.15) !important;
+    }
 
-      .hiw-card.card-bg .hiw-step-number {
-        color: rgba(255, 255, 255, 0.5);
-      }
+    .hiw-card.card-bg .hiw-step-number {
+      color: rgba(255, 255, 255, 0.5);
+    }
 
-      .premium-service-card.card-bg .service-link {
-        color: #93c5fd !important;
-      }
-    </style>
-  </head>
+    .premium-service-card.card-bg .service-link {
+      color: #93c5fd !important;
+    }
+  </style>
+</head>
 
 <body>
   <!-- Top Navbar -->
   <nav class="dashboard-topnav" style="position: fixed; top: 0; width: 100%; z-index: 1000;">
     <div class="topnav-inner" style="max-width: 1400px; margin: 0 auto; padding: 0 2rem;">
       <a href="index.html" class="topnav-brand" style="margin-right: auto;">
-        <img src="logo.png" alt="TumourCare Logo">
-        <span>TumourCare</span>
+        <img src="logo.png" alt="NeuroCare Logo">
+        <span>NeuroCare</span>
       </a>
 
       <button class="topnav-toggle" id="navToggle" aria-label="Toggle navigation"
@@ -137,9 +121,9 @@
   <section class="hero">
     <div class="hero-container">
       <div class="hero-content">
-        <h1>Expert Tumour Care, Compassionate Support</h1>
-        <p>Book oncology consultations, connect with tumour specialists, receive personalized treatment plans, and
-          manage your cancer care journey â€” all from one place.</p>
+        <h1>Expert Brain Care, Compassionate Support</h1>
+        <p>Book neurology consultations, connect with brain specialists, receive personalized treatment plans, and
+          manage your neurological care journey â€” all from one place.</p>
         <div class="hero-actions">
           <a href="register.html" class="btn btn-primary btn-lg">Get Started Free</a>
           <a href="#services" class="btn btn-ghost btn-lg">Learn More &#8595;</a>
@@ -170,7 +154,7 @@
   </section>
 
   <!-- About -->
-  <section id="about" class="section">
+  <section id="about" class="section" style="background-color: #f0fdfa;">
     <div class="about-grid reveal">
       <div class="about-image-wrapper">
         <img
@@ -183,17 +167,17 @@
       </div>
       <div class="about-content">
         <div class="section-badge">Our Mission</div>
-        <h2>Pioneering Specialized Oncology Care</h2>
-        <p class="about-lead">We are a leading oncology centre dedicated to providing comprehensive and compassionate
-          tumour care. Our experienced team ensures every patient receives personalized treatment seamlessly through our
+        <h2>Pioneering Specialized Neurological Care</h2>
+        <p class="about-lead">We are a leading neurology centre dedicated to providing comprehensive and compassionate
+          brain care. Our experienced team ensures every patient receives personalized treatment seamlessly through our
           digital platform.</p>
 
         <ul class="about-features">
           <li>
             <span class="check-icon">&#10003;</span>
             <div>
-              <strong>World-Class Oncologists</strong>
-              <p>Consult with globally recognized specialists in tumour management.</p>
+              <strong>World-Class Neurologists</strong>
+              <p>Consult with globally recognized specialists in brain health.</p>
             </div>
           </li>
           <li>
@@ -207,7 +191,7 @@
             <span class="check-icon">&#10003;</span>
             <div>
               <strong>24/7 Secure Patient Portal</strong>
-              <p>Manage your entire cancer care journey from any device, anywhere.</p>
+              <p>Manage your entire neurological care journey from any device, anywhere.</p>
             </div>
           </li>
         </ul>
@@ -218,11 +202,12 @@
   </section>
 
   <!-- Services -->
-  <section id="services" class="section section-alt">
+  <section id="services" class="section section-alt" style="background-color: #eff6ff;">
     <div class="section-header reveal">
       <div class="section-badge" style="margin: 0 auto 1rem; display: table;">Our Expertise</div>
-      <h2>Comprehensive Tumour Care Services</h2>
-      <p class="section-subtitle">Everything you need for your cancer care journey, streamlined in one digital platform.
+      <h2>Comprehensive Brain Care Services</h2>
+      <p class="section-subtitle">Everything you need for your neurological care journey, streamlined in one digital
+        platform.
       </p>
     </div>
 
@@ -235,8 +220,8 @@
               d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
           </svg>
         </div>
-        <h3>Oncology Consultations</h3>
-        <p>Submit your symptoms securely and get assigned to an expert oncologist. Track your consultation status and
+        <h3>Neurology Consultations</h3>
+        <p>Submit your symptoms securely and get assigned to an expert neurologist. Track your consultation status and
           treatment milestones in real-time.</p>
         <a href="register.html" class="service-link text-blue">Book Now &rarr;</a>
       </div>
@@ -272,11 +257,11 @@
   </section>
 
   <!-- Features -->
-  <section id="features" class="section">
+  <section id="features" class="section" style="background-color: #f8fafc;">
     <div class="section-header reveal">
       <div class="section-badge" style="margin: 0 auto 1rem; display: table;">The Advantage</div>
-      <h2>Why Choose TumourCare?</h2>
-      <p class="section-subtitle">A digital-first approach to oncology that prioritizes patient experience, data
+      <h2>Why Choose NeuroCare?</h2>
+      <p class="section-subtitle">A digital-first approach to neurology that prioritizes patient experience, data
         security, and seamless continuous care.</p>
     </div>
 
@@ -338,7 +323,7 @@
           </svg>
         </div>
         <h4>Easy Follow-Ups</h4>
-        <p>Request follow-up consultations with your dedicated oncologist organically after every treatment cycle.</p>
+        <p>Request follow-up consultations with your dedicated neurologist organically after every treatment cycle.</p>
       </div>
 
       <div class="advantage-card card-bg"
@@ -356,7 +341,7 @@
   </section>
 
   <!-- How It Works -->
-  <section class="hiw-section">
+  <section class="hiw-section" style="background-color: #fefce8;">
     <div class="hiw-container">
       <div class="section-header reveal" style="text-align:center;">
         <div class="section-badge"
@@ -397,7 +382,7 @@
             </svg>
           </div>
           <h4>Describe Your Symptoms</h4>
-          <p>Submit detailed tumour-related concerns through a guided form. Our oncology team reviews every case
+          <p>Submit detailed neurological concerns through a guided form. Our neurology team reviews every case
             personally.</p>
         </div>
 
@@ -411,8 +396,8 @@
                 d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <h4>Meet Your Oncologist</h4>
-          <p>Get matched with a certified tumour specialist best suited for your diagnosis. Review their profile before
+          <h4>Meet Your Neurologist</h4>
+          <p>Get matched with a certified brain specialist best suited for your diagnosis. Review their profile before
             your first consultation.</p>
         </div>
 
@@ -435,7 +420,7 @@
   </section>
 
   <!-- Stats -->
-  <section class="stats-section">
+  <section class="stats-section" style="background-color: #fdf4ff;">
     <div class="stats-container">
       <div class="section-header reveal" style="text-align:center;">
         <div class="section-badge" style="margin: 0 auto 1rem; display: table;">By The Numbers</div>
@@ -461,7 +446,7 @@
             </svg>
           </div>
           <div class="stat-number" data-countup-to="50" data-countup-suffix="+">0</div>
-          <div class="stat-label">Expert Oncologists</div>
+          <div class="stat-label">Expert Neurologists</div>
         </div>
         <div class="premium-stat">
           <div class="stat-icon-wrap">
@@ -488,7 +473,7 @@
   </section>
 
   <!-- Contact -->
-  <section id="contact" class="section">
+  <section id="contact" class="section" style="background-color: #fff1f2;">
     <div class="section-header reveal" style="text-align:center;">
       <div class="section-badge" style="margin: 0 auto 1rem; display: table;">Reach Out</div>
       <h2>Get In Touch</h2>
@@ -558,10 +543,10 @@
     <div class="footer-container">
       <div class="footer-brand">
         <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 1rem;">
-          <img src="logo.png" alt="TumourCare Logo" style="max-height: 45px; border-radius: 100px;">
-          <span style="font-size: 1.2rem; font-weight: 700; color: #fff;">TumourCare</span>
+          <img src="logo.png" alt="NeuroCare Logo" style="max-height: 45px; border-radius: 100px;">
+          <span style="font-size: 1.2rem; font-weight: 700; color: #fff;">NeuroCare</span>
         </div>
-        <p>Specialized oncology management platform built for patients, doctors, and administrators. Your health,
+        <p>Specialized neurology management platform built for patients, doctors, and administrators. Your health,
           digitized and secure.</p>
         <div class="footer-socials">
           <a href="#" aria-label="Twitter"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
@@ -613,7 +598,7 @@
       </div>
     </div>
     <div class="footer-bottom">
-      <p>&copy; 2026 TumourCare. All rights reserved. Built with care for better cancer care.</p>
+      <p>&copy; 2026 NeuroCare. All rights reserved. Built with care for better brain health.</p>
     </div>
   </footer>
 
