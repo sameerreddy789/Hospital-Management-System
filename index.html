@@ -37,16 +37,7 @@
     <link rel="stylesheet" href="css/patient-layout.css">
     <style>
       /* â”€â”€ Section Snap â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
-      html {
-        scroll-snap-type: y proximity;
-        overflow-y: scroll;
-      }
 
-      .hero,
-      section,
-      footer {
-        scroll-snap-align: start;
-      }
 
       /* -- Card full background image (dark overlay + white text) -- */
       .premium-service-card.card-bg,
@@ -381,7 +372,8 @@
 
       <div class="hiw-grid reveal">
         <!-- Step 1 -->
-        <div class="hiw-card">
+        <div class="hiw-card card-bg"
+          style="background-image:url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=500&q=60');">
           <div class="hiw-step-number">01</div>
           <div class="hiw-icon-wrap">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -394,7 +386,8 @@
         </div>
 
         <!-- Step 2 -->
-        <div class="hiw-card">
+        <div class="hiw-card card-bg"
+          style="background-image:url('https://images.unsplash.com/photo-1584036561566-baf8f5f1b144?w=500&q=60');">
           <div class="hiw-step-number">02</div>
           <div class="hiw-icon-wrap">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -408,7 +401,8 @@
         </div>
 
         <!-- Step 3 -->
-        <div class="hiw-card">
+        <div class="hiw-card card-bg"
+          style="background-image:url('https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=500&q=60');">
           <div class="hiw-step-number">03</div>
           <div class="hiw-icon-wrap">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -422,7 +416,8 @@
         </div>
 
         <!-- Step 4 -->
-        <div class="hiw-card">
+        <div class="hiw-card card-bg"
+          style="background-image:url('https://images.unsplash.com/photo-1530497610245-94d3c16cda28?w=500&q=60');">
           <div class="hiw-step-number">04</div>
           <div class="hiw-icon-wrap">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -645,43 +640,11 @@
     backBtn.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: 'smooth' }); });
   </script>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script src="js/count-up.js"></script>
 
   <!-- Mobile Menu Toggle Script -->
 
-  <script>
-    (function () {
-      var snaps = Array.from(document.querySelectorAll('.hero, section, footer'));
-      var idx = 0;
-
-      // Keep snap index in sync for keyboard/anchor navigation
-      window.addEventListener('scrollend', function () {
-        var mid = window.scrollY + window.innerHeight / 2;
-        snaps.forEach(function (s, i) {
-          var top = s.getBoundingClientRect().top + window.scrollY;
-          if (mid >= top && mid < top + s.offsetHeight) idx = i;
-        });
-      }, { passive: true });
-
-      // Support arrow keys for snapping navigation without hijacking mouse wheel
-      window.addEventListener('keydown', function (e) {
-        if (e.key === 'ArrowDown' || e.key === 'PageDown') {
-          if (idx < snaps.length - 1) {
-            e.preventDefault();
-            idx++;
-            snaps[idx].scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
-        }
-        if (e.key === 'ArrowUp' || e.key === 'PageUp') {
-          if (idx > 0) {
-            e.preventDefault();
-            idx--;
-            snaps[idx].scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
-        }
-      });
-    })();
-  </script>
 </body>
 
 </html>
