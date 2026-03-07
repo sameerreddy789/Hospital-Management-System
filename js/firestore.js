@@ -69,12 +69,17 @@ function getPendingSubmissions() {
 function getSubmissionsByPatient(patientId) {
   return db.collection('problemSubmissions')
     .where('patientId', '==', patientId)
-    .orderBy('createdAt', 'desc')
     .get()
     .then(function (snapshot) {
       var results = [];
       snapshot.forEach(function (doc) {
         results.push(Object.assign({ id: doc.id }, doc.data()));
+      });
+      // Sort newest first in JS to avoid composite index requirement
+      results.sort(function (a, b) {
+        var t1 = (a.createdAt && a.createdAt.seconds) ? a.createdAt.seconds : 0;
+        var t2 = (b.createdAt && b.createdAt.seconds) ? b.createdAt.seconds : 0;
+        return t2 - t1;
       });
       return results;
     });
@@ -133,12 +138,18 @@ function createAppointment(patientId, doctorId, submissionId, date, time) {
 function getAppointmentsByPatient(patientId) {
   return db.collection('appointments')
     .where('patientId', '==', patientId)
-    .orderBy('scheduledDate', 'desc')
     .get()
     .then(function (snapshot) {
       var results = [];
       snapshot.forEach(function (doc) {
         results.push(Object.assign({ id: doc.id }, doc.data()));
+      });
+      // Sort by date desc in JS to avoid requiring a Firestore composite index
+      results.sort(function (a, b) {
+        var d1 = a.scheduledDate || '';
+        var d2 = b.scheduledDate || '';
+        if (d1 !== d2) return d2.localeCompare(d1);
+        return (b.scheduledTime || '').localeCompare(a.scheduledTime || '');
       });
       return results;
     });

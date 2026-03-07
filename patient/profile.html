@@ -116,7 +116,7 @@
             </div>
             <div class="form-group">
               <label for="dob">Date of Birth</label>
-              <input type="date" id="dob">
+              <input type="date" id="dob" max="">
             </div>
             <div class="form-group">
               <label for="age">Age</label>
@@ -298,10 +298,17 @@
       var form = document.getElementById('profileForm');
       var messageEl = document.getElementById('message');
 
+      // Set max DOB to today (prevent future dates / negative ages)
+      var todayStr = new Date().toISOString().split('T')[0];
+      document.getElementById('dob').max = todayStr;
+
       function calculateAge(dob) {
         if (!dob) return '';
         var birth = new Date(dob);
         var today = new Date();
+        if (birth > today) {
+          return 'invalid';
+        }
         var age = today.getFullYear() - birth.getFullYear();
         var m = today.getMonth() - birth.getMonth();
         if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
@@ -309,7 +316,14 @@
       }
 
       document.getElementById('dob').addEventListener('change', function () {
-        document.getElementById('age').value = calculateAge(this.value);
+        var result = calculateAge(this.value);
+        if (result === 'invalid') {
+          this.value = '';
+          document.getElementById('age').value = '';
+          showFieldError(this, 'Date of birth cannot be in the future.');
+        } else {
+          document.getElementById('age').value = result;
+        }
       });
 
       // Load existing profile
