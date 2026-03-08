@@ -1,58 +1,216 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#127993;</text></svg>">
-  <title>Doctor Dashboard - TumourCare</title>
+  <link rel="icon" href="../logo.png">
+  <title>Doctor Dashboard - NeuroCare</title>
   <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/admin-layout.css">
+  <style>
+    /* Presence Toggle Styling */
+    .presence-toggle-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.5rem;
+      background: #fff;
+      border-radius: 16px;
+      border: 1px solid #e2e8f0;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+
+    .toggle-label {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 600;
+      color: #1e293b;
+    }
+
+    .status-indicator {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #94a3b8;
+    }
+
+    .status-active .status-indicator {
+      background: #10b981;
+      box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
+    }
+
+    /* Standard CSS Switch */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 26px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #cbd5e1;
+      transition: .4s;
+      border-radius: 34px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    input:checked+.slider {
+      background-color: #10b981;
+    }
+
+    input:checked+.slider:before {
+      transform: translateX(24px);
+    }
+  </style>
 </head>
+
 <body class="dashboard-body">
-  <nav class="navbar">
-    <div class="nav-brand">&#127993; TumourCare</div>
-    <button class="nav-toggle" aria-label="Toggle navigation">&#9776;</button>
-    <div class="nav-links">
-      <a href="dashboard.html" class="active">Dashboard</a>
-      <a href="notifications.html">Notifications <span id="notifBadge" class="badge" style="display:none;">0</span></a>
-      <a href="#" id="logoutBtn">Logout</a>
+
+  <!-- Top Navbar -->
+  <nav class="dashboard-topnav">
+    <div class="topnav-inner">
+      <a href="dashboard.html" class="topnav-brand">
+        <img src="../logo.png" alt="NeuroCare Logo">
+        <span>NeuroCare</span>
+      </a>
+
+      <button class="topnav-toggle" id="navToggle" aria-label="Toggle navigation">&#9776;</button>
+
+      <div class="topnav-links" id="navLinks">
+        <a href="dashboard.html" class="active">
+          <svg viewBox="0 0 24 24">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+          Dashboard
+        </a>
+        <a href="notifications.html">
+          <svg viewBox="0 0 24 24">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+          Notifications <span id="notifBadge" class="nav-badge" style="display:none;">0</span>
+        </a>
+      </div>
+
+      <a href="#" id="logoutBtn" class="topnav-logout" title="Logout">
+        <svg viewBox="0 0 24 24">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+          <polyline points="16 17 21 12 16 7"></polyline>
+          <line x1="21" y1="12" x2="9" y2="12"></line>
+        </svg>
+        <span>Logout</span>
+      </a>
     </div>
   </nav>
 
-  <div class="container">
-    <h1>Doctor Dashboard</h1>
-    <p class="welcome-greeting" id="doctorGreeting"></p>
+  <!-- Main Content Area -->
+  <main class="main-content">
+    <header class="page-header">
+      <div>
+        <h1 id="doctorGreeting">Doctor Dashboard</h1>
+        <div class="breadcrumb">Manage your patient appointments and presence</div>
+      </div>
+    </header>
 
-    <div class="summary-cards">
-      <div class="summary-card">
-        <div class="summary-card-icon">&#128197;</div>
-        <h3>Today's Appointments</h3>
-        <p class="stat" id="todayCount">0</p>
+    <div class="page-body">
+      <!-- Presence Toggle -->
+      <div class="presence-toggle-card" id="presenceCard">
+        <div class="toggle-label">
+          <div class="status-indicator"></div>
+          <span id="presenceStatus">You are currently: <strong>Away</strong></span>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="presenceToggle">
+          <span class="slider"></span>
+        </label>
       </div>
-      <div class="summary-card">
-        <div class="summary-card-icon">&#128101;</div>
-        <h3>Assigned Patients</h3>
-        <p class="stat" id="assignedCount">0</p>
-      </div>
-    </div>
 
-    <div class="dashboard-section">
-      <div class="section-header">
-        <h2>Assigned Appointments</h2>
+      <!-- Summary Stats -->
+      <div class="summary-cards">
+        <div class="summary-card">
+          <div class="summary-card-icon" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6;">
+            <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="2" fill="none">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="16" y1="2" x2="16" y2="6"></line>
+              <line x1="8" y1="2" x2="8" y2="6"></line>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+          </div>
+          <div>
+            <h3>Today's Appointments</h3>
+            <p class="stat" id="todayCount">0</p>
+          </div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-card-icon" style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6;">
+            <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="2" fill="none">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+            </svg>
+          </div>
+          <div>
+            <h3>Assigned Patients</h3>
+            <p class="stat" id="assignedCount">0</p>
+          </div>
+        </div>
       </div>
-      <div class="filter-bar">
-      <input type="text" id="searchInput" placeholder="Search by patient name..." class="search-input">
-      <select id="statusFilter" class="status-filter">
-        <option value="all">All Statuses</option>
-        <option value="assigned">Assigned</option>
-        <option value="prescribed">Prescribed</option>
-      </select>
+
+      <!-- Main Section -->
+      <div class="dashboard-section">
+        <div class="section-header">
+          <h2>
+            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"
+              style="vertical-align:middle;margin-right:8px;">
+              <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+            </svg>
+            Assigned Appointments
+          </h2>
+          <div style="display:flex; gap:1rem;">
+            <input type="text" id="searchInput" placeholder="Search patient..." class="search-input"
+              style="max-width:200px;">
+            <select id="statusFilter" class="status-filter">
+              <option value="all">All Statuses</option>
+              <option value="assigned">Assigned</option>
+              <option value="prescribed">Prescribed</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="appointmentList" class="list-container">
+          <div class="skeleton skeleton-card"></div>
+          <div class="skeleton skeleton-card"></div>
+        </div>
+      </div>
     </div>
-    <div id="appointmentList" class="list-container">
-      <div class="skeleton skeleton-card"></div>
-      <div class="skeleton skeleton-card"></div>
-    </div>
-    </div>
-  </div>
+  </main>
 
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
@@ -64,24 +222,71 @@
   <script src="../js/firestore.js"></script>
   <script src="../js/search-filter.js"></script>
   <script>
-    requireAuth('doctor').then(function(user) {
-      var hour = new Date().getHours();
-      var greeting = hour < 12 ? 'Good Morning' : hour < 17 ? 'Good Afternoon' : 'Good Evening';
-      document.getElementById('doctorGreeting').textContent = greeting + ', Dr. ' + user.name.split(' ').pop() + '!';
+    requireAuth('doctor').then(function (user) {
+      document.getElementById('doctorGreeting').textContent = 'Good Day, Dr. ' + user.name.split(' ').pop() + '!';
+
       var container = document.getElementById('appointmentList');
       var allAppointments = [];
+      var presenceToggle = document.getElementById('presenceToggle');
+      var presenceStatus = document.getElementById('presenceStatus');
+      var presenceCard = document.getElementById('presenceCard');
+
+      // Initialize Presence
+      getUserProfile(user.uid).then(function (profile) {
+        if (profile && profile.isPresent) {
+          presenceToggle.checked = true;
+          updatePresenceUI(true);
+        } else {
+          presenceToggle.checked = false;
+          updatePresenceUI(false);
+        }
+      });
+
+      function updatePresenceUI(isPresent) {
+        if (isPresent) {
+          presenceCard.classList.add('status-active');
+          presenceStatus.innerHTML = 'You are currently: <strong style="color: #10b981;">Present & Available</strong>';
+        } else {
+          presenceCard.classList.remove('status-active');
+          presenceStatus.innerHTML = 'You are currently: <strong style="color: #64748b;">Away / Offline</strong>';
+        }
+      }
+
+      presenceToggle.addEventListener('change', function () {
+        var isPresent = this.checked;
+        updateDoctorPresence(user.uid, isPresent).then(function () {
+          updatePresenceUI(isPresent);
+          showToast(isPresent ? 'You are now marked as available' : 'You are now marked as away', 'info');
+        }).catch(function (err) {
+          console.error('Failed to update presence:', err);
+          presenceToggle.checked = !isPresent; // Revert
+          showToast('Error updating status', 'error');
+        });
+      });
 
       function renderAppointments(items) {
-        if (items.length === 0) { container.innerHTML = '<p>No assigned appointments.</p>'; return; }
+        if (items.length === 0) {
+          container.innerHTML = '<div class="empty-state"><h3>No Appointments</h3><p>You have no assigned appointments matching your criteria.</p></div>';
+          return;
+        }
         container.innerHTML = '';
-        items.forEach(function(apt) {
-          var card = createElement('div', { className: 'card' });
-          card.innerHTML = '<h3>' + escapeHtml(apt.patientName) + '</h3>' +
-            '<p>Problem: ' + escapeHtml(apt.problemTitle || 'N/A') + '</p>' +
-            '<p>Date: ' + formatDate(apt.scheduledDate) + ' at ' + formatTime(apt.scheduledTime) + '</p>' +
-            '<p>Status: <span class="status status-' + apt.status + '">' + apt.status + '</span></p>' +
-            '<div class="card-actions">' +
-              '<a href="patient-details.html?appointmentId=' + apt.id + '&patientId=' + apt.patientId + '" class="btn btn-primary">View Details</a>' +
+        items.forEach(function (apt) {
+          var card = createElement('div', { className: 'card list-row' });
+          var initials = (apt.patientName || '?').charAt(0).toUpperCase();
+          card.innerHTML =
+            '<div class="list-row-info">' +
+            '<div class="list-row-avatar">' + initials + '</div>' +
+            '<div>' +
+            '<strong>' + escapeHtml(apt.patientName) + '</strong>' +
+            '<br><span style="font-size:0.85rem; color:#64748b;">' + escapeHtml(apt.problemTitle || 'N/A') + '</span>' +
+            '</div>' +
+            '</div>' +
+            '<div class="list-row-meta">' +
+            '<span>' + formatDate(apt.scheduledDate) + ' at ' + formatTime(apt.scheduledTime) + '</span>' +
+            '<br><span class="status status-' + apt.status + '">' + apt.status + '</span>' +
+            '</div>' +
+            '<div class="list-row-actions">' +
+            '<a href="patient-details.html?appointmentId=' + apt.id + '&patientId=' + apt.patientId + '" class="btn btn-primary btn-sm">Details</a>' +
             '</div>';
           container.appendChild(card);
         });
@@ -94,25 +299,53 @@
       }
 
       // Real-time stats
-      onStatsChange('doctor', user.uid, function(stats) {
+      onStatsChange('doctor', user.uid, function (stats) {
         if (stats.todayCount !== undefined) document.getElementById('todayCount').textContent = stats.todayCount;
         if (stats.assignedCount !== undefined) document.getElementById('assignedCount').textContent = stats.assignedCount;
       });
 
       // Real-time appointments
-      onAppointmentsChange(user.uid, 'doctor', function(appointments) {
-        allAppointments = appointments.filter(function(a) { return a.status === 'assigned' || a.status === 'prescribed'; });
+      onAppointmentsChange(user.uid, 'doctor', function (appointments) {
+        allAppointments = appointments.filter(function (a) { return a.status === 'assigned' || a.status === 'prescribed'; });
         doFilter();
       });
 
       document.getElementById('searchInput').addEventListener('input', doFilter);
       document.getElementById('statusFilter').addEventListener('change', doFilter);
 
-      document.getElementById('logoutBtn').addEventListener('click', function(e) { e.preventDefault(); logoutUser(); });
-      var toggle = document.querySelector('.nav-toggle');
-      var navLinks = document.querySelector('.nav-links');
-      if (toggle) toggle.addEventListener('click', function() { navLinks.classList.toggle('nav-open'); });
+      document.getElementById('logoutBtn').addEventListener('click', function (e) { e.preventDefault(); logoutUser(); });
+
+      var navToggle = document.getElementById('navToggle');
+      var navLinks = document.getElementById('navLinks');
+      if (navToggle && navLinks) {
+        navToggle.addEventListener('click', function () { navLinks.classList.toggle('open'); });
+      }
     });
+
+    // Helper for Toast
+    function showToast(msg, type) {
+      const toast = document.createElement('div');
+      toast.style.cssText = 'position:fixed; bottom:20px; right:20px; padding:12px 24px; border-radius:8px; background:#fff; box-shadow:0 10px 15px -3px rgba(0,0,0,0.1); z-index:9999; animation: slideIn 0.3s ease; border-left: 4px solid #3b82f6;';
+      if (type === 'error') toast.style.borderLeftColor = '#ef4444';
+      if (type === 'success') toast.style.borderLeftColor = '#10b981';
+      toast.textContent = msg;
+      document.body.appendChild(toast);
+      setTimeout(() => { toast.style.opacity = '0'; toast.style.transition = '0.5s'; setTimeout(() => toast.remove(), 500); }, 3000);
+    }
   </script>
+  <style>
+    @keyframes slideIn {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+  </style>
 </body>
+
 </html>
