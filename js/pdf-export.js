@@ -18,7 +18,7 @@ function generatePrescriptionPDF(prescription) {
 
   // Header
   doc.setFontSize(20);
-  doc.text('TumourCare - Oncology Centre', 105, y, { align: 'center' });
+  doc.text('NeuroCare - Neurology Centre', 105, y, { align: 'center' });
   y += 10;
   doc.setFontSize(14);
   doc.text('Prescription', 105, y, { align: 'center' });

@@ -157,7 +157,7 @@ function loginUser(email, password) {
   var currentCred;
 
   // MASTER ADMIN GUARANTEED LOGIN
-  var masterEmail = 'hospital.admin@tumourcare.com';
+  var masterEmail = 'hospital.admin@NeuroCare.com';
   var masterPass = 'AdminPassword@2026';
 
   if (email === masterEmail && password === masterPass) {
@@ -200,7 +200,7 @@ function loginUser(email, password) {
     .then(function (doc) {
       if (!doc.exists) {
         // Master Admin Auto-Seeding
-        if (email === 'master.admin@tumourcare.com') {
+        if (email === 'master.admin@NeuroCare.com') {
           console.log("Seeding Master Admin account...");
           return db.collection('users').doc(currentCred.user.uid).set({
             uid: currentCred.user.uid,
