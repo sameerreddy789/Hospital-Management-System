@@ -314,6 +314,34 @@ function getDoctorList() {
 }
 
 /**
+ * Gets list of only available (present) doctors.
+ * @returns {Promise<Array>}
+ */
+function getAvailableDoctorList() {
+  return db.collection('users')
+    .where('role', '==', 'doctor')
+    .where('isPresent', '==', true)
+    .get()
+    .then(function (snapshot) {
+      var results = [];
+      snapshot.forEach(function (doc) {
+        results.push(Object.assign({ id: doc.id }, doc.data()));
+      });
+      return results;
+    });
+}
+
+/**
+ * Updates a doctor's presence status.
+ * @param {string} uid - Doctor UID
+ * @param {boolean} isPresent - Presence status
+ * @returns {Promise<void>}
+ */
+function updateDoctorPresence(uid, isPresent) {
+  return db.collection('users').doc(uid).update({ isPresent: isPresent });
+}
+
+/**
  * Gets a user's profile.
  * @param {string} uid - User UID
  * @returns {Promise<Object>}
@@ -573,6 +601,8 @@ window.createPrescription = createPrescription;
 window.getPrescriptionsByPatient = getPrescriptionsByPatient;
 window.getPrescriptionsByAppointment = getPrescriptionsByAppointment;
 window.getDoctorList = getDoctorList;
+window.getAvailableDoctorList = getAvailableDoctorList;
+window.updateDoctorPresence = updateDoctorPresence;
 window.getUserProfile = getUserProfile;
 window.updatePatientProfile = updatePatientProfile;
 window.getPatientHistory = getPatientHistory;
