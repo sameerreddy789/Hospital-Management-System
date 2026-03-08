@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" href="../logo.png">
-  <title>Admin Dashboard - TumourCare</title>
+  <title>Admin Dashboard - NeuroCare</title>
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/admin-layout.css">
 </head>
@@ -15,8 +15,8 @@
   <nav class="dashboard-topnav">
     <div class="topnav-inner">
       <a href="dashboard.html" class="topnav-brand">
-        <img src="../logo.png" alt="TumourCare Logo">
-        <span>TumourCare</span>
+        <img src="../logo.png" alt="NeuroCare Logo">
+        <span>NeuroCare</span>
       </a>
 
       <button class="topnav-toggle" id="navToggle" aria-label="Toggle navigation">&#9776;</button>
@@ -326,11 +326,9 @@
             (appointments || []).forEach(function (apt) {
               if (apt.doctorId === doc.uid && (apt.status === 'assigned' || apt.status === 'prescribed')) patientCount++;
             });
-            var card = createElement('div', { className: 'card list-row' });
-            var initials = (doc.name || '?').split(' ').map(function (w) { return w[0]; }).join('').toUpperCase().slice(0, 2);
-            var spec = doc.specialization ? '<span class="badge badge-info">' + escapeHtml(doc.specialization) + '</span>' : '';
+            var statusDot = doc.isPresent ? 'status-online' : 'status-offline';
             card.innerHTML = '<div class="list-row-info">' +
-              '<div class="list-row-avatar doctor-avatar"><span class="status-dot status-online"></span>' + initials + '</div>' +
+              '<div class="list-row-avatar doctor-avatar"><span class="status-dot ' + statusDot + '"></span>' + initials + '</div>' +
               '<div><strong>Dr. ' + escapeHtml(doc.name) + '</strong> ' + spec + '</div>' +
               '</div>' +
               '<div class="list-row-meta"><span>' + patientCount + ' patient' + (patientCount !== 1 ? 's' : '') + '</span></div>';
@@ -477,7 +475,7 @@
 
         // Export
         document.getElementById('exportBtn').addEventListener('click', function () {
-          var lines = ['TumourCare Admin Report', 'Generated: ' + new Date().toLocaleString(), ''];
+          var lines = ['NeuroCare Admin Report', 'Generated: ' + new Date().toLocaleString(), ''];
           lines.push('--- Patient Requests ---');
           allSubmissions.forEach(function (s) {
             lines.push(s.patientName + ' | ' + s.title + ' | ' + (s.createdAt ? new Date(s.createdAt.seconds * 1000).toLocaleDateString() : ''));
@@ -485,7 +483,7 @@
           lines.push('');
           lines.push('--- Doctors Active ---');
           allDoctors.forEach(function (d) {
-            lines.push('Dr. ' + d.name + ' | ' + (d.specialization || 'General Oncology'));
+            lines.push('Dr. ' + d.name + ' | ' + (d.specialization || 'General Neurology'));
           });
           lines.push('');
           lines.push('--- Patients Assigned ---');
@@ -495,7 +493,7 @@
           var blob = new Blob([lines.join('\n')], { type: 'text/plain' });
           var url = URL.createObjectURL(blob);
           var a = document.createElement('a');
-          a.href = url; a.download = 'tumourcare-report-' + today + '.txt'; a.click();
+          a.href = url; a.download = 'NeuroCare-report-' + today + '.txt'; a.click();
           URL.revokeObjectURL(url);
         });
 

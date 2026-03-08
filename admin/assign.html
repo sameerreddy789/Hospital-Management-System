@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon"
     href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#127993;</text></svg>">
-  <title>Assign Patient - TumourCare</title>
+  <title>Assign Patient - NeuroCare</title>
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/admin-layout.css">
 </head>
@@ -16,8 +16,8 @@
   <nav class="dashboard-topnav">
     <div class="topnav-inner">
       <a href="dashboard.html" class="topnav-brand">
-        <img src="../logo.png" alt="TumourCare Logo">
-        <span>TumourCare</span>
+        <img src="../logo.png" alt="NeuroCare Logo">
+        <span>NeuroCare</span>
       </a>
 
       <button class="topnav-toggle" id="navToggle" aria-label="Toggle navigation">&#9776;</button>
@@ -133,8 +133,15 @@
         return;
       }
 
-      // Load doctors
-      getDoctorList().then(function (doctors) {
+      // Load present doctors
+      getAvailableDoctorList().then(function (doctors) {
+        if (doctors.length === 0) {
+          var opt = document.createElement('option');
+          opt.disabled = true;
+          opt.textContent = 'No doctors currently available';
+          doctorSelect.appendChild(opt);
+          showMessage(messageEl, 'No doctors are currently marked as present. They must toggle their presence on their dashboard.', 'info');
+        }
         doctors.forEach(function (doc) {
           var opt = document.createElement('option');
           opt.value = doc.id;

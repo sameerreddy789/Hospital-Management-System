@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" href="../logo.png">
-  <title>Request Consultation - TumourCare</title>
+  <title>Request Consultation - NeuroCare</title>
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/patient-layout.css">
 </head>
@@ -16,8 +16,8 @@
   <nav class="dashboard-topnav">
     <div class="topnav-inner">
       <a href="dashboard.html" class="topnav-brand">
-        <img src="../logo.png" alt="TumourCare Logo">
-        <span>TumourCare</span>
+        <img src="../logo.png" alt="NeuroCare Logo">
+        <span>NeuroCare</span>
       </a>
 
       <button class="topnav-toggle" id="navToggle" aria-label="Toggle navigation">&#9776;</button>
@@ -100,12 +100,15 @@
             <label for="primaryConcern">Primary Reason for Consultation</label>
             <select id="primaryConcern" name="primaryConcern" required>
               <option value="">-- Select primary reason --</option>
-              <option value="New lump/swelling">New lump or swelling</option>
-              <option value="Pain in specific area">Pain in a specific area</option>
-              <option value="Follow-up consultation">Follow-up consultation</option>
-              <option value="Report review">Report review</option>
-              <option value="Treatment side effects">Treatment side effects</option>
-              <option value="Post-surgery consultation">Post-surgery observation/query</option>
+              <option value="Persistent headaches/migraines">Persistent headaches/migraines</option>
+              <option value="Seizures or convulsions">Seizures or convulsions</option>
+              <option value="Memory loss/cognitive decline">Memory loss/cognitive decline</option>
+              <option value="Numbness/tingling (neuropathy)">Numbness/tingling (neuropathy)</option>
+              <option value="Dizziness/vertigo">Dizziness/vertigo</option>
+              <option value="Vision/speech difficulties">Vision/speech difficulties</option>
+              <option value="Tremors/movement disorders">Tremors/movement disorders</option>
+              <option value="Brain injury follow-up">Brain injury follow-up</option>
+              <option value="Brain scan review">Brain scan review</option>
               <option value="Second opinion">Second opinion</option>
               <option value="Other">Other</option>
             </select>
@@ -115,15 +118,16 @@
             <label for="bodyArea">Affected Body Area</label>
             <select id="bodyArea" name="bodyArea" required>
               <option value="">-- Select affected area --</option>
-              <option value="Breast">Breast</option>
-              <option value="Brain">Brain</option>
-              <option value="Lung">Lung</option>
-              <option value="Oral">Oral</option>
-              <option value="Neck">Neck</option>
-              <option value="Abdomen">Abdomen</option>
-              <option value="Bone">Bone</option>
-              <option value="Skin">Skin</option>
-              <option value="Other">Other</option>
+              <option value="Frontal lobe">Frontal lobe</option>
+              <option value="Temporal lobe">Temporal lobe</option>
+              <option value="Parietal lobe">Parietal lobe</option>
+              <option value="Occipital lobe">Occipital lobe</option>
+              <option value="Cerebellum">Cerebellum</option>
+              <option value="Brain stem">Brain stem</option>
+              <option value="Spinal cord">Spinal cord</option>
+              <option value="Peripheral nerves">Peripheral nerves</option>
+              <option value="General brain">General brain</option>
+              <option value="Not sure/Other">Not sure/Other</option>
             </select>
           </div>
 
@@ -377,7 +381,7 @@
                   '<div class="modal-content" style="text-align:center;max-width:440px;border-radius:24px;padding:2.5rem;">' +
                   '<div style="width:72px;height:72px;border-radius:20px;background:rgba(16,185,129,0.1);color:#10b981;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;"><svg viewBox="0 0 24 24" width="36" height="36" stroke="currentColor" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>' +
                   '<h2 style="margin-bottom:0.75rem;color:#0f172a;font-weight:700;">Request Received</h2>' +
-                  '<p style="color:#64748b;margin-bottom:2rem;line-height:1.6;font-size:0.95rem;">Your request for a medical consultation has been received. Our oncology team will review your symptoms and schedule an appointment with the appropriate specialist shortly.</p>' +
+                  '<p style="color:#64748b;margin-bottom:2rem;line-height:1.6;font-size:0.95rem;">Your request for a medical consultation has been received. Our neurology team will review your symptoms and schedule an appointment with the appropriate specialist shortly.</p>' +
                   '<a href="dashboard.html" class="btn btn-primary" style="width:100%;">Return to Dashboard</a>' +
                   '</div>';
                 document.body.appendChild(successModal);
