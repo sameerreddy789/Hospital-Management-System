@@ -1,87 +1,214 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#127993;</text></svg>">
+  <link rel="icon" href="../logo.png">
   <title>Patient Details - NeuroCare</title>
   <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/admin-layout.css">
 </head>
+
 <body class="dashboard-body">
-  <nav class="navbar">
-    <div class="nav-brand">&#127993; NeuroCare</div>
-    <button class="nav-toggle" aria-label="Toggle navigation">&#9776;</button>
-    <div class="nav-links">
-      <a href="dashboard.html">Dashboard</a>
-      <a href="notifications.html">Notifications</a>
-      <a href="#" id="logoutBtn">Logout</a>
+
+  <!-- Top Navbar -->
+  <nav class="dashboard-topnav">
+    <div class="topnav-inner">
+      <a href="dashboard.html" class="topnav-brand">
+        <img src="../logo.png" alt="NeuroCare Logo">
+        <span>NeuroCare</span>
+      </a>
+
+      <button class="topnav-toggle" id="navToggle" aria-label="Toggle navigation">&#9776;</button>
+
+      <div class="topnav-links" id="navLinks">
+        <a href="dashboard.html">
+          <svg viewBox="0 0 24 24">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+          Dashboard
+        </a>
+        <a href="notifications.html">
+          <svg viewBox="0 0 24 24">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+          Notifications <span id="notifBadge" class="nav-badge" style="display:none;">0</span>
+        </a>
+      </div>
+
+      <a href="#" id="logoutBtn" class="topnav-logout" title="Logout">
+        <svg viewBox="0 0 24 24">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+          <polyline points="16 17 21 12 16 7"></polyline>
+          <line x1="21" y1="12" x2="9" y2="12"></line>
+        </svg>
+        <span>Logout</span>
+      </a>
     </div>
   </nav>
 
-  <div class="container">
-    <div class="breadcrumb"><a href="dashboard.html">Dashboard</a> <span>›</span> Patient Details</div>
-    <h1>Patient Details</h1>
-    <div id="message" class="message" style="display:none;"></div>
-
-    <!-- Patient Profile -->
-    <div class="card" id="patientProfile">
-      <h2>Patient Information</h2>
-      <p>Name: <span id="pName">-</span></p>
-      <p>Email: <span id="pEmail">-</span></p>
-      <p>Phone: <span id="pPhone">-</span></p>
-      <p>Address: <span id="pAddress">-</span></p>
-    </div>
-
-    <!-- Current Appointment -->
-    <div class="card" id="currentAppointment">
-      <h2>Current Appointment</h2>
-      <p>Problem: <span id="aptProblem">-</span></p>
-      <p>Description: <span id="aptDesc">-</span></p>
-      <p>Date: <span id="aptDate">-</span></p>
-      <p>Status: <span id="aptStatus" class="status">-</span></p>
-      <div id="completeSection" style="display:none;">
-        <button id="completeBtn" class="btn btn-primary">Mark as Completed</button>
+  <!-- Main Content Area -->
+  <main class="main-content">
+    <header class="page-header">
+      <div>
+        <h1>Patient Details</h1>
+        <div class="breadcrumb">
+          <a href="dashboard.html">Dashboard</a> <span>&nbsp;›&nbsp;</span> Patient Details
+        </div>
       </div>
-    </div>
+    </header>
 
-    <!-- Prescription Form (only for assigned appointments) -->
-    <div class="card" id="prescriptionSection" style="display:none;">
-      <h2>Write Prescription</h2>
-      <form id="prescriptionForm" novalidate>
-        <div id="medicineRows">
-          <div class="medicine-row">
-            <div class="form-group">
-              <label>Medicine Name</label>
-              <input type="text" class="med-name" required>
+    <div class="page-body">
+      <div id="message" class="message" style="display:none;"></div>
+
+      <div class="dashboard-section">
+        <div class="section-header">
+          <h2>
+            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"
+              style="vertical-align:middle;margin-right:8px;">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+            Patient Information
+          </h2>
+        </div>
+        <div class="card" id="patientProfile" style="padding: 1.5rem;">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+            <div>
+              <p
+                style="color: #64748b; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; margin-bottom: 4px;">
+                Name</p>
+              <p id="pName" style="font-weight: 700; color: #1e293b; font-size: 1.1rem;">-</p>
             </div>
-            <div class="form-group">
-              <label>Dosage</label>
-              <input type="text" class="med-dosage" placeholder="e.g., 500mg" required>
+            <div>
+              <p
+                style="color: #64748b; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; margin-bottom: 4px;">
+                Email</p>
+              <p id="pEmail" style="font-weight: 500; color: #1e293b;">-</p>
             </div>
-            <div class="form-group">
-              <label>Frequency</label>
-              <input type="text" class="med-frequency" placeholder="e.g., Twice daily" required>
+            <div>
+              <p
+                style="color: #64748b; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; margin-bottom: 4px;">
+                Phone</p>
+              <p id="pPhone" style="font-weight: 500; color: #1e293b;">-</p>
+            </div>
+            <div>
+              <p
+                style="color: #64748b; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; margin-bottom: 4px;">
+                Address</p>
+              <p id="pAddress" style="font-weight: 500; color: #1e293b;">-</p>
             </div>
           </div>
         </div>
-        <button type="button" id="addMedicine" class="btn btn-outline">+ Add Medicine</button>
-        <div class="form-group">
-          <label for="notes">Additional Notes</label>
-          <textarea id="notes" rows="3"></textarea>
-        </div>
-        <button type="submit" class="btn btn-primary">Submit Prescription</button>
-      </form>
-    </div>
+      </div>
 
-    <!-- Patient History -->
-    <div class="card">
-      <h2>Patient History</h2>
-      <div id="historyList" class="list-container">
-        <p class="loading">Loading...</p>
+      <div class="dashboard-section">
+        <div class="section-header">
+          <h2>
+            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"
+              style="vertical-align:middle;margin-right:8px;">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="16" y1="2" x2="16" y2="6"></line>
+              <line x1="8" y1="2" x2="8" y2="6"></line>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+            Current Appointment
+          </h2>
+        </div>
+        <div class="card" id="currentAppointment" style="padding: 1.5rem;">
+          <div style="margin-bottom: 1.5rem;">
+            <p
+              style="color: #64748b; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; margin-bottom: 4px;">
+              Problem</p>
+            <p id="aptProblem" style="font-weight: 700; color: #1e293b; font-size: 1.1rem;">-</p>
+          </div>
+          <div style="margin-bottom: 1.5rem;">
+            <p
+              style="color: #64748b; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; margin-bottom: 4px;">
+              Description</p>
+            <p id="aptDesc" style="color: #475569; line-height: 1.5;">-</p>
+          </div>
+          <div
+            style="display: flex; justify-content: space-between; align-items: center; padding-top: 1rem; border-top: 1px solid #f1f5f9;">
+            <div>
+              <p
+                style="color: #64748b; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; margin-bottom: 4px;">
+                Date & Time</p>
+              <p id="aptDate" style="font-weight: 600; color: #1e293b;">-</p>
+            </div>
+            <div>
+              <span id="aptStatus" class="status">-</span>
+            </div>
+          </div>
+          <div id="completeSection" style="display:none; margin-top: 1.5rem;">
+            <button id="completeBtn" class="btn btn-primary w-full">Mark as Completed</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="dashboard-section" id="prescriptionSection" style="display:none;">
+        <div class="section-header">
+          <h2>
+            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"
+              style="vertical-align:middle;margin-right:8px;">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+            </svg>
+            Write Prescription
+          </h2>
+        </div>
+        <div class="card" style="padding: 1.5rem;">
+          <form id="prescriptionForm" novalidate>
+            <div id="medicineRows">
+              <div class="medicine-row"
+                style="display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 1rem; align-items: end; margin-bottom: 1rem;">
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label>Medicine Name</label>
+                  <input type="text" class="med-name" placeholder="e.g. Paracetamol" required style="width: 100%;">
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label>Dosage</label>
+                  <input type="text" class="med-dosage" placeholder="e.g. 500mg" required style="width: 100%;">
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label>Frequency</label>
+                  <input type="text" class="med-frequency" placeholder="e.g. 1-0-1" required style="width: 100%;">
+                </div>
+                <div style="width: 38px;"></div> <!-- Spacer for remove button alignment -->
+              </div>
+            </div>
+            <button type="button" id="addMedicine" class="btn btn-outline btn-sm"
+              style="margin-bottom: 1.5rem; border-style: dashed;">+ Add Another Medicine</button>
+            <div class="form-group">
+              <label for="notes">Additional Advice / Notes</label>
+              <textarea id="notes" rows="3" placeholder="Rest for 2 days, drink plenty of water..."
+                style="width: 100%; border-radius: 12px; border: 1px solid #e2e8f0; padding: 0.75rem;"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary w-full" style="height: 48px; font-weight: 700;">Submit
+              Prescription</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="dashboard-section">
+        <div class="section-header">
+          <h2>
+            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"
+              style="vertical-align:middle;margin-right:8px;">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+            Patient History
+          </h2>
+        </div>
+        <div id="historyList" class="list-container" style="min-height: 100px;">
+          <div class="skeleton-card"></div>
+        </div>
       </div>
     </div>
-  </div>
-
+  </main>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
@@ -93,7 +220,7 @@
   <script src="../js/firestore.js"></script>
   <script src="../js/notifications.js"></script>
   <script>
-    requireAuth('doctor').then(function(user) {
+    requireAuth('doctor').then(function (user) {
       var params = new URLSearchParams(window.location.search);
       var appointmentId = params.get('appointmentId');
       var patientId = params.get('patientId');
@@ -105,7 +232,7 @@
       }
 
       // Load patient profile
-      getUserProfile(patientId).then(function(profile) {
+      getUserProfile(patientId).then(function (profile) {
         if (profile) {
           document.getElementById('pName').textContent = profile.name || '-';
           document.getElementById('pEmail').textContent = profile.email || '-';
@@ -115,7 +242,7 @@
       });
 
       // Load current appointment
-      db.collection('appointments').doc(appointmentId).get().then(function(doc) {
+      db.collection('appointments').doc(appointmentId).get().then(function (doc) {
         if (!doc.exists) return;
         var apt = doc.data();
         document.getElementById('aptProblem').textContent = apt.problemTitle || '-';
@@ -133,64 +260,96 @@
       });
 
       // Load patient history
-      getPatientHistory(patientId).then(function(history) {
+      getPatientHistory(patientId).then(function (history) {
         var container = document.getElementById('historyList');
         var items = [];
-        history.appointments.forEach(function(a) {
+        history.appointments.forEach(function (a) {
           items.push({ type: 'appointment', date: a.scheduledDate, data: a });
         });
-        history.prescriptions.forEach(function(p) {
+        history.prescriptions.forEach(function (p) {
           var d = p.createdAt ? new Date(p.createdAt.seconds * 1000).toISOString().split('T')[0] : '0000-00-00';
           items.push({ type: 'prescription', date: d, data: p });
         });
-        items.sort(function(a, b) { return b.date.localeCompare(a.date); });
+        items.sort(function (a, b) { return b.date.localeCompare(a.date); });
 
-        if (items.length === 0) { container.innerHTML = '<p>No history.</p>'; return; }
+        if (items.length === 0) {
+          container.innerHTML = '<div class="empty-state" style="padding: 2rem; border-radius: 16px;"><p style="color: #64748b; font-weight: 500;">No medical history found for this patient.</p></div>';
+          return;
+        }
         container.innerHTML = '';
-        items.forEach(function(item) {
-          var card = createElement('div', { className: 'card card-sm' });
+        items.forEach(function (item) {
+          var card = createElement('div', { className: 'list-row' });
+          var icon = item.type === 'appointment' ?
+            '<svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>' :
+            '<svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>';
+
+          var color = item.type === 'appointment' ? '#3b82f6' : '#8b5cf6';
+          var bg = item.type === 'appointment' ? 'rgba(59, 130, 246, 0.1)' : 'rgba(139, 92, 246, 0.1)';
+
           if (item.type === 'appointment') {
-            card.innerHTML = '<p><strong>Appointment</strong> - ' + formatDate(item.data.scheduledDate) + '</p>' +
-              '<p>' + escapeHtml(item.data.problemTitle) + ' | Status: ' + escapeHtml(item.data.status) + '</p>';
+            card.innerHTML =
+              '<div class="list-row-info">' +
+              '<div class="list-row-avatar" style="background:' + bg + '; color:' + color + ';">' + icon + '</div>' +
+              '<div>' +
+              '<strong>' + escapeHtml(item.data.problemTitle) + '</strong>' +
+              '<br><span style="font-size:0.85rem; color:#64748b;">Appointment Status: ' + escapeHtml(item.data.status) + '</span>' +
+              '</div>' +
+              '</div>' +
+              '<div class="list-row-meta">' + formatDate(item.data.scheduledDate) + '</div>';
           } else {
-            var meds = (item.data.medicines || []).map(function(m) { return escapeHtml(m.name); }).join(', ');
-            card.innerHTML = '<p><strong>Prescription</strong> - ' + formatDate(item.date) + '</p>' +
-              '<p>Medicines: ' + meds + '</p>';
+            var meds = (item.data.medicines || []).map(function (m) { return escapeHtml(m.name); }).join(', ');
+            card.innerHTML =
+              '<div class="list-row-info">' +
+              '<div class="list-row-avatar" style="background:' + bg + '; color:' + color + ';">' + icon + '</div>' +
+              '<div>' +
+              '<strong>Prescription Issued</strong>' +
+              '<br><span style="font-size:0.85rem; color:#64748b;">Meds: ' + (meds || 'N/A') + '</span>' +
+              '</div>' +
+              '</div>' +
+              '<div class="list-row-meta">' + formatDate(item.date) + '</div>';
           }
           container.appendChild(card);
         });
       });
 
       // Add medicine row
-      document.getElementById('addMedicine').addEventListener('click', function() {
+      document.getElementById('addMedicine').addEventListener('click', function () {
         var row = document.createElement('div');
         row.className = 'medicine-row';
-        row.innerHTML = '<div class="form-group"><label>Medicine Name</label><input type="text" class="med-name" required></div>' +
-          '<div class="form-group"><label>Dosage</label><input type="text" class="med-dosage" placeholder="e.g., 500mg" required></div>' +
-          '<div class="form-group"><label>Frequency</label><input type="text" class="med-frequency" placeholder="e.g., Twice daily" required></div>' +
-          '<button type="button" class="btn btn-danger btn-sm remove-med">Remove</button>';
+        row.style.cssText = 'display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 1rem; align-items: end; margin-bottom: 1rem; animation: slideIn 0.3s ease;';
+        row.innerHTML =
+          '<div class="form-group" style="margin-bottom: 0;"><label>Medicine Name</label><input type="text" class="med-name" placeholder="e.g. Paracetamol" required style="width: 100%;"></div>' +
+          '<div class="form-group" style="margin-bottom: 0;"><label>Dosage</label><input type="text" class="med-dosage" placeholder="e.g. 500mg" required style="width: 100%;"></div>' +
+          '<div class="form-group" style="margin-bottom: 0;"><label>Frequency</label><input type="text" class="med-frequency" placeholder="e.g. 1-0-1" required style="width: 100%;"></div>' +
+          '<button type="button" class="btn btn-danger btn-sm remove-med" style="padding: 0 10px; height: 42px; width: 38px; display: flex; align-items: center; justify-content: center;" title="Remove Row">' +
+          '<svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><path d="M18 6L6 18M6 6l12 12"></path></svg>' +
+          '</button>';
         document.getElementById('medicineRows').appendChild(row);
-        row.querySelector('.remove-med').addEventListener('click', function() { row.remove(); });
+        row.querySelector('.remove-med').addEventListener('click', function () {
+          row.style.opacity = '0';
+          row.style.transform = 'translateX(20px)';
+          row.style.transition = '0.3s ease';
+          setTimeout(() => row.remove(), 300);
+        });
       });
 
       // Submit prescription
-      document.getElementById('prescriptionForm').addEventListener('submit', function(e) {
+      document.getElementById('prescriptionForm').addEventListener('submit', function (e) {
         e.preventDefault();
         var names = document.querySelectorAll('.med-name');
         var dosages = document.querySelectorAll('.med-dosage');
         var freqs = document.querySelectorAll('.med-frequency');
         var medicines = [];
         for (var i = 0; i < names.length; i++) {
-          if (!names[i].value.trim()) { showMessage(messageEl, 'Please fill in all medicine fields.', 'error'); return; }
+          if (!names[i].value.trim()) { showToast('Please fill in all medicine fields.', 'error'); return; }
           medicines.push({ name: names[i].value.trim(), dosage: dosages[i].value.trim(), frequency: freqs[i].value.trim() });
         }
-        if (medicines.length === 0) { showMessage(messageEl, 'At least one medicine is required.', 'error'); return; }
+        if (medicines.length === 0) { showToast('At least one medicine is required.', 'error'); return; }
         var notes = document.getElementById('notes').value;
 
         createPrescription(appointmentId, patientId, user.uid, medicines, notes)
-          .then(function() { return updateAppointmentStatus(appointmentId, 'prescribed'); })
-          .then(function() {
-            // Notify patient about prescription
+          .then(function () { return updateAppointmentStatus(appointmentId, 'prescribed'); })
+          .then(function () {
             createNotification(patientId, 'A new prescription has been issued for you.', 'prescription');
             showToast('Prescription submitted successfully!', 'success');
             document.getElementById('prescriptionSection').style.display = 'none';
@@ -198,26 +357,74 @@
             document.getElementById('aptStatus').className = 'status status-prescribed';
             document.getElementById('completeSection').style.display = 'block';
           })
-          .catch(function(err) { showMessage(messageEl, err.message || 'Failed to submit prescription.', 'error'); });
+          .catch(function (err) { showToast(err.message || 'Failed to submit prescription.', 'error'); });
       });
 
       // Mark as completed
-      document.getElementById('completeBtn').addEventListener('click', function() {
-        updateAppointmentStatus(appointmentId, 'completed').then(function() {
-          // Notify patient about completion
+      document.getElementById('completeBtn').addEventListener('click', function () {
+        updateAppointmentStatus(appointmentId, 'completed').then(function () {
           createNotification(patientId, 'Your appointment has been marked as completed.', 'completion');
           showToast('Appointment marked as completed.', 'success');
           document.getElementById('completeSection').style.display = 'none';
           document.getElementById('aptStatus').textContent = 'completed';
           document.getElementById('aptStatus').className = 'status status-completed';
-        }).catch(function(err) { showMessage(messageEl, err.message, 'error'); });
+        }).catch(function (err) { showToast(err.message, 'error'); });
       });
 
-      document.getElementById('logoutBtn').addEventListener('click', function(e) { e.preventDefault(); logoutUser(); });
-      var toggle = document.querySelector('.nav-toggle');
-      var navLinks = document.querySelector('.nav-links');
-      if (toggle) toggle.addEventListener('click', function() { navLinks.classList.toggle('nav-open'); });
+      document.getElementById('logoutBtn').addEventListener('click', function (e) { e.preventDefault(); logoutUser(); });
+
+      var navToggle = document.getElementById('navToggle');
+      var navLinks = document.getElementById('navLinks');
+      if (navToggle && navLinks) {
+        navToggle.addEventListener('click', function () { navLinks.classList.toggle('open'); });
+      }
     });
+
+    // Modern Toast Helper
+    function showToast(msg, type) {
+      const toast = document.createElement('div');
+      toast.style.cssText = 'position:fixed; bottom:24px; right:24px; padding:12px 24px; border-radius:12px; background:#fff; box-shadow:0 10px 15px -3px rgba(0,0,0,0.1); z-index:9999; animation: slideIn 0.3s ease; border-left: 4px solid #3b82f6; display: flex; align-items: center; gap: 12px; font-weight: 500; color: #1e293b;';
+      if (type === 'error') toast.style.borderLeftColor = '#ef4444';
+      if (type === 'success') toast.style.borderLeftColor = '#10b981';
+      toast.textContent = msg;
+      document.body.appendChild(toast);
+      setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translateY(10px)'; toast.style.transition = '0.4s ease'; setTimeout(() => toast.remove(), 400); }, 3000);
+    }
   </script>
+  <style>
+    @keyframes slideIn {
+      from {
+        transform: translateX(30px);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .w-full {
+      width: 100%;
+    }
+
+    .list-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.25rem;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      margin-bottom: 1rem;
+      transition: transform 0.2s ease;
+    }
+
+    .list-row:hover {
+      transform: translateX(5px);
+      border-color: #cbd5e1;
+    }
+  </style>
 </body>
+
 </html>
