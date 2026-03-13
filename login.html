@@ -484,7 +484,7 @@
         </form>
         <div class="auth-links">
           <a href="reset-password.html">Forgot Password?</a>
-          <a href="register.html">Don't have an account? Register</a>
+          <a id="registerLink" href="register.html">Don't have an account? Register</a>
         </div>
       </div>
     </div>
@@ -519,6 +519,11 @@
       roleSubtext.textContent = roleInfo[selectedRole].sub;
       roleSelection.style.display = 'none';
       loginStep.style.display = 'block';
+      
+      var registerLink = document.getElementById('registerLink');
+      if (registerLink) {
+        registerLink.style.display = (role === 'admin') ? 'none' : 'block';
+      }
     }
 
     // Auto-select role from URL param (e.g. login.html?role=patient)
