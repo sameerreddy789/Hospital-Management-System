@@ -4,15 +4,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" href="favicon.png">
-  <title>Register - NeuroCare</title>
+  <link rel="icon" href="../assets/favicon.png">
+  <title>Login - NeuroCare</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
     rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
   <style>
     /* ============================================================
-       Registration Page — Premium Dark Design
+       Login Page — Premium Dark Design
        ============================================================ */
-    .register-page {
+    .login-page {
       min-height: 100vh;
       background: linear-gradient(160deg, #f0f4ff 0%, #e8eeff 50%, #f5f0ff 100%);
       display: flex;
@@ -23,7 +24,7 @@
       overflow-y: auto;
     }
 
-    .register-page::before {
+    .login-page::before {
       content: '';
       position: absolute;
       width: 500px;
@@ -34,7 +35,7 @@
       border-radius: 50%;
     }
 
-    .register-page::after {
+    .login-page::after {
       content: '';
       position: absolute;
       width: 400px;
@@ -45,7 +46,7 @@
       border-radius: 50%;
     }
 
-    .register-container {
+    .login-container {
       max-width: 680px;
       width: 100%;
       position: relative;
@@ -53,7 +54,7 @@
     }
 
     /* Brand */
-    .register-brand {
+    .login-brand {
       display: flex;
       align-items: center;
       justify-content: center;
@@ -61,12 +62,12 @@
       margin-bottom: 2.5rem;
     }
 
-    .register-brand img {
+    .login-brand img {
       max-height: 48px;
       border-radius: 100px;
     }
 
-    .register-brand span {
+    .login-brand span {
       font-size: 1.4rem;
       font-weight: 700;
       color: #1e293b;
@@ -74,7 +75,7 @@
     }
 
     /* Headings */
-    .register-container h1 {
+    .login-container h1 {
       color: #1e293b;
       font-size: 2rem;
       font-weight: 800;
@@ -82,7 +83,7 @@
       margin-bottom: 0.5rem;
     }
 
-    .register-container>div>p,
+    .login-container>div>p,
     #roleSelection>p {
       color: #64748b;
       text-align: center;
@@ -93,7 +94,7 @@
     /* Role Cards Grid */
     .role-cards {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       gap: 1.5rem;
       margin-bottom: 2rem;
     }
@@ -195,22 +196,10 @@
       margin: 0;
     }
 
-    .role-card-badge {
-      display: inline-block;
-      margin-top: 0.75rem;
-      padding: 4px 10px;
-      border-radius: 8px;
-      font-size: 0.7rem;
-      font-weight: 600;
-      letter-spacing: 0.02em;
-      background: rgba(245, 158, 11, 0.12);
-      color: #d97706;
-    }
-
     /* Auth Links */
     .auth-links {
       text-align: center;
-      margin-top: 1.5rem;
+      margin-top: 0.5rem;
     }
 
     .auth-links a {
@@ -257,8 +246,8 @@
       width: 100%;
     }
 
-    /* Registration Form Card */
-    .register-form-card {
+    /* Login Form Card */
+    .login-form-card {
       background: #ffffff;
       border: 1px solid rgba(226, 232, 240, 0.8);
       border-radius: 20px;
@@ -266,7 +255,7 @@
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
     }
 
-    .register-form-card h1 {
+    .login-form-card h1 {
       margin-bottom: 0.25rem;
     }
 
@@ -347,7 +336,7 @@
     }
 
     /* Submit button */
-    .register-form-card .btn-primary {
+    .login-form-card .btn-primary {
       width: 100%;
       padding: 0.9rem;
       font-size: 1rem;
@@ -355,22 +344,22 @@
       border-radius: 12px;
       margin-top: 0.5rem;
       cursor: pointer;
-      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      background: #3b82f6;
       color: #fff;
       border: none;
       transition: background 0.1s ease, transform 0.1s ease, box-shadow 0.1s ease;
-      box-shadow: 0 4px 10px rgba(139, 92, 246, 0.2);
+      box-shadow: 0 4px 6px rgba(59, 130, 246, 0.2);
     }
 
-    .register-form-card .btn-primary:hover {
+    .login-form-card .btn-primary:hover {
+      background: #2563eb;
       transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(139, 92, 246, 0.35);
-      filter: brightness(1.1);
+      box-shadow: 0 8px 15px rgba(59, 130, 246, 0.3);
     }
 
-    .register-form-card .btn-primary:active {
+    .login-form-card .btn-primary:active {
       transform: translateY(0);
-      box-shadow: 0 2px 5px rgba(139, 92, 246, 0.2);
+      box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
       filter: brightness(0.9);
     }
 
@@ -381,11 +370,11 @@
       filter: grayscale(0.5);
     }
 
-    .register-form-card .auth-links {
+    .login-form-card .auth-links {
       margin-top: 1.5rem;
     }
 
-    .register-form-card .auth-links a {
+    .login-form-card .auth-links a {
       display: block;
       margin-bottom: 0.5rem;
     }
@@ -404,47 +393,35 @@
       color: #fca5a5;
     }
 
-    .message-success {
-      background: rgba(16, 185, 129, 0.12);
-      border: 1px solid rgba(16, 185, 129, 0.25);
-      color: #10b981;
-    }
-
-    .message-info {
-      background: rgba(59, 130, 246, 0.12);
-      border: 1px solid rgba(59, 130, 246, 0.25);
-      color: #3b82f6;
-    }
-
     /* Responsive */
     @media (max-width: 576px) {
       .role-cards {
         grid-template-columns: 1fr;
       }
 
-      .register-container {
+      .login-container {
         max-width: 100%;
       }
 
-      .register-form-card {
+      .login-form-card {
         padding: 2rem 1.5rem;
       }
     }
   </style>
 </head>
 
-<body class="register-page">
-  <div class="register-container">
+<body class="login-page">
+  <div class="login-container">
     <!-- Brand -->
-    <div class="register-brand">
-      <img src="logo.png" alt="NeuroCare Logo">
+    <div class="login-brand">
+      <img src="../assets/logo.png" alt="NeuroCare Logo">
       <span>NeuroCare</span>
     </div>
 
     <!-- Step 1: Role Selection -->
     <div id="roleSelection">
-      <h1>Create Account</h1>
-      <p>Select your role to get started</p>
+      <h1>Welcome Back</h1>
+      <p>Select your role to continue</p>
       <div class="role-cards">
         <button class="role-card role-blue" data-role="patient" type="button">
           <div class="role-card-icon role-icon-blue">
@@ -454,7 +431,7 @@
             </svg>
           </div>
           <h3>Patient</h3>
-          <p>Request consultations &amp; view health records</p>
+          <p>View appointments, prescriptions &amp; reports</p>
         </button>
         <button class="role-card role-green" data-role="doctor" type="button">
           <div class="role-card-icon role-icon-green">
@@ -464,60 +441,51 @@
             </svg>
           </div>
           <h3>Doctor</h3>
-          <p>Manage patients &amp; provide care</p>
-          <span class="role-card-badge">Requires Approval</span>
+          <p>Manage patients, prescribe &amp; review history</p>
         </button>
-
+        <button class="role-card role-purple" data-role="admin" type="button">
+          <div class="role-card-icon role-icon-purple">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+          </div>
+          <h3>Admin</h3>
+          <p>Assign doctors, manage system &amp; reports</p>
+        </button>
       </div>
       <div class="auth-links">
-        <a href="login.html">Already have an account? Sign In</a>
+        <a href="register.html">New patient? Register here &rarr;</a>
       </div>
     </div>
 
-    <!-- Step 2: Registration Form -->
-    <div id="registerStep" style="display:none;">
-      <div class="register-form-card">
-        <button type="button" class="back-link" id="backToRoles">&larr; Back to role selection</button>
-        <h1>Register as <span id="roleLabel" class="gradient-text"></span></h1>
+    <!-- Step 2: Login Form (hidden initially) -->
+    <div id="loginStep" style="display:none;">
+      <div class="login-form-card">
+        <button type="button" class="back-link" id="backToRoles">&larr; Change Role</button>
+        <h1>Sign In as <span id="roleLabel" class="gradient-text"></span></h1>
         <p id="roleSubtext"></p>
-        <div id="approvalNotice" class="message message-info" style="display:none;">
-          &#128274; Your account will require admin approval before you can sign in.
-        </div>
         <div id="message" class="message" style="display:none;"></div>
-        <form id="registerForm" novalidate>
+        <form id="loginForm" novalidate>
           <div class="form-group">
-            <label for="name">Full Name</label>
-            <input type="text" id="name" name="name" placeholder="John Doe" autocomplete="name" required>
-          </div>
-          <div class="form-group">
-            <label for="email">Email</label>
+            <label for="email">Email Address</label>
             <input type="email" id="email" name="email" placeholder="you@example.com" autocomplete="email" required>
-          </div>
-          <div class="form-group" id="specializationGroup" style="display:none;">
-            <label for="specialization">Specialization</label>
-            <input type="text" id="specialization" name="specialization"
-              placeholder="e.g. Surgical Neurology, Radiation Neurology">
           </div>
           <div class="form-group">
             <label for="password">Password</label>
             <div class="password-wrapper">
-              <input type="password" id="password" name="password" placeholder="Min 6 characters"
-                autocomplete="new-password" required>
+              <input type="password" id="password" name="password" placeholder="Enter your password"
+                autocomplete="current-password" required>
               <button type="button" class="password-toggle" aria-label="Toggle password visibility">&#128065;</button>
             </div>
           </div>
-          <div class="form-group">
-            <label for="confirmPassword">Confirm Password</label>
-            <div class="password-wrapper">
-              <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Repeat password"
-                autocomplete="new-password" required>
-              <button type="button" class="password-toggle" aria-label="Toggle password visibility">&#128065;</button>
-            </div>
-          </div>
-          <button type="submit" class="btn btn-primary" id="submitBtn">Create Account</button>
+          <button type="submit" class="btn btn-primary" id="submitBtn">Sign In</button>
         </form>
         <div class="auth-links">
-          <a href="login.html">Already have an account? Sign In</a>
+          <a href="reset-password.html">Forgot Password?</a>
+          <a id="registerLink" href="register.html">Don't have an account? Register</a>
         </div>
       </div>
     </div>
@@ -526,50 +494,66 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-  <script src="js/firebase-config.js"></script>
-  <script src="js/validation.js"></script>
-  <script src="js/auth.js"></script>
+  <script src="../js/firebase-config.js"></script>
+  <script src="../js/validation.js"></script>
+  <script src="../js/auth.js"></script>
   <script>
     var selectedRole = null;
     var roleSelection = document.getElementById('roleSelection');
-    var registerStep = document.getElementById('registerStep');
+    var loginStep = document.getElementById('loginStep');
     var roleLabel = document.getElementById('roleLabel');
     var roleSubtext = document.getElementById('roleSubtext');
-    var approvalNotice = document.getElementById('approvalNotice');
-    var specGroup = document.getElementById('specializationGroup');
-    var form = document.getElementById('registerForm');
+    var form = document.getElementById('loginForm');
     var messageEl = document.getElementById('message');
     var submitBtn = document.getElementById('submitBtn');
 
     var roleInfo = {
-      patient: { label: 'Patient', sub: 'Fill in your details to create an account' },
-      doctor: { label: 'Doctor', sub: 'Register as an Neurology specialist' }
+      patient: { label: 'Patient', sub: 'Access your appointments and prescriptions' },
+      doctor: { label: 'Doctor', sub: 'View assigned patients and prescribe treatments' },
+      admin: { label: 'Admin', sub: 'Manage assignments, doctors and system reports' }
     };
+
+    // Helper: select a role and show login form
+    function selectRole(role) {
+      selectedRole = role;
+      roleLabel.textContent = roleInfo[selectedRole].label;
+      roleSubtext.textContent = roleInfo[selectedRole].sub;
+      roleSelection.style.display = 'none';
+      loginStep.style.display = 'block';
+      
+      var registerLink = document.getElementById('registerLink');
+      if (registerLink) {
+        registerLink.style.display = (role === 'admin') ? 'none' : 'block';
+      }
+    }
+
+    // Auto-select role from URL param (e.g. login.html?role=patient)
+    var urlParams = new URLSearchParams(window.location.search);
+    var urlRole = urlParams.get('role');
+    if (urlRole && roleInfo[urlRole]) {
+      selectRole(urlRole);
+    }
 
     // Role card click
     document.querySelectorAll('.role-card').forEach(function (card) {
       card.addEventListener('click', function () {
-        selectedRole = this.getAttribute('data-role');
-        roleLabel.textContent = roleInfo[selectedRole].label;
-        roleSubtext.textContent = roleInfo[selectedRole].sub;
-        submitBtn.textContent = selectedRole === 'doctor' ? 'Send Approval Request' : 'Create Account';
-        approvalNotice.style.display = (selectedRole !== 'patient') ? 'block' : 'none';
-        specGroup.style.display = (selectedRole === 'doctor') ? 'block' : 'none';
-        roleSelection.style.display = 'none';
-        registerStep.style.display = 'block';
-        document.getElementById('name').focus();
+        var role = this.getAttribute('data-role');
+        // Update URL so back button returns to this form
+        history.replaceState(null, '', 'login.html?role=' + role);
+        selectRole(role);
+        document.getElementById('email').focus();
       });
     });
 
     // Back button
     document.getElementById('backToRoles').addEventListener('click', function () {
-      registerStep.style.display = 'none';
+      loginStep.style.display = 'none';
       roleSelection.style.display = 'block';
       messageEl.style.display = 'none';
       selectedRole = null;
     });
 
-    // Password toggles
+    // Password toggle
     document.querySelectorAll('.password-toggle').forEach(function (btn) {
       btn.addEventListener('click', function () {
         var input = this.previousElementSibling;
@@ -579,61 +563,54 @@
       });
     });
 
-    // Register submit
+    // Login submit
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       clearFieldErrors(form);
       messageEl.style.display = 'none';
 
-      var name = document.getElementById('name').value;
       var email = document.getElementById('email').value;
       var password = document.getElementById('password').value;
-      var confirmPassword = document.getElementById('confirmPassword').value;
-      var specialization = document.getElementById('specialization').value.trim();
 
       var result = validateForm([
-        { value: name, fieldName: 'Name', validators: [validateRequired] },
         { value: email, fieldName: 'Email', validators: [validateRequired, validateEmail] },
-        { value: password, fieldName: 'Password', validators: [validateRequired, validatePassword] },
-        { value: confirmPassword, fieldName: 'ConfirmPassword', validators: [validateRequired] }
+        { value: password, fieldName: 'Password', validators: [validateRequired] }
       ]);
 
       if (!result.isValid) {
         for (var field in result.errors) {
-          var inputId = field === 'ConfirmPassword' ? 'confirmPassword' : field.toLowerCase();
-          var input = document.getElementById(inputId);
+          var input = form.querySelector('[name="' + field.toLowerCase() + '"]');
           if (input) showFieldError(input, result.errors[field]);
         }
         return;
       }
 
-      if (password !== confirmPassword) {
-        showFieldError(document.getElementById('confirmPassword'), 'Passwords do not match');
-        return;
-      }
-
       submitBtn.classList.add('btn-loading');
-      var originalBtnText = submitBtn.textContent;
-      submitBtn.textContent = selectedRole === 'doctor' ? 'Sending Request...' : 'Creating Account...';
+      submitBtn.textContent = 'Signing In...';
 
-      registerUser(name, email, password, selectedRole, specialization)
-        .then(function (status) {
-          submitBtn.classList.remove('btn-loading');
-          submitBtn.textContent = originalBtnText;
-          if (status === 'active') {
-            messageEl.textContent = 'Registration successful! Your account is active. Redirecting to login...';
-            messageEl.className = 'message message-success';
-          } else {
-            messageEl.textContent = 'Registration submitted! Your account is pending admin approval. You will be notified once approved.';
-            messageEl.className = 'message message-success';
+      loginUser(email, password)
+        .then(function (user) {
+          // Verify role matches selection
+          if (user.role !== selectedRole) {
+            submitBtn.classList.remove('btn-loading');
+            submitBtn.textContent = 'Sign In';
+            messageEl.textContent = 'This account is registered as ' + roleInfo[user.role].label + '. Please go back and select the correct role.';
+            messageEl.className = 'message message-error';
+            messageEl.style.display = 'block';
+            auth.signOut();
+            return;
           }
-          messageEl.style.display = 'block';
-          setTimeout(function () { window.location.href = 'login.html'; }, 3000);
+          var dashboards = {
+            patient: '/patient/dashboard.html',
+            doctor: '/doctor/dashboard.html',
+            admin: '/admin/dashboard.html'
+          };
+          window.location.href = dashboards[user.role] || '/';
         })
         .catch(function (err) {
           submitBtn.classList.remove('btn-loading');
-          submitBtn.textContent = originalBtnText;
-          messageEl.textContent = err.message || 'Registration failed. Please try again.';
+          submitBtn.textContent = 'Sign In';
+          messageEl.textContent = err.message || 'Login failed. Please check your credentials.';
           messageEl.className = 'message message-error';
           messageEl.style.display = 'block';
         });

@@ -4,9 +4,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" href="../logo.png">
-  <title>Notifications - NeuroCare</title>
+  <link rel="icon" href="../assets/favicon.png">
+  <title>My Prescriptions - NeuroCare</title>
   <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/print.css" media="print">
   <link rel="stylesheet" href="../css/patient-layout.css">
 </head>
 
@@ -16,7 +17,7 @@
   <nav class="dashboard-topnav">
     <div class="topnav-inner">
       <a href="dashboard.html" class="topnav-brand">
-        <img src="../logo.png" alt="NeuroCare Logo">
+        <img src="../assets/logo.png" alt="NeuroCare Logo">
         <span>NeuroCare</span>
       </a>
 
@@ -46,7 +47,7 @@
           </svg>
           Appointments
         </a>
-        <a href="prescriptions.html">
+        <a href="prescriptions.html" class="active">
           <svg viewBox="0 0 24 24">
             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
             <polyline points="14 2 14 8 20 8"></polyline>
@@ -62,7 +63,7 @@
           </svg>
           Profile
         </a>
-        <a href="notifications.html" class="active">
+        <a href="notifications.html">
           <svg viewBox="0 0 24 24">
             <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
             <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
@@ -85,21 +86,22 @@
   <main class="main-content">
     <header class="page-header">
       <div>
-        <h1 id="pageTitle">Notifications</h1>
-        <div class="breadcrumb" id="pageBreadcrumb"><a href="dashboard.html">Dashboard</a> <span>›</span> Notifications
+        <h1 id="pageTitle">My Prescriptions</h1>
+        <div class="breadcrumb" id="pageBreadcrumb"><a href="dashboard.html">Dashboard</a> <span>›</span> Prescriptions
         </div>
       </div>
     </header>
 
     <div class="page-body">
-      <div id="notifList" class="list-container">
+      <div id="prescriptionList" class="list-container">
         <div class="loading-container">
           <div class="loading-spinner"></div>
-          <span class="loading-text" style="color: #64748b; font-weight: 500;">Checking for notifications...</span>
+          <span class="loading-text" style="color: #64748b; font-weight: 500;">Retrieving your prescriptions...</span>
         </div>
       </div>
     </div>
   </main>
+
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
@@ -107,51 +109,61 @@
   <script src="../js/utils.js"></script>
   <script src="../js/auth.js"></script>
   <script src="../js/auth-guard.js"></script>
-  <script src="../js/notifications.js"></script>
+  <script src="../js/firestore.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="../js/pdf-export.js"></script>
   <script>
     requireAuth('patient').then(function (user) {
-      var emptyHtml = '<div class="empty-state">' +
-        '<div class="empty-state-icon"><svg viewBox="0 0 24 24" width="64" height="64" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="color: #cbd5e1;"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg></div>' +
-        '<h3>No Notifications</h3>' +
-        '<p>You\'re all caught up! Notifications about your appointments, prescriptions, and updates will appear here.</p>' +
-        '</div>';
+      var container = document.getElementById('prescriptionList');
 
-      onNotificationsChange(user.uid, function (notifs) {
-        var container = document.getElementById('notifList');
-        if (notifs.length === 0) { container.innerHTML = emptyHtml; return; }
-        container.innerHTML = '';
-        notifs.forEach(function (n) {
-          var card = createElement('div', { className: 'card' + (n.read ? '' : ' card-unread') });
-          var dateStr = n.createdAt ? new Date(n.createdAt.seconds * 1000).toLocaleString() : '';
-
-          var iconHtml = '';
-          var iconClass = 'notif-update';
-          var iconSvg = '<svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>';
-
-          if (n.type === 'request') {
-            iconClass = 'notif-request';
-            iconSvg = '<svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>';
-          } else if (n.type === 'cancellation') {
-            iconClass = 'notif-cancellation';
-            iconSvg = '<svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>';
-          }
-
-          card.innerHTML = '<div class="notification-item">' +
-            '<div class="notification-icon ' + iconClass + '">' + iconSvg + '</div>' +
-            '<div>' +
-            '<p style="margin-bottom: 0.25rem; font-weight: 500; color: #0f172a;">' + escapeHtml(n.message) + '</p>' +
-            '<p class="text-muted" style="font-size: 0.8rem;">' + dateStr + '</p>' +
-            '</div>' +
+      getPrescriptionsByPatient(user.uid).then(function (prescriptions) {
+        if (prescriptions.length === 0) {
+          container.innerHTML = '<div class="empty-state">' +
+            '<div class="empty-state-icon"><svg viewBox="0 0 24 24" width="64" height="64" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round" style="color: #cbd5e1;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></div>' +
+            '<h3>No Prescriptions Yet</h3>' +
+            '<p>Prescriptions will appear here after your doctor completes a consultation and provides medication details.</p>' +
+            '<a href="appointments.html" class="btn btn-primary">View Appointments</a>' +
             '</div>';
-
-          if (!n.read) {
-            card.addEventListener('click', function () { markAsRead(n.id); card.classList.remove('card-unread'); });
-          }
+          return;
+        }
+        container.innerHTML = '';
+        prescriptions.forEach(function (rx) {
+          var card = createElement('div', { className: 'card' });
+          var medsHtml = '<table class="table"><thead><tr><th>Medicine</th><th>Dosage</th><th>Frequency</th></tr></thead><tbody>';
+          (rx.medicines || []).forEach(function (m) {
+            medsHtml += '<tr><td>' + escapeHtml(m.name) + '</td><td>' + escapeHtml(m.dosage) + '</td><td>' + escapeHtml(m.frequency) + '</td></tr>';
+          });
+          medsHtml += '</tbody></table>';
+          var dateStr = rx.createdAt ? new Date(rx.createdAt.seconds * 1000).toLocaleDateString() : '';
+          card.innerHTML = '<h3>Prescription - ' + dateStr + '</h3>' +
+            '<p>Doctor: ' + escapeHtml(rx.doctorName) + '</p>' +
+            medsHtml +
+            (rx.notes ? '<p><strong>Notes:</strong> ' + escapeHtml(rx.notes) + '</p>' : '') +
+            '<div class="card-actions">' +
+            '<button class="btn btn-primary download-btn" data-idx="' + prescriptions.indexOf(rx) + '">Download PDF</button> ' +
+            '<button class="btn btn-outline print-btn">Print</button>' +
+            '</div>';
           container.appendChild(card);
         });
-      }, function () {
-        document.getElementById('notifList').innerHTML = emptyHtml;
+
+        container.querySelectorAll('.download-btn').forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            var idx = parseInt(btn.dataset.idx);
+            generatePrescriptionPDF(prescriptions[idx]);
+          });
+        });
+        container.querySelectorAll('.print-btn').forEach(function (btn) {
+          btn.addEventListener('click', function () { window.print(); });
+        });
+      }).catch(function () {
+        container.innerHTML = '<div class="empty-state">' +
+          '<div class="empty-state-icon">&#128138;</div>' +
+          '<p style="font-size:1.05rem;color:#1e293b;font-weight:600;margin-bottom:0.25rem;">No Prescriptions Yet</p>' +
+          '<p>Prescriptions will appear here after your doctor completes a consultation and provides medication details.</p>' +
+          '<a href="appointments.html" class="btn btn-primary" style="margin-top:1rem;">View Appointments</a>' +
+          '</div>';
       });
+
       document.getElementById('logoutBtnSidebar').addEventListener('click', function (e) { e.preventDefault(); confirmLogout(); });
       var navToggle = document.getElementById('navToggle');
       var navLinks = document.getElementById('navLinks');

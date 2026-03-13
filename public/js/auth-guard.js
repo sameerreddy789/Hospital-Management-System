@@ -43,7 +43,7 @@ function requireAuth(allowedRole) {
   return new Promise(function(resolve, reject) {
     auth.onAuthStateChanged(function(user) {
       if (!user) {
-        window.location.href = '/login.html';
+        window.location.href = '/auth/login.html';
         reject(new Error('Not authenticated'));
         return;
       }
@@ -51,14 +51,14 @@ function requireAuth(allowedRole) {
       db.collection('users').doc(user.uid).get()
         .then(function(doc) {
           if (!doc.exists) {
-            window.location.href = '/login.html';
+            window.location.href = '/auth/login.html';
             reject(new Error('User profile not found'));
             return;
           }
 
           var data = doc.data();
           if (data.role !== allowedRole) {
-            window.location.href = roleDashboards[data.role] || '/login.html';
+            window.location.href = roleDashboards[data.role] || '/auth/login.html';
             reject(new Error('Unauthorized role'));
             return;
           }
@@ -71,7 +71,7 @@ function requireAuth(allowedRole) {
           });
         })
         .catch(function(err) {
-          window.location.href = '/login.html';
+          window.location.href = '/auth/login.html';
           reject(err);
         });
     });

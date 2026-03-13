@@ -255,7 +255,7 @@ function confirmLogout() {
  */
 function logoutUser() {
   return auth.signOut().then(function () {
-    window.location.href = '/login.html';
+    window.location.href = '/auth/login.html';
   });
 }
 
