@@ -132,14 +132,14 @@
         return;
       }
 
-      // Load present doctors
-      getAvailableDoctorList().then(function (doctors) {
+      // Load doctors
+      getDoctorList().then(function (doctors) {
         if (doctors.length === 0) {
           var opt = document.createElement('option');
           opt.disabled = true;
-          opt.textContent = 'No doctors currently available';
+          opt.textContent = 'No doctors registered';
           doctorSelect.appendChild(opt);
-          showMessage(messageEl, 'No doctors are currently marked as present. They must toggle their presence on their dashboard.', 'info');
+          showMessage(messageEl, 'No oncologists are registered in the system.', 'info');
         }
         doctors.forEach(function (doc) {
           var opt = document.createElement('option');
