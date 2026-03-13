@@ -233,16 +233,20 @@ function checkDoctorConflict(doctorId, date, time) {
  * @param {string} doctorId - Doctor UID
  * @param {Array} medicines - Array of {name, dosage, frequency}
  * @param {string} notes - Doctor notes
+ * @param {string} reportsNeeded - Required reports next time (optional)
+ * @param {boolean} requiresFollowUp - Optional toggle for follow-up (optional)
+ * @param {Object} recommendedDoctor - Object containing {id, name} of recommended doctor (optional)
  * @returns {Promise<string>} Prescription ID
  */
-function createPrescription(appointmentId, patientId, doctorId, medicines, notes) {
+function createPrescription(appointmentId, patientId, doctorId, medicines, notes, reportsNeeded, requiresFollowUp, recommendedDoctor) {
   return Promise.all([
     db.collection('users').doc(doctorId).get(),
     db.collection('users').doc(patientId).get()
   ]).then(function (docs) {
     var doctorName = docs[0].exists ? docs[0].data().name : 'Unknown';
     var patientName = docs[1].exists ? docs[1].data().name : 'Unknown';
-    return db.collection('prescriptions').add({
+    
+    var docData = {
       appointmentId: appointmentId,
       patientId: patientId,
       patientName: patientName,
@@ -251,7 +255,17 @@ function createPrescription(appointmentId, patientId, doctorId, medicines, notes
       medicines: medicines,
       notes: notes || '',
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
+    };
+    
+    // Add optional follow-up fields
+    if (reportsNeeded) docData.reportsNeeded = reportsNeeded;
+    if (requiresFollowUp) docData.requiresFollowUp = requiresFollowUp;
+    if (recommendedDoctor && recommendedDoctor.id) {
+       docData.recommendedDoctorId = recommendedDoctor.id;
+       docData.recommendedDoctorName = recommendedDoctor.name;
+    }
+
+    return db.collection('prescriptions').add(docData);
   }).then(function (docRef) {
     return docRef.id;
   });

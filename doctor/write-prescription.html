@@ -172,6 +172,31 @@
                 style="width: 100%; border-radius: 12px; border: 1px solid #e2e8f0; padding: 0.75rem; font-family: inherit; font-size: 0.95rem;"></textarea>
             </div>
             
+            <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1px dashed #cbd5e1;">
+              <h3 style="margin-top: 0; font-size: 1.1rem; color: #1e293b; margin-bottom: 1rem;">Follow-up & Referral (Optional)</h3>
+              
+              <div class="form-group" style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;">
+                <input type="checkbox" id="requiresFollowUp" style="width: 18px; height: 18px;">
+                <label for="requiresFollowUp" style="margin-bottom: 0; cursor: pointer; font-weight: 600;">Patient requires a follow-up visit</label>
+              </div>
+
+              <div id="followUpDetails" style="display: none; animation: slideIn 0.3s ease;">
+                <div class="form-group">
+                  <label for="reportsNeeded">Reports Needed for Next Visit</label>
+                  <input type="text" id="reportsNeeded" placeholder="e.g. Blood Test, MRI scan..." style="width: 100%;">
+                </div>
+
+                <div class="form-group">
+                  <label for="recommendedDoctor">Recommend Another Doctor</label>
+                  <select id="recommendedDoctor" style="width: 100%; border-radius: 12px; border: 1px solid #e2e8f0; padding: 0.75rem; font-family: inherit; font-size: 0.95rem; background: #fff;">
+                    <option value="">-- No referral needed --</option>
+                    <!-- Doctors will be populated here -->
+                  </select>
+                  <small style="color: #64748b; margin-top: 4px; display: block;">Select a doctor if the patient needs specialized care or a second opinion.</small>
+                </div>
+              </div>
+            </div>
+            
             <div style="display:flex; gap:1rem; margin-top:2rem;">
               <a href="dashboard.html" class="btn btn-outline" style="flex:1; text-align:center; display:flex; align-items:center; justify-content:center;">Cancel</a>
               <button type="submit" class="btn btn-primary" style="flex:2; height: 52px; font-weight: 700; font-size: 1.05rem;">Complete Consultation & Issue Prescription</button>
@@ -200,8 +225,8 @@
       const loader = document.getElementById('loader');
 
       if (!appointmentId || !patientId) {
-        alert('Invalid consultation session.');
-        window.location.href = 'dashboard.html';
+        showToast('Invalid consultation session.', 'error');
+        setTimeout(() => window.location.href = 'dashboard.html', 1500);
         return;
       }
 
@@ -210,14 +235,14 @@
       // Load Context
       db.collection('appointments').doc(appointmentId).get().then(function (doc) {
         if (!doc.exists) {
-            alert('Appointment not found.');
-            window.location.href = 'dashboard.html';
+            showToast('Appointment not found.', 'error');
+            setTimeout(() => window.location.href = 'dashboard.html', 1500);
             return;
         }
         const apt = doc.data();
         if (apt.status !== 'assigned') {
-            alert('This consultation has already been completed.');
-            window.location.href = 'patient-details.html?appointmentId=' + appointmentId + '&patientId=' + patientId;
+            showToast('This consultation has already been completed.', 'error');
+            setTimeout(() => window.location.href = 'patient-details.html?appointmentId=' + appointmentId + '&patientId=' + patientId, 1500);
             return;
         }
 
@@ -261,6 +286,35 @@
           document.getElementById('ctxBadges').appendChild(badge);
         }
       });
+      
+      // Load doctors for referral dropdown
+      getDoctorList().then(function(doctors) {
+        const select = document.getElementById('recommendedDoctor');
+        doctors.forEach(function(doc) {
+          // Don't show the current doctor in the referral list
+          if (doc.id !== user.uid) {
+            const option = document.createElement('option');
+            option.value = doc.id;
+            option.textContent = doc.name + (doc.specialization ? ' (' + doc.specialization + ')' : '');
+            select.appendChild(option);
+          }
+        });
+      }).catch(function(err) {
+        console.error("Error loading doctors for referral:", err);
+      });
+      
+      // Toggle follow-up details visibility
+      document.getElementById('requiresFollowUp').addEventListener('change', function(e) {
+        const detailsDiv = document.getElementById('followUpDetails');
+        if (e.target.checked) {
+          detailsDiv.style.display = 'block';
+        } else {
+          detailsDiv.style.display = 'none';
+          // Clear the fields when hidden
+          document.getElementById('reportsNeeded').value = '';
+          document.getElementById('recommendedDoctor').value = '';
+        }
+      });
 
       // Add Row Logic
       document.getElementById('addMedicine').addEventListener('click', function () {
@@ -291,7 +345,7 @@
         const medicines = [];
         
         for (let i = 0; i < names.length; i++) {
-          if (!names[i].value.trim()) { alert('Please fill in all medicine fields.'); return; }
+          if (!names[i].value.trim()) { showToast('Please fill in all medicine fields.', 'error'); return; }
           medicines.push({ 
             name: names[i].value.trim(), 
             dosage: dosages[i].value.trim(), 
@@ -299,12 +353,23 @@
           });
         }
         
-        if (medicines.length === 0) { alert('At least one medicine is required.'); return; }
+        if (medicines.length === 0) { showToast('At least one medicine is required.', 'error'); return; }
         
         loader.style.display = 'flex';
         const notes = document.getElementById('notes').value;
+        const reportsNeeded = document.getElementById('reportsNeeded').value.trim();
+        const requiresFollowUp = document.getElementById('requiresFollowUp').checked;
+        
+        const docSelect = document.getElementById('recommendedDoctor');
+        let recommendedDoctor = null;
+        if (docSelect.value) {
+          recommendedDoctor = {
+            id: docSelect.value,
+            name: docSelect.options[docSelect.selectedIndex].text.split('(')[0].trim() // Extract name without specialization
+          };
+        }
 
-        createPrescription(appointmentId, patientId, user.uid, medicines, notes)
+        createPrescription(appointmentId, patientId, user.uid, medicines, notes, reportsNeeded, requiresFollowUp, recommendedDoctor)
           .then(() => updateAppointmentStatus(appointmentId, 'prescribed'))
           .then(() => {
             createNotification(patientId, 'A new prescription has been issued for you.', 'prescription');
@@ -312,7 +377,7 @@
           })
           .catch(err => {
             loader.style.display = 'none';
-            alert(err.message || 'Failed to submit prescription.');
+            showToast(err.message || 'Failed to submit prescription.', 'error');
           });
       });
 

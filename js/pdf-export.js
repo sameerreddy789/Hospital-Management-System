@@ -8,7 +8,7 @@
  */
 function generatePrescriptionPDF(prescription) {
   if (typeof jspdf === 'undefined' && typeof window.jspdf === 'undefined') {
-    alert('PDF generation is unavailable. Please try again later.');
+    showToast('PDF generation is unavailable. Please try again later.', 'error');
     return;
   }
 

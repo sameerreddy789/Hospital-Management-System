@@ -873,7 +873,7 @@
         var title = document.getElementById('fuTitle').value.trim();
         var desc = document.getElementById('fuDescription').value.trim();
         var aptId = document.getElementById('fuAppointmentId').value;
-        if (!title || !desc) { alert('Please fill in all fields.'); return; }
+        if (!title || !desc) { showToast('Please fill in all fields.', 'error'); return; }
         createProblemSubmission(user.uid, title, desc, 'follow-up', aptId).then(function () {
           document.getElementById('followUpModal').style.display = 'none';
           document.getElementById('followUpForm').reset();

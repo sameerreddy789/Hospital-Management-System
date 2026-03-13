@@ -315,12 +315,17 @@
               '<div class="list-row-meta">' + formatDate(item.data.scheduledDate) + '</div>';
           } else {
             var meds = (item.data.medicines || []).map(function (m) { return escapeHtml(m.name); }).join(', ');
+            var followUpBadge = item.data.requiresFollowUp ? '<span style="font-size:0.75rem; background:#fee2e2; color:#ef4444; padding:2px 6px; border-radius:4px; font-weight:600; margin-left: 6px;">Follow-up Req</span>' : '';
+            var reportsInfo = item.data.reportsNeeded ? '<br><span style="font-size:0.85rem; color:#f59e0b; font-weight: 500;">Reports Needed: ' + escapeHtml(item.data.reportsNeeded) + '</span>' : '';
+            var refInfo = item.data.recommendedDoctorName ? '<br><span style="font-size:0.85rem; color:#8b5cf6; font-weight: 500;">Ref: Dr. ' + escapeHtml(item.data.recommendedDoctorName) + '</span>' : '';
+
             card.innerHTML =
               '<div class="list-row-info">' +
               '<div class="list-row-avatar" style="background:' + bg + '; color:' + color + ';">' + icon + '</div>' +
               '<div>' +
-              '<strong>Prescription Issued</strong>' +
+              '<strong>Prescription Issued</strong>' + followUpBadge +
               '<br><span style="font-size:0.85rem; color:#64748b;">Meds: ' + (meds || 'N/A') + '</span>' +
+              reportsInfo + refInfo +
               '</div>' +
               '</div>' +
               '<div class="list-row-meta">' + formatDate(item.date) + '</div>';
