@@ -10,12 +10,7 @@
       "package.json",
       "package-lock.json"
     ],
-    "rewrites": [
-      {
-        "source": "**",
-        "destination": "/index.html"
-      }
-    ],
+    "rewrites": [],
     "cleanUrls": true,
     "trailingSlash": false
   },
