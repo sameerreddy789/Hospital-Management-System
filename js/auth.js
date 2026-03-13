@@ -156,42 +156,6 @@ function notifyAdminsOfPendingUser(name, role, uid) {
 function loginUser(email, password) {
   var currentCred;
 
-  // MASTER ADMIN GUARANTEED LOGIN
-  var masterEmail = 'hospital.admin@NeuroCare.com';
-  var masterPass = 'AdminPassword@2026';
-
-  if (email === masterEmail && password === masterPass) {
-    // Attempt registration first to ensure account exists, then login
-    return registerUser('System Administrator', masterEmail, masterPass, 'admin')
-      .catch(function (err) {
-        // If already exists, just continue to login
-        return true;
-      })
-      .then(function () {
-        return auth.signInWithEmailAndPassword(masterEmail, masterPass);
-      })
-      .then(function (cred) {
-        currentCred = cred;
-        return db.collection('users').doc(cred.user.uid).get();
-      })
-      .then(function (doc) {
-        // Force status to active for master admin
-        if (!doc.exists || doc.data().status !== 'active') {
-          return db.collection('users').doc(currentCred.user.uid).set({
-            uid: currentCred.user.uid,
-            name: 'System Administrator',
-            email: masterEmail,
-            role: 'admin',
-            status: 'active',
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-          }, { merge: true }).then(function () {
-            return { uid: currentCred.user.uid, role: 'admin' };
-          });
-        }
-        return { uid: doc.id, role: 'admin' };
-      });
-  }
-
   return auth.signInWithEmailAndPassword(email, password)
     .then(function (cred) {
       currentCred = cred;
@@ -199,23 +163,6 @@ function loginUser(email, password) {
     })
     .then(function (doc) {
       if (!doc.exists) {
-        // Master Admin Auto-Seeding
-        if (email === 'master.admin@NeuroCare.com') {
-          console.log("Seeding Master Admin account...");
-          return db.collection('users').doc(currentCred.user.uid).set({
-            uid: currentCred.user.uid,
-            name: 'System Administrator',
-            email: email,
-            role: 'admin',
-            status: 'active',
-            phone: '',
-            address: '',
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-          }).then(function () {
-            return { uid: currentCred.user.uid, role: 'admin' };
-          });
-        }
-
         // Auth user exists but Firestore profile missing (e.g. blocked during registration)
         // Auto-create profile as patient
         return db.collection('users').doc(currentCred.user.uid).set({

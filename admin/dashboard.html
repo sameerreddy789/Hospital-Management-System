@@ -118,6 +118,19 @@
             <p class="stat" id="doctorCount">0</p>
           </div>
         </div>
+        <a href="manage-patients.html" class="summary-card" style="text-decoration: none; transition: transform 0.2s; cursor: pointer;" onmouseover="this.style.transform='translateY(-5px)'" onmouseout="this.style.transform='translateY(0)'">
+          <div class="summary-card-icon" style="background: rgba(99, 102, 241, 0.1); color: #6366f1;">
+            <svg viewBox="0 0 24 24" width="32" height="32" stroke="currentColor" stroke-width="2" fill="none">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <polyline points="16 11 18 13 22 9"></polyline>
+            </svg>
+          </div>
+          <div>
+            <h3>Patients Directory</h3>
+            <p class="stat-label" style="color: var(--primary); font-weight: 600;">Manage Patients &rarr;</p>
+          </div>
+        </a>
       </div>
 
       <!-- Section 0: Doctor Registration Requests -->
@@ -324,9 +337,14 @@
           pageItems.forEach(function (doc) {
             var patientCount = 0;
             (appointments || []).forEach(function (apt) {
-              if (apt.doctorId === doc.uid && (apt.status === 'assigned' || apt.status === 'prescribed')) patientCount++;
+              if (apt.doctorId === doc.id && (apt.status === 'assigned' || apt.status === 'prescribed')) patientCount++;
             });
+            
+            var card = createElement('div', { className: 'card list-row' });
+            var initials = (doc.name || '?').split(' ').map(function (w) { return w[0]; }).join('').toUpperCase().slice(0, 2);
             var statusDot = doc.isPresent ? 'status-online' : 'status-offline';
+            var spec = doc.specialization ? '<span class="badge badge-info">' + escapeHtml(doc.specialization) + '</span>' : '';
+            
             card.innerHTML = '<div class="list-row-info">' +
               '<div class="list-row-avatar doctor-avatar"><span class="status-dot ' + statusDot + '"></span>' + initials + '</div>' +
               '<div><strong>Dr. ' + escapeHtml(doc.name) + '</strong> ' + spec + '</div>' +
