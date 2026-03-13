@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="../logo.png">
+  <title>Write Prescription - NeuroCare</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/admin-layout.css">
+  <style>
+    .context-bar {
+      background: #fff;
+      padding: 1.25rem 1.5rem;
+      border-radius: 16px;
+      border: 1px solid #e2e8f0;
+      margin-bottom: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+
+    .context-info h2 { margin: 0; font-size: 1.25rem; color: #0f172a; }
+    .context-info p { margin: 4px 0 0; font-size: 0.9rem; color: #64748b; font-weight: 500; }
+
+    .priority-badge { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; padding: 4px 10px; border-radius: 99px; }
+    .priority-emergency { background: #fee2e2; color: #ef4444; border: 1px solid #fecaca; }
+    .priority-urgent { background: #ffedd5; color: #f97316; border: 1px solid #fed7aa; }
+    .priority-normal { background: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; }
+
+    .medicine-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr auto;
+      gap: 1rem;
+      align-items: end;
+      margin-bottom: 1rem;
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateX(20px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    .w-full { width: 100%; }
+    
+    .loading-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(4px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      display: none;
+    }
+  </style>
+</head>
+
+<body class="dashboard-body">
+  <div id="loader" class="loading-overlay">
+    <div class="loading-spinner"></div>
+    <p style="margin-top: 1rem; font-weight: 600; color: #1e293b;">Processing...</p>
+  </div>
+
+  <!-- Top Navbar -->
+  <nav class="dashboard-topnav">
+    <div class="topnav-inner">
+      <a href="dashboard.html" class="topnav-brand">
+        <img src="../logo.png" alt="NeuroCare Logo">
+        <span>NeuroCare</span>
+      </a>
+
+      <button class="topnav-toggle" id="navToggle" aria-label="Toggle navigation">&#9776;</button>
+
+      <div class="topnav-links" id="navLinks">
+        <a href="dashboard.html" class="active">
+          <svg viewBox="0 0 24 24">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+          Dashboard
+        </a>
+        <a href="notifications.html">
+          <svg viewBox="0 0 24 24">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+          </svg>
+          Notifications <span id="notifBadge" class="nav-badge" style="display:none;">0</span>
+        </a>
+      </div>
+
+      <a href="#" id="logoutBtn" class="topnav-logout" title="Logout">
+        <svg viewBox="0 0 24 24">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+          <polyline points="16 17 21 12 16 7"></polyline>
+          <line x1="21" y1="12" x2="9" y2="12"></line>
+        </svg>
+        <span>Logout</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Main Content Area -->
+  <main class="main-content">
+    <header class="page-header">
+      <div>
+        <h1>Consultation</h1>
+        <div class="breadcrumb">
+          <a href="dashboard.html">Dashboard</a> <span>&nbsp;›&nbsp;</span> Write Prescription
+        </div>
+      </div>
+    </header>
+
+    <div class="page-body">
+      <!-- Patient Context -->
+      <div id="patientContext" class="context-bar">
+        <div class="context-info" style="flex: 1;">
+          <h2 id="ctxPatientName">Loading patient...</h2>
+          <p id="ctxProblemTitle">Please wait</p>
+          <div id="clinicalAlerts" style="margin-top: 0.75rem; display: flex; flex-wrap: wrap; gap: 0.5rem; display: none;">
+            <!-- Conditions/Allergies tags will appear here -->
+          </div>
+          <a id="viewDetailsLink" href="#" style="font-size:0.8rem; color:#3b82f6; font-weight:600; text-decoration:none; margin-top:0.75rem; display:inline-block;">&larr; Review Full Profile & History</a>
+        </div>
+        <div id="ctxBadges">
+          <!-- Will hold urgency badge -->
+        </div>
+      </div>
+
+      <div class="dashboard-section">
+        <div class="section-header">
+          <h2>
+            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"
+              style="vertical-align:middle;margin-right:8px;">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+            </svg>
+            Write Prescription
+          </h2>
+        </div>
+        
+        <div class="card" style="padding: 1.5rem;">
+          <form id="prescriptionForm" novalidate>
+            <div id="medicineRows">
+              <div class="medicine-row">
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label>Medicine Name</label>
+                  <input type="text" class="med-name" placeholder="e.g. Paracetamol" required style="width: 100%;">
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label>Dosage</label>
+                  <input type="text" class="med-dosage" placeholder="e.g. 500mg" required style="width: 100%;">
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label>Frequency</label>
+                  <input type="text" class="med-frequency" placeholder="e.g. 1-0-1" required style="width: 100%;">
+                </div>
+                <div style="width: 38px;"></div>
+              </div>
+            </div>
+            
+            <button type="button" id="addMedicine" class="btn btn-outline btn-sm"
+              style="margin-bottom: 2rem; border-style: dashed; width: 100%;">+ Add Another Medicine</button>
+            
+            <div class="form-group">
+              <label for="notes">Additional Advice / Notes</label>
+              <textarea id="notes" rows="4" placeholder="Advise on rest, diet, or follow-up instructions..."
+                style="width: 100%; border-radius: 12px; border: 1px solid #e2e8f0; padding: 0.75rem; font-family: inherit; font-size: 0.95rem;"></textarea>
+            </div>
+            
+            <div style="display:flex; gap:1rem; margin-top:2rem;">
+              <a href="dashboard.html" class="btn btn-outline" style="flex:1; text-align:center; display:flex; align-items:center; justify-content:center;">Cancel</a>
+              <button type="submit" class="btn btn-primary" style="flex:2; height: 52px; font-weight: 700; font-size: 1.05rem;">Complete Consultation & Issue Prescription</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="../js/firebase-config.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/validation.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/auth-guard.js"></script>
+  <script src="../js/firestore.js"></script>
+  <script src="../js/notifications.js"></script>
+  <script>
+    requireAuth('doctor').then(function (user) {
+      const params = new URLSearchParams(window.location.search);
+      const appointmentId = params.get('appointmentId');
+      const patientId = params.get('patientId');
+      const loader = document.getElementById('loader');
+
+      if (!appointmentId || !patientId) {
+        alert('Invalid consultation session.');
+        window.location.href = 'dashboard.html';
+        return;
+      }
+
+      document.getElementById('viewDetailsLink').href = 'patient-details.html?appointmentId=' + appointmentId + '&patientId=' + patientId;
+
+      // Load Context
+      db.collection('appointments').doc(appointmentId).get().then(function (doc) {
+        if (!doc.exists) {
+            alert('Appointment not found.');
+            window.location.href = 'dashboard.html';
+            return;
+        }
+        const apt = doc.data();
+        if (apt.status !== 'assigned') {
+            alert('This consultation has already been completed.');
+            window.location.href = 'patient-details.html?appointmentId=' + appointmentId + '&patientId=' + patientId;
+            return;
+        }
+
+        document.getElementById('ctxPatientName').textContent = apt.patientName;
+        document.getElementById('ctxProblemTitle').textContent = apt.problemTitle || 'General Consultation';
+        
+        // Fetch patient profile for alerts
+        getUserProfile(patientId).then(profile => {
+          if (profile) {
+            const alerts = document.getElementById('clinicalAlerts');
+            let hasAlerts = false;
+            
+            if (profile.conditions && profile.conditions.length) {
+              profile.conditions.forEach(c => {
+                const tag = document.createElement('span');
+                tag.style.cssText = 'font-size:0.7rem; background:#f1f5f9; color:#475569; padding:2px 8px; border-radius:4px; font-weight:600; border:1px solid #e2e8f0;';
+                tag.textContent = c;
+                alerts.appendChild(tag);
+              });
+              hasAlerts = true;
+            }
+            
+            if (profile.allergies && profile.allergies.length) {
+              profile.allergies.forEach(a => {
+                const tag = document.createElement('span');
+                tag.style.cssText = 'font-size:0.7rem; background:#fee2e2; color:#ef4444; padding:2px 8px; border-radius:4px; font-weight:600; border:1px solid #fecaca;';
+                tag.textContent = 'Allergy: ' + a;
+                alerts.appendChild(tag);
+              });
+              hasAlerts = true;
+            }
+            
+            if (hasAlerts) alerts.style.display = 'flex';
+          }
+        });
+
+        if (apt.urgency && apt.urgency !== 'Normal') {
+          const badge = document.createElement('span');
+          badge.className = 'priority-badge priority-' + apt.urgency.toLowerCase();
+          badge.textContent = apt.urgency;
+          document.getElementById('ctxBadges').appendChild(badge);
+        }
+      });
+
+      // Add Row Logic
+      document.getElementById('addMedicine').addEventListener('click', function () {
+        const row = document.createElement('div');
+        row.className = 'medicine-row';
+        row.innerHTML =
+          '<div class="form-group" style="margin-bottom: 0;"><label>Medicine Name</label><input type="text" class="med-name" placeholder="e.g. Paracetamol" required style="width: 100%;"></div>' +
+          '<div class="form-group" style="margin-bottom: 0;"><label>Dosage</label><input type="text" class="med-dosage" placeholder="e.g. 500mg" required style="width: 100%;"></div>' +
+          '<div class="form-group" style="margin-bottom: 0;"><label>Frequency</label><input type="text" class="med-frequency" placeholder="e.g. 1-0-1" required style="width: 100%;"></div>' +
+          '<button type="button" class="btn btn-danger btn-sm remove-med" style="padding: 0 10px; height: 42px; width: 38px; display: flex; align-items: center; justify-content: center;">' +
+          '<svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><path d="M18 6L6 18M6 6l12 12"></path></svg></button>';
+        document.getElementById('medicineRows').appendChild(row);
+        
+        row.querySelector('.remove-med').addEventListener('click', () => {
+          row.style.opacity = '0';
+          row.style.transform = 'translateX(20px)';
+          row.style.transition = '0.3s ease';
+          setTimeout(() => row.remove(), 300);
+        });
+      });
+
+      // Submit Logic
+      document.getElementById('prescriptionForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const names = document.querySelectorAll('.med-name');
+        const dosages = document.querySelectorAll('.med-dosage');
+        const freqs = document.querySelectorAll('.med-frequency');
+        const medicines = [];
+        
+        for (let i = 0; i < names.length; i++) {
+          if (!names[i].value.trim()) { alert('Please fill in all medicine fields.'); return; }
+          medicines.push({ 
+            name: names[i].value.trim(), 
+            dosage: dosages[i].value.trim(), 
+            frequency: freqs[i].value.trim() 
+          });
+        }
+        
+        if (medicines.length === 0) { alert('At least one medicine is required.'); return; }
+        
+        loader.style.display = 'flex';
+        const notes = document.getElementById('notes').value;
+
+        createPrescription(appointmentId, patientId, user.uid, medicines, notes)
+          .then(() => updateAppointmentStatus(appointmentId, 'prescribed'))
+          .then(() => {
+            createNotification(patientId, 'A new prescription has been issued for you.', 'prescription');
+            window.location.href = 'patient-details.html?appointmentId=' + appointmentId + '&patientId=' + patientId + '&success=1';
+          })
+          .catch(err => {
+            loader.style.display = 'none';
+            alert(err.message || 'Failed to submit prescription.');
+          });
+      });
+
+      document.getElementById('logoutBtn').addEventListener('click', (e) => { e.preventDefault(); confirmLogout(); });
+      
+      const navToggle = document.getElementById('navToggle');
+      const navLinks = document.getElementById('navLinks');
+      if (navToggle && navLinks) {
+        navToggle.addEventListener('click', () => { navLinks.classList.toggle('open'); });
+      }
+    });
+  </script>
+</body>
+
+</html>
