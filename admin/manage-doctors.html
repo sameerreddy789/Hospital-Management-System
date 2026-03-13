@@ -268,7 +268,7 @@
             var joinDate = doc.createdAt ? new Date(doc.createdAt.seconds * 1000).toLocaleDateString() : 'N/A';
             var spec = doc.specialization ? '<span class="badge badge-info">' + escapeHtml(doc.specialization) + '</span>' : '';
             card.innerHTML = '<div class="list-row-info">' +
-              '<div class="list-row-avatar doctor-avatar"><span class="status-dot status-online"></span>' + initials + '</div>' +
+              '<div class="list-row-avatar doctor-avatar">' + initials + '</div>' +
               '<div><strong>Dr. ' + escapeHtml(doc.name) + '</strong> ' + spec +
               '<br><span class="text-muted">' + escapeHtml(doc.email) + ' &middot; Joined ' + joinDate + '</span></div>' +
               '</div>';
@@ -348,7 +348,7 @@
             });
         });
 
-        document.getElementById('logoutBtn').addEventListener('click', function (e) { e.preventDefault(); logoutUser(); });
+        document.getElementById('logoutBtn').addEventListener('click', function (e) { e.preventDefault(); confirmLogout(); });
 
         var navToggle = document.getElementById('navToggle');
         var navLinks = document.getElementById('navLinks');
