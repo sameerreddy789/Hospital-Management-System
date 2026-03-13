@@ -149,15 +149,15 @@
               <div class="medicine-row">
                 <div class="form-group" style="margin-bottom: 0;">
                   <label>Medicine Name</label>
-                  <input type="text" class="med-name" placeholder="e.g. Paracetamol" required style="width: 100%;">
+                  <input type="text" class="med-name" placeholder="e.g. Paracetamol" style="width: 100%;">
                 </div>
                 <div class="form-group" style="margin-bottom: 0;">
                   <label>Dosage</label>
-                  <input type="text" class="med-dosage" placeholder="e.g. 500mg" required style="width: 100%;">
+                  <input type="text" class="med-dosage" placeholder="e.g. 500mg" style="width: 100%;">
                 </div>
                 <div class="form-group" style="margin-bottom: 0;">
                   <label>Frequency</label>
-                  <input type="text" class="med-frequency" placeholder="e.g. 1-0-1" required style="width: 100%;">
+                  <input type="text" class="med-frequency" placeholder="e.g. 1-0-1" style="width: 100%;">
                 </div>
                 <div style="width: 38px;"></div>
               </div>
@@ -321,9 +321,9 @@
         const row = document.createElement('div');
         row.className = 'medicine-row';
         row.innerHTML =
-          '<div class="form-group" style="margin-bottom: 0;"><label>Medicine Name</label><input type="text" class="med-name" placeholder="e.g. Paracetamol" required style="width: 100%;"></div>' +
-          '<div class="form-group" style="margin-bottom: 0;"><label>Dosage</label><input type="text" class="med-dosage" placeholder="e.g. 500mg" required style="width: 100%;"></div>' +
-          '<div class="form-group" style="margin-bottom: 0;"><label>Frequency</label><input type="text" class="med-frequency" placeholder="e.g. 1-0-1" required style="width: 100%;"></div>' +
+          '<div class="form-group" style="margin-bottom: 0;"><label>Medicine Name</label><input type="text" class="med-name" placeholder="e.g. Paracetamol" style="width: 100%;"></div>' +
+          '<div class="form-group" style="margin-bottom: 0;"><label>Dosage</label><input type="text" class="med-dosage" placeholder="e.g. 500mg" style="width: 100%;"></div>' +
+          '<div class="form-group" style="margin-bottom: 0;"><label>Frequency</label><input type="text" class="med-frequency" placeholder="e.g. 1-0-1" style="width: 100%;"></div>' +
           '<button type="button" class="btn btn-danger btn-sm remove-med" style="padding: 0 10px; height: 42px; width: 38px; display: flex; align-items: center; justify-content: center;">' +
           '<svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none"><path d="M18 6L6 18M6 6l12 12"></path></svg></button>';
         document.getElementById('medicineRows').appendChild(row);
@@ -345,15 +345,25 @@
         const medicines = [];
         
         for (let i = 0; i < names.length; i++) {
-          if (!names[i].value.trim()) { showToast('Please fill in all medicine fields.', 'error'); return; }
+          const n = names[i].value.trim();
+          const d = dosages[i].value.trim();
+          const f = freqs[i].value.trim();
+          
+          if (!n && !d && !f) continue; // Skip completely empty rows
+          
+          if (!n || !d || !f) {
+            showToast('Please fill in all details for the medicines you entered.', 'error');
+            return;
+          }
+          
           medicines.push({ 
-            name: names[i].value.trim(), 
-            dosage: dosages[i].value.trim(), 
-            frequency: freqs[i].value.trim() 
+            name: n, 
+            dosage: d, 
+            frequency: f 
           });
         }
         
-        if (medicines.length === 0) { showToast('At least one medicine is required.', 'error'); return; }
+        // Remove the block requiring at least one medicine.
         
         loader.style.display = 'flex';
         const notes = document.getElementById('notes').value;
