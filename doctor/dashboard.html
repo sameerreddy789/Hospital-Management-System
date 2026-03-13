@@ -7,91 +7,9 @@
   <link rel="icon" href="../logo.png">
   <title>Doctor Dashboard - NeuroCare</title>
   <link rel="stylesheet" href="../css/style.css">
-  <link rel="stylesheet" href="../css/admin-layout.css">
-  <style>
-    /* Presence Toggle Styling */
-    .presence-toggle-card {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 1rem 1.5rem;
-      background: #fff;
-      border-radius: 16px;
-      border: 1px solid #e2e8f0;
-      margin-bottom: 2rem;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-    }
-
-    .toggle-label {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-weight: 600;
-      color: #1e293b;
-    }
-
-    .status-indicator {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: #94a3b8;
-    }
-
-    .status-active .status-indicator {
-      background: #10b981;
-      box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
-    }
-
-    /* Standard CSS Switch */
-    .switch {
-      position: relative;
-      display: inline-block;
-      width: 50px;
-      height: 26px;
-    }
-
-    .switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-
-    .slider {
-      position: absolute;
-      cursor: pointer;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: #cbd5e1;
-      transition: .4s;
-      border-radius: 34px;
-    }
-
-    .slider:before {
-      position: absolute;
-      content: "";
-      height: 18px;
-      width: 18px;
-      left: 4px;
-      bottom: 4px;
-      background-color: white;
-      transition: .4s;
-      border-radius: 50%;
-    }
-
-    input:checked+.slider {
-      background-color: #10b981;
-    }
-
-    input:checked+.slider:before {
-      transform: translateX(24px);
-    }
-  </style>
-</head>
+  <link rel="stylesheet" href="../css/admin-layout.css"></head>
 
 <body class="dashboard-body">
-
   <!-- Top Navbar -->
   <nav class="dashboard-topnav">
     <div class="topnav-inner">
@@ -135,23 +53,11 @@
     <header class="page-header">
       <div>
         <h1 id="doctorGreeting">Doctor Dashboard</h1>
-        <div class="breadcrumb">Manage your patient appointments and presence</div>
+        <div class="breadcrumb">Manage your patient appointments</div>
       </div>
     </header>
 
     <div class="page-body">
-      <!-- Presence Toggle -->
-      <div class="presence-toggle-card" id="presenceCard">
-        <div class="toggle-label">
-          <div class="status-indicator"></div>
-          <span id="presenceStatus">You are currently: <strong>Away</strong></span>
-        </div>
-        <label class="switch">
-          <input type="checkbox" id="presenceToggle">
-          <span class="slider"></span>
-        </label>
-      </div>
-
       <!-- Summary Stats -->
       <div class="summary-cards">
         <div class="summary-card">
@@ -186,24 +92,19 @@
       <!-- Main Section -->
       <div class="dashboard-section">
         <div class="section-header">
-          <h2>
-            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"
-              style="vertical-align:middle;margin-right:8px;">
-              <path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-            </svg>
-            Assigned Appointments
-          </h2>
+          <div class="tab-nav">
+            <button class="tab-btn active" data-tab="active">
+              Active Appointments
+            </button>
+            <button class="tab-btn" data-tab="history">
+              Consultation History
+            </button>
+          </div>
           <div style="display:flex; gap:1rem;">
             <input type="text" id="searchInput" placeholder="Search patient..." class="search-input"
               style="max-width:200px;">
-            <select id="statusFilter" class="status-filter">
-              <option value="all">All Statuses</option>
-              <option value="assigned">Assigned</option>
-              <option value="prescribed">Prescribed</option>
-            </select>
           </div>
         </div>
-
         <div id="appointmentList" class="list-container">
           <div class="skeleton skeleton-card"></div>
           <div class="skeleton skeleton-card"></div>
@@ -211,6 +112,49 @@
       </div>
     </div>
   </main>
+
+  <style>
+    /* Clinical Badges */
+    .priority-badge { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; padding: 2px 8px; border-radius: 99px; margin-left: 8px; vertical-align: middle; }
+    .priority-emergency { background: #fee2e2; color: #ef4444; border: 1px solid #fecaca; animation: pulse-priority 2s infinite; }
+    .priority-urgent { background: #ffedd5; color: #f97316; border: 1px solid #fed7aa; }
+    .priority-normal { background: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; }
+
+    @keyframes pulse-priority {
+      0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+      70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    }
+
+    .type-badge { font-size: 0.7rem; font-weight: 600; padding: 2px 6px; border-radius: 4px; background: #e0e7ff; color: #4338ca; border: 1px solid #c7d2fe; margin-right: 6px; }
+
+    .desc-snippet { font-size: 0.82rem; color: #475569; margin-top: 6px; display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.4; max-width: 400px; }
+    .tab-nav {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .tab-btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      background: none;
+      font-weight: 600;
+      color: #64748b;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      color: #3b82f6;
+      border-bottom-color: #3b82f6;
+    }
+
+    .tab-btn:hover:not(.active) {
+      color: #1e293b;
+    }
+  </style>
 
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
@@ -227,66 +171,46 @@
 
       var container = document.getElementById('appointmentList');
       var allAppointments = [];
-      var presenceToggle = document.getElementById('presenceToggle');
-      var presenceStatus = document.getElementById('presenceStatus');
-      var presenceCard = document.getElementById('presenceCard');
-
-      // Initialize Presence
-      getUserProfile(user.uid).then(function (profile) {
-        if (profile && profile.isPresent) {
-          presenceToggle.checked = true;
-          updatePresenceUI(true);
-        } else {
-          presenceToggle.checked = false;
-          updatePresenceUI(false);
-        }
-      });
-
-      function updatePresenceUI(isPresent) {
-        if (isPresent) {
-          presenceCard.classList.add('status-active');
-          presenceStatus.innerHTML = 'You are currently: <strong style="color: #10b981;">Present & Available</strong>';
-        } else {
-          presenceCard.classList.remove('status-active');
-          presenceStatus.innerHTML = 'You are currently: <strong style="color: #64748b;">Away / Offline</strong>';
-        }
-      }
-
-      presenceToggle.addEventListener('change', function () {
-        var isPresent = this.checked;
-        updateDoctorPresence(user.uid, isPresent).then(function () {
-          updatePresenceUI(isPresent);
-          showToast(isPresent ? 'You are now marked as available' : 'You are now marked as away', 'info');
-        }).catch(function (err) {
-          console.error('Failed to update presence:', err);
-          presenceToggle.checked = !isPresent; // Revert
-          showToast('Error updating status', 'error');
-        });
-      });
+      var currentTab = 'active';
 
       function renderAppointments(items) {
         if (items.length === 0) {
-          container.innerHTML = '<div class="empty-state"><h3>No Appointments</h3><p>You have no assigned appointments matching your criteria.</p></div>';
+          var msg = currentTab === 'active' ? 'You have no assigned appointments.' : 'No completed consultations found.';
+          container.innerHTML = '<div class="empty-state"><h3>No Data</h3><p>' + msg + '</p></div>';
           return;
         }
         container.innerHTML = '';
         items.forEach(function (apt) {
           var card = createElement('div', { className: 'card list-row' });
           var initials = (apt.patientName || '?').charAt(0).toUpperCase();
+          var badgeClass = apt.status === 'prescribed' ? 'success' : 'primary';
+          var statusLabel = apt.status === 'prescribed' ? 'Completed' : 'Assigned';
+          
+          var urgency = apt.urgency || 'Normal';
+          var urgencyClass = 'priority-' + urgency.toLowerCase();
+          var urgencyBadge = urgency !== 'Normal' ? '<span class="priority-badge ' + urgencyClass + '">' + urgency + '</span>' : '';
+          
+          var typeBadge = apt.type === 'follow-up' ? '<span class="type-badge">Follow-up</span>' : '';
+          var descSnippet = apt.problemDescription ? '<div class="desc-snippet">' + escapeHtml(apt.problemDescription) + '</div>' : '';
+
           card.innerHTML =
             '<div class="list-row-info">' +
             '<div class="list-row-avatar">' + initials + '</div>' +
             '<div>' +
-            '<strong>' + escapeHtml(apt.patientName) + '</strong>' +
-            '<br><span style="font-size:0.85rem; color:#64748b;">' + escapeHtml(apt.problemTitle || 'N/A') + '</span>' +
+            '<strong>' + escapeHtml(apt.patientName) + '</strong>' + urgencyBadge +
+            '<br><span style="font-size:0.85rem; color:#64748b;">' + typeBadge + escapeHtml(apt.problemTitle || 'N/A') + '</span>' +
+            descSnippet +
             '</div>' +
             '</div>' +
-            '<div class="list-row-meta">' +
-            '<span>' + formatDate(apt.scheduledDate) + ' at ' + formatTime(apt.scheduledTime) + '</span>' +
-            '<br><span class="status status-' + apt.status + '">' + apt.status + '</span>' +
+            '<div class="list-row-meta" style="text-align:right;">' +
+            '<span style="font-weight:600; color:#1e293b;">' + formatDate(apt.scheduledDate) + '</span>' +
+            '<br><span style="font-size:0.85rem; color:#64748b;">' + formatTime(apt.scheduledTime) + '</span>' +
+            '<br><span class="badge badge-sm badge-' + badgeClass + '" style="margin-top:4px;">' + statusLabel + '</span>' +
             '</div>' +
             '<div class="list-row-actions">' +
-            '<a href="patient-details.html?appointmentId=' + apt.id + '&patientId=' + apt.patientId + '" class="btn btn-primary btn-sm">Details</a>' +
+            '<a href="patient-details.html?appointmentId=' + apt.id + '&patientId=' + apt.patientId + '" class="btn btn-primary btn-sm">' + 
+              (currentTab === 'history' ? 'View Records' : 'Start Consultation') + 
+            '</a>' +
             '</div>';
           container.appendChild(card);
         });
@@ -294,9 +218,23 @@
 
       function doFilter() {
         var text = document.getElementById('searchInput').value;
-        var status = document.getElementById('statusFilter').value;
-        renderAppointments(applyFilters(allAppointments, text, 'patientName', status));
+        var filteredByTab = allAppointments.filter(function(a) {
+          if (currentTab === 'active') return a.status === 'assigned';
+          if (currentTab === 'history') return a.status === 'prescribed' || a.status === 'completed';
+          return false;
+        });
+        renderAppointments(applyFilters(filteredByTab, text, 'patientName', 'all'));
       }
+
+      // Tab switching
+      document.querySelectorAll('.tab-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+          this.classList.add('active');
+          currentTab = this.dataset.tab;
+          doFilter();
+        });
+      });
 
       // Real-time stats
       onStatsChange('doctor', user.uid, function (stats) {
@@ -306,14 +244,13 @@
 
       // Real-time appointments
       onAppointmentsChange(user.uid, 'doctor', function (appointments) {
-        allAppointments = appointments.filter(function (a) { return a.status === 'assigned' || a.status === 'prescribed'; });
+        allAppointments = appointments;
         doFilter();
       });
 
       document.getElementById('searchInput').addEventListener('input', doFilter);
-      document.getElementById('statusFilter').addEventListener('change', doFilter);
 
-      document.getElementById('logoutBtn').addEventListener('click', function (e) { e.preventDefault(); logoutUser(); });
+      document.getElementById('logoutBtn').addEventListener('click', function (e) { e.preventDefault(); confirmLogout(); });
 
       var navToggle = document.getElementById('navToggle');
       var navLinks = document.getElementById('navLinks');
@@ -321,31 +258,7 @@
         navToggle.addEventListener('click', function () { navLinks.classList.toggle('open'); });
       }
     });
-
-    // Helper for Toast
-    function showToast(msg, type) {
-      const toast = document.createElement('div');
-      toast.style.cssText = 'position:fixed; bottom:20px; right:20px; padding:12px 24px; border-radius:8px; background:#fff; box-shadow:0 10px 15px -3px rgba(0,0,0,0.1); z-index:9999; animation: slideIn 0.3s ease; border-left: 4px solid #3b82f6;';
-      if (type === 'error') toast.style.borderLeftColor = '#ef4444';
-      if (type === 'success') toast.style.borderLeftColor = '#10b981';
-      toast.textContent = msg;
-      document.body.appendChild(toast);
-      setTimeout(() => { toast.style.opacity = '0'; toast.style.transition = '0.5s'; setTimeout(() => toast.remove(), 500); }, 3000);
-    }
   </script>
-  <style>
-    @keyframes slideIn {
-      from {
-        transform: translateX(100%);
-        opacity: 0;
-      }
-
-      to {
-        transform: translateX(0);
-        opacity: 1;
-      }
-    }
-  </style>
 </body>
 
-</html>
+</html>
