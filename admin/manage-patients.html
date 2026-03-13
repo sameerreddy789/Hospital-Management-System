@@ -73,17 +73,14 @@
         </header>
 
         <div class="page-body">
-            <!-- Search -->
+            <!-- Summary Header with Tabs -->
             <div class="dashboard-section">
                 <div class="section-header">
-                    <h2>
-                        <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2"
-                            fill="none" style="vertical-align:middle;margin-right:8px;">
-                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                            <circle cx="9" cy="7" r="4"></circle>
-                        </svg>
-                        All Patients
-                    </h2>
+                    <div class="tab-nav">
+                        <button class="tab-btn active" data-tab="all">All Patients</button>
+                        <button class="tab-btn" data-tab="pending">Pending Consultation</button>
+                        <button class="tab-btn" data-tab="consulted">Consulted</button>
+                    </div>
                     <div class="section-actions">
                         <input type="text" id="searchInput" placeholder="Search by name or email..."
                             class="search-input">
@@ -98,6 +95,56 @@
             </div>
         </div>
 
+        <style>
+            .tab-nav {
+                display: flex;
+                gap: 1rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .tab-btn {
+                padding: 0.75rem 1.5rem;
+                border: none;
+                background: none;
+                font-weight: 600;
+                color: #64748b;
+                cursor: pointer;
+                border-bottom: 2px solid transparent;
+                transition: all 0.2s;
+                white-space: nowrap;
+            }
+
+            .tab-btn.active {
+                color: #3b82f6;
+                border-bottom-color: #3b82f6;
+            }
+
+            .tab-btn:hover:not(.active) {
+                color: #1e293b;
+            }
+
+            .patient-status-group {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                margin-top: 4px;
+            }
+
+            .patient-info-mini {
+                font-size: 0.8rem;
+                color: #64748b;
+                display: flex;
+                align-items: center;
+                gap: 4px;
+            }
+
+            .patient-info-mini svg {
+                width: 14px;
+                height: 14px;
+                stroke-width: 2.5;
+            }
+        </style>
+
         <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
         <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
         <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
@@ -111,7 +158,9 @@
                 var PAGE_SIZE = 5;
                 var container = document.getElementById('patientsList');
                 var allPatients = [];
+                var allAppointments = [];
                 var currentPage = 1;
+                var currentTab = 'all';
 
                 function getEmptyState(title, message, icon) {
                     return '<div class="empty-state">' +
@@ -151,7 +200,7 @@
                 function renderPatients(patients) {
                     if (patients.length === 0) {
                         container.innerHTML = getEmptyState('No Patients Found',
-                            'No patients match your search criteria.',
+                            'No patients match this category or search criteria.',
                             '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>');
                         document.getElementById('patientsPagination').style.display = 'none';
                         return;
@@ -162,19 +211,52 @@
                     container.innerHTML = '';
 
                     pageItems.forEach(function (p) {
+                        // Find latest appointment for this patient
+                        var patientApts = allAppointments.filter(function(a) { return a.patientId === p.id; });
+                        patientApts.sort(function(a, b) { 
+                            var t1 = a.scheduledDate + ' ' + a.scheduledTime;
+                            var t2 = b.scheduledDate + ' ' + b.scheduledTime;
+                            return t2.localeCompare(t1);
+                        });
+                        var latestApt = patientApts[0];
+
                         var card = document.createElement('div');
                         card.className = 'card list-row';
                         var initials = (p.name || '?').split(' ').map(function (w) { return w[0]; }).join('').toUpperCase().slice(0, 2);
-                        var dateStr = p.createdAt ? new Date(p.createdAt.seconds * 1000).toLocaleDateString() : 'N/A';
-                        var statusBadge = p.status === 'active'
-                            ? '<span class="badge" style="background:rgba(16,185,129,0.15);color:#10b981;">Active</span>'
-                            : '<span class="badge" style="background:rgba(245,158,11,0.15);color:#f59e0b;">Pending</span>';
+                        
+                        var statusBadge = '';
+                        var aptInfo = '';
+
+                        if (latestApt) {
+                            var bColor = '#3b82f6';
+                            var bBg = 'rgba(59,130,246,0.1)';
+                            var bText = latestApt.status;
+
+                            if (latestApt.status === 'prescribed' || latestApt.status === 'completed') {
+                                bColor = '#10b981';
+                                bBg = 'rgba(16,185,129,0.15)';
+                                bText = 'Consulted';
+                            } else if (latestApt.status === 'assigned') {
+                                bColor = '#f59e0b';
+                                bBg = 'rgba(245,158,11,0.15)';
+                                bText = 'Awaiting Consultation';
+                            }
+
+                            statusBadge = '<span class="badge" style="background:'+bBg+';color:'+bColor+';">'+bText+'</span>';
+                            aptInfo = '<div class="patient-info-mini">' +
+                                '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>' +
+                                'Dr. ' + (latestApt.doctorName || 'Assigned') + ' &middot; ' + formatDate(latestApt.scheduledDate) +
+                                '</div>';
+                        } else {
+                            statusBadge = '<span class="badge" style="background:rgba(100,116,139,0.1);color:#64748b;">Not Scheduled</span>';
+                        }
 
                         card.innerHTML = '<div class="list-row-info">' +
                             '<div class="list-row-avatar">' + initials + '</div>' +
                             '<div>' +
                             '<strong>' + escapeHtml(p.name) + '</strong> ' + statusBadge +
-                            '<br><span class="text-muted">' + escapeHtml(p.email) + ' &middot; Joined ' + dateStr + '</span>' +
+                            '<br><span class="text-muted" style="font-size:0.85rem;">' + escapeHtml(p.email) + '</span>' +
+                            aptInfo +
                             '</div>' +
                             '</div>' +
                             '<div class="list-row-meta">' +
@@ -189,36 +271,68 @@
                     });
                 }
 
-                // Load all patients
-                db.collection('users').where('role', '==', 'patient').get().then(function (snap) {
-                    snap.forEach(function (doc) {
+                function filterAndRender() {
+                    var query = document.getElementById('searchInput').value.toLowerCase();
+                    var filtered = allPatients.filter(function (p) {
+                        // First apply tab filter
+                        var patientApts = allAppointments.filter(function(a) { return a.patientId === p.id; });
+                        var isAssigned = patientApts.some(function(a) { return a.status === 'assigned'; });
+                        var isConsulted = patientApts.some(function(a) { return a.status === 'prescribed' || a.status === 'completed'; });
+
+                        if (currentTab === 'pending' && !isAssigned) return false;
+                        if (currentTab === 'consulted' && !isConsulted) return false;
+
+                        // Then apply search filter
+                        return (p.name || '').toLowerCase().indexOf(query) !== -1 ||
+                               (p.email || '').toLowerCase().indexOf(query) !== -1;
+                    });
+                    renderPatients(filtered);
+                }
+
+                // Load data
+                Promise.all([
+                    db.collection('users').where('role', '==', 'patient').get(),
+                    db.collection('appointments').get()
+                ]).then(function (results) {
+                    var userSnap = results[0];
+                    var aptSnap = results[1];
+
+                    userSnap.forEach(function (doc) {
                         var data = doc.data();
                         data.id = doc.id;
                         allPatients.push(data);
                     });
-                    // Sort by name
-                    allPatients.sort(function (a, b) {
-                        return (a.name || '').localeCompare(b.name || '');
+
+                    aptSnap.forEach(function (doc) {
+                        var data = doc.data();
+                        data.id = doc.id;
+                        allAppointments.push(data);
                     });
-                    renderPatients(allPatients);
+
+                    allPatients.sort(function (a, b) { return (a.name || '').localeCompare(b.name || ''); });
+                    filterAndRender();
                 }).catch(function (err) {
-                    container.innerHTML = getEmptyState('Error Loading Patients',
-                        'Could not load patient data. Please try again.',
-                        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>');
+                    container.innerHTML = getEmptyState('Error Loading Data', 'Could not load patient or appointment data.', '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>');
+                });
+
+                // Tab switching
+                document.querySelectorAll('.tab-btn').forEach(function(btn) {
+                    btn.addEventListener('click', function() {
+                        document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+                        this.classList.add('active');
+                        currentTab = this.dataset.tab;
+                        currentPage = 1;
+                        filterAndRender();
+                    });
                 });
 
                 // Search
                 document.getElementById('searchInput').addEventListener('input', function () {
-                    var query = this.value.toLowerCase();
                     currentPage = 1;
-                    var filtered = allPatients.filter(function (p) {
-                        return (p.name || '').toLowerCase().indexOf(query) !== -1 ||
-                            (p.email || '').toLowerCase().indexOf(query) !== -1;
-                    });
-                    renderPatients(filtered);
+                    filterAndRender();
                 });
 
-                document.getElementById('logoutBtn').addEventListener('click', function (e) { e.preventDefault(); logoutUser(); });
+                document.getElementById('logoutBtn').addEventListener('click', function (e) { e.preventDefault(); confirmLogout(); });
 
                 var navToggle = document.getElementById('navToggle');
                 var navLinks = document.getElementById('navLinks');
