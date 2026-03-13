@@ -343,6 +343,30 @@
       border-radius: 12px;
       margin-top: 0.5rem;
       cursor: pointer;
+      background: #3b82f6;
+      color: #fff;
+      border: none;
+      transition: background 0.1s ease, transform 0.1s ease, box-shadow 0.1s ease;
+      box-shadow: 0 4px 6px rgba(59, 130, 246, 0.2);
+    }
+
+    .login-form-card .btn-primary:hover {
+      background: #2563eb;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 15px rgba(59, 130, 246, 0.3);
+    }
+
+    .login-form-card .btn-primary:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+      filter: brightness(0.9);
+    }
+
+    .btn-loading {
+      opacity: 0.7;
+      pointer-events: none;
+      cursor: not-allowed;
+      filter: grayscale(0.5);
     }
 
     .login-form-card .auth-links {
@@ -556,11 +580,14 @@
       }
 
       submitBtn.classList.add('btn-loading');
+      submitBtn.textContent = 'Signing In...';
+
       loginUser(email, password)
         .then(function (user) {
           // Verify role matches selection
           if (user.role !== selectedRole) {
             submitBtn.classList.remove('btn-loading');
+            submitBtn.textContent = 'Sign In';
             messageEl.textContent = 'This account is registered as ' + roleInfo[user.role].label + '. Please go back and select the correct role.';
             messageEl.className = 'message message-error';
             messageEl.style.display = 'block';
@@ -576,6 +603,7 @@
         })
         .catch(function (err) {
           submitBtn.classList.remove('btn-loading');
+          submitBtn.textContent = 'Sign In';
           messageEl.textContent = err.message || 'Login failed. Please check your credentials.';
           messageEl.className = 'message message-error';
           messageEl.style.display = 'block';

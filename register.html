@@ -358,11 +358,27 @@
       background: linear-gradient(135deg, #3b82f6, #8b5cf6);
       color: #fff;
       border: none;
+      transition: background 0.1s ease, transform 0.1s ease, box-shadow 0.1s ease;
+      box-shadow: 0 4px 10px rgba(139, 92, 246, 0.2);
     }
 
-    .register-form-card .btn-loading {
+    .register-form-card .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(139, 92, 246, 0.35);
+      filter: brightness(1.1);
+    }
+
+    .register-form-card .btn-primary:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 5px rgba(139, 92, 246, 0.2);
+      filter: brightness(0.9);
+    }
+
+    .btn-loading {
       opacity: 0.7;
       pointer-events: none;
+      cursor: not-allowed;
+      filter: grayscale(0.5);
     }
 
     .register-form-card .auth-links {
@@ -597,9 +613,13 @@
       }
 
       submitBtn.classList.add('btn-loading');
+      var originalBtnText = submitBtn.textContent;
+      submitBtn.textContent = selectedRole === 'doctor' ? 'Sending Request...' : 'Creating Account...';
+
       registerUser(name, email, password, selectedRole, specialization)
         .then(function (status) {
           submitBtn.classList.remove('btn-loading');
+          submitBtn.textContent = originalBtnText;
           if (status === 'active') {
             messageEl.textContent = 'Registration successful! Your account is active. Redirecting to login...';
             messageEl.className = 'message message-success';
@@ -612,6 +632,7 @@
         })
         .catch(function (err) {
           submitBtn.classList.remove('btn-loading');
+          submitBtn.textContent = originalBtnText;
           messageEl.textContent = err.message || 'Registration failed. Please try again.';
           messageEl.className = 'message message-error';
           messageEl.style.display = 'block';
