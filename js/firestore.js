@@ -120,6 +120,8 @@ function createAppointment(patientId, doctorId, submissionId, date, time) {
       submissionId: submissionId,
       problemTitle: submission.title || '',
       problemDescription: submission.description || '',
+      urgency: submission.urgency || 'Normal',
+      type: submission.type || 'initial',
       scheduledDate: date,
       scheduledTime: time,
       status: 'assigned',
@@ -263,12 +265,17 @@ function createPrescription(appointmentId, patientId, doctorId, medicines, notes
 function getPrescriptionsByPatient(patientId) {
   return db.collection('prescriptions')
     .where('patientId', '==', patientId)
-    .orderBy('createdAt', 'desc')
     .get()
     .then(function (snapshot) {
       var results = [];
       snapshot.forEach(function (doc) {
         results.push(Object.assign({ id: doc.id }, doc.data()));
+      });
+      // Sort newest first in JS to avoid composite index requirement
+      results.sort(function (a, b) {
+        var t1 = (a.createdAt && a.createdAt.seconds) ? a.createdAt.seconds : 0;
+        var t2 = (b.createdAt && b.createdAt.seconds) ? b.createdAt.seconds : 0;
+        return t2 - t1;
       });
       return results;
     });
@@ -313,33 +320,7 @@ function getDoctorList() {
     });
 }
 
-/**
- * Gets list of only available (present) doctors.
- * @returns {Promise<Array>}
- */
-function getAvailableDoctorList() {
-  return db.collection('users')
-    .where('role', '==', 'doctor')
-    .where('isPresent', '==', true)
-    .get()
-    .then(function (snapshot) {
-      var results = [];
-      snapshot.forEach(function (doc) {
-        results.push(Object.assign({ id: doc.id }, doc.data()));
-      });
-      return results;
-    });
-}
 
-/**
- * Updates a doctor's presence status.
- * @param {string} uid - Doctor UID
- * @param {boolean} isPresent - Presence status
- * @returns {Promise<void>}
- */
-function updateDoctorPresence(uid, isPresent) {
-  return db.collection('users').doc(uid).update({ isPresent: isPresent });
-}
 
 /**
  * Gets a user's profile.
@@ -601,8 +582,6 @@ window.createPrescription = createPrescription;
 window.getPrescriptionsByPatient = getPrescriptionsByPatient;
 window.getPrescriptionsByAppointment = getPrescriptionsByAppointment;
 window.getDoctorList = getDoctorList;
-window.getAvailableDoctorList = getAvailableDoctorList;
-window.updateDoctorPresence = updateDoctorPresence;
 window.getUserProfile = getUserProfile;
 window.updatePatientProfile = updatePatientProfile;
 window.getPatientHistory = getPatientHistory;
